@@ -13,22 +13,23 @@ recurse = (key, val, ctx) ->
   when 'Function'
     val.call ctx
   when 'Object'
-    _.each(val, recurse, ctx)
+    for each k in val
+      recurse key, k, ctx
 
 valid_rules = (rules)->
-  _.is-type('Object', rules) or _.is-type('Function', rules)
+  typeof! rules is 'Object' or typeof! rules is 'Function'
 
 # To apply a rule, means to execute the .can or .cannot statement in order to add one or more entries
 # to the corresponding can-rules or cannot-rules object in the rule-rep
 module.exports = class RuleApplier implements Debugger
   (@repo, @rules, @access-request, @debugging) ->
-    unless _.is-type('Object', @repo)
+    unless typeof! @repo is 'Object'
       throw Error "RuleApplier must be passed a RuleRepo, was: #{@repo}"
 
     unless valid_rules @rules
       throw Error "RuleApplier must be passed the rules to be applied, was: #{@rules}"
 
-    unless @access-request is undefined or _.is-type 'Object', @access-request
+    unless @access-request is undefined or typeof! @access-request is 'Object'
       throw Error "AccessRequest must be an Object, was: #{@access-request}"
     @debugging = @debugging
 
@@ -71,10 +72,10 @@ module.exports = class RuleApplier implements Debugger
   apply-rules-for: (name, context) ->
     @debug "apply rules for #{name} in context: #{context}"
 
-    if _.is-type 'Object' name
+    if typeof! name is 'Object'
       @apply-obj-rules-for name, context
 
-    unless _.is-type 'String' name
+    unless typeof! name is 'String'
       @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
       return @
       # throw Error "Name to appl rules for must be a String, was: #{name}"
@@ -82,7 +83,7 @@ module.exports = class RuleApplier implements Debugger
     rules = @context-rules(context)
 
     named-rules = rules[name]
-    if _.is-type 'Function', named-rules
+    if typeof! named-rules is 'Function'
       named-rules.call @, @access-request
     else
       @debug "rules key for #{name} should be a function that resolves one or more rules"
@@ -98,22 +99,21 @@ module.exports = class RuleApplier implements Debugger
     if obj.clazz is 'User'
       obj-keys = ['name', 'role']
 
-    self = @
-    obj-keys.each (key) ->
+    for each key of obj-keys
       val = obj[key]
 
       if obj.clazz is 'User'
-        self.apply-rules-for val, context
+        @apply-rules-for val, context
 
       key-rules = rules[key]
-      self.apply-rules-for val, key-rules
+      @apply-rules-for val, key-rules
 
 
   context-rules: (context)->
-    if _.is-type 'Object', context
+    if typeof! context is 'Object'
       return context
 
-    return @rules unless _.is-type 'String', context
+    return @rules unless typeof! context is 'String'
     if _.is-type 'Object' @rules[context]
       @rules[context]
     else
@@ -170,7 +170,7 @@ module.exports = class RuleApplier implements Debugger
 
   apply-default-rules: ->
     @debug 'apply-default-rules', @access-request, @valid-request!
-    if _.is-type('Object', @access-request) and @valid-request!
+    if typeof! @access-request is 'Object' and @valid-request!
       @apply-access-rules!
     else
       @apply-rules-for 'default'
@@ -209,7 +209,8 @@ module.exports = class RuleApplier implements Debugger
       rules = @rules
       ctx = @
       self = @
-      lo.each _.keys(rules), (key) ->
+      keys = lo.keys rules
+      for each key of keys
         self.recurse key, rules[key], ctx
     else
       throw Error "rules must be an Object was: #{typeof @rules}"

@@ -42,7 +42,7 @@
         throw Error("Not a permit, was: " + permit);
       }
       if (place != null) {
-        if (!(permit.rules != null && _.isType('Object', permit.rules != null))) {
+        if (!(permit.rules != null && toString$.call(permit.rules).slice(8, -1) === 'Object')) {
           throw Error("Permit has no rules object to place loaded rules at " + place);
         }
         return permit.rules[place] = this.processedRules;
@@ -52,7 +52,7 @@
     };
     prototype.ruleFor = function(rule){
       var key;
-      key = _.keys(rule)[0];
+      key = lo.keys(rule)[0];
       if (!['can', 'cannot'].include(key)) {
         throw Error("Not a valid rule key, must be 'can' or 'cannot', was: " + key);
       }

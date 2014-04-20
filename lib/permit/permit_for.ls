@@ -17,7 +17,7 @@ module.exports = (base-clazz, name, base-obj, debug) ->
   permit = new base-clazz name
   permit.debug-on! if debug is true
 
-  if base-obj? and _.is-type 'Function', base-obj
+  if base-obj? and typeof! base-obj is 'Function'
     base-obj = base-obj!
 
   # extend permit with custom functionality

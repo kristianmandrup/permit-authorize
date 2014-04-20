@@ -18,7 +18,7 @@ module.exports = class PermitRegistry implements Debugger
     if name is undefined
       name = "Permit-#{@@permit-counter}"
 
-    unless _.is-type 'String', name
+    unless typeof! name is 'String'
       throw Error "Name of permit must be a String, was: #{name}"
     name
 
@@ -29,7 +29,7 @@ module.exports = class PermitRegistry implements Debugger
     permit.name = @calc-name permit.name
     name = permit.name
 
-    unless _.is-type 'Object', @@permits
+    unless typeof! @@permits is 'Object'
       throw Error "permits registry container must be an Object in order to store permits by name, was: #{@@permits}"
 
     if @@permits[name]

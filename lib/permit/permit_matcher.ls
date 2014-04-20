@@ -1,7 +1,6 @@
 requires  = require '../../requires'
 lo        = require 'lodash'
 
-Util          = requires.lib 'util'
 Intersect     = requires.util 'intersect'
 AccessMatcher = requires.lib('matchers').AccessMatcher
 
@@ -36,15 +35,15 @@ module.exports = class PermitMatcher implements Debugger
     @intersect-on @permit.excludes
 
   custom-ex-match: ->
-    if _.is-type 'Function' @permit.ex-match
+    if typeof! @permit.ex-match is 'Function'
       res = @permit.ex-match @access-request
       if res.constructor is AccessMatcher
         return res.result!
 
       return true if res is undefined
 
-      unless _.is-type 'Boolean', res
-        throw Error ".match method of permit #{@permit.name} must return a Boolean value, was: #{typeof res}"
+      unless typeof! res is 'Boolean'
+        throw Error ".match method of permit #{@permit.name} must return a Boolean value, was: #{typeof! res}"
 
       return res
     else
@@ -52,7 +51,7 @@ module.exports = class PermitMatcher implements Debugger
       false
 
   custom-match: ->
-    if _.is-type 'Function' @permit.match
+    if typeof! @permit.match is 'Function'
       res = @permit.match @access-request
       @debug 'custom-match', @permit.match, res
       if res.constructor is AccessMatcher
@@ -60,8 +59,8 @@ module.exports = class PermitMatcher implements Debugger
 
       return true if res is undefined
 
-      unless _.is-type 'Boolean', res
-        throw Error ".match method of permit #{@permit.name} must return a Boolean value, was: #{typeof res}"
+      unless typeof! res is 'Boolean'
+        throw Error ".match method of permit #{@permit.name} must return a Boolean value, was: #{typeof! res}"
 
       return res
     else
@@ -71,7 +70,7 @@ module.exports = class PermitMatcher implements Debugger
   intersect-on: (partial) ->
     return false unless partial?
 
-    if _.is-type 'Function' partial
+    if typeof! partial is 'Function'
       partial = partial!
     res = @intersect.on partial, @access-request
     res

@@ -31,14 +31,14 @@ class PermitRulesLoader
       throw Error "Not a permit, was: #{permit}" 
       
     if place?
-      unless permit.rules? and _.is-type 'Object', permit.rules?
+      unless permit.rules? and typeof! permit.rules is 'Object'
         throw Error "Permit has no rules object to place loaded rules at #{place}" 
       permit.rules[place] = @processed-rules
     else
       permit.rules = @processed-rules
  
   rule-for: (rule) ->
-    key = _.keys(rule).0
+    key = lo.keys(rule).0
     unless ['can', 'cannot'].include key
       throw Error "Not a valid rule key, must be 'can' or 'cannot', was: #{key}"
     

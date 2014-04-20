@@ -1,3 +1,5 @@
+lo = require 'lodash'
+
 module.exports = ->
   countProps = (obj) ->
     count = 0
@@ -22,7 +24,7 @@ module.exports = ->
     return false unless partialObj? and compareObj?
     return false if typeof! partialObj is 'Unknown' or typeof! compareObj is 'Unknown'
 
-    for key in _.keys partialObj
+    for key in lo.keys partialObj
       res[key] = false
       partial = partialObj[key]
       compare = compareObj[key]
@@ -35,7 +37,7 @@ module.exports = ->
 
       res[key] = true if equals
 
-    for key in _.keys partialObj
+    for key in lo.keys partialObj
       unless res[key]
         return false
     true

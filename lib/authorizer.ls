@@ -13,7 +13,6 @@ module.exports = class Authorizer implements Debugger
     if typeof! action is 'Object'
       return @run(action.action, action.subject, action.context)
 
-    console.log "ACTION type", typeof! action
     @debug 'run', action, subject, context
     @can action, subject, context
 

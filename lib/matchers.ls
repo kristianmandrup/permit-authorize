@@ -67,7 +67,7 @@ class SubjectMatcher extends BaseMatcher
     @subject ||= if @access-request? then @access-request.subject else {}
 
   match: (subject) ->
-    if _.is-type 'Function' subject
+    if typeof! subject is 'Function'
       return subject.call @subject
     return true if @death-match 'subject', subject
     @intersect.on subject, @subject
@@ -88,7 +88,7 @@ class ContextMatcher extends BaseMatcher
     @ctx ||= if @access-request? then @access-request.ctx else {}
 
   match: (ctx) ->
-    if _.is-type 'Function' ctx
+    if typeof! ctx is 'Function'
       return ctx.call @ctx
 
     return true if @death-match 'ctx', ctx
@@ -114,11 +114,11 @@ class AccessMatcher
 
   match-on: (hash) ->
     all = hash
-    for key in _.keys hash
+    for key in lo.keys hash
       match-fun   = @[key]
       match-value = hash[key]
 
-      if _.is-type 'Function' match-fun
+      if typeof! match-fun is 'Function'
         delete all[key]
         match-fun.call(@, match-value).match-on(all)
     @result!

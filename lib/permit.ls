@@ -15,7 +15,6 @@ ActionMatcher   = matchers.ActionMatcher
 ContextMatcher  = matchers.ContextMatcher
 AccessMatcher   = matchers.AccessMatcher
 
-Util            = requires.lib 'util'
 Debugger        = requires.lib 'debugger'
 
 module.exports = class Permit implements Debugger
@@ -30,7 +29,7 @@ module.exports = class Permit implements Debugger
 
   # get a named permit
   @get = (name) ->
-    PermitRegistry.get(name)
+    PermitRegistry.get name
 
   init: ->
     @apply-rules!
@@ -42,10 +41,10 @@ module.exports = class Permit implements Debugger
 
   # used by permit-for to extend specific permit from base class (prototype)
   use: (obj) ->
-    obj = obj! if _.is-type 'Function', obj
-    if _.is-type 'Object', obj
+    obj = obj! if typeof! obj is 'Function'
+    if typeof! obj is 'Object'
       lo.extend @, obj
-    else throw Error "Can only extend permit with an Object, was: #{typeof obj}"
+    else throw Error "Can only extend permit with an Object, was: #{typeof! obj}"
 
   # default empty rules
   rules: ->
@@ -88,12 +87,12 @@ module.exports = class Permit implements Debugger
   # ----------------
 
   rule-applier: (access-request) ->
-    access-request = {} unless _.is-type 'Object', access-request
+    access-request = {} unless typeof! access-request is 'Object'
     new @rule-applier-class @rule-repo, @rules, access-request, @debugging
 
   # always called (can be overridden for custom behavior)
   apply-rules: (access-request, force) ->
-    unless access-request is undefined or _.is-type 'Object', access-request
+    unless access-request is undefined or typeof! access-request is 'Object'
       force = Boolean access-request
     unless @applied-rules and not force
       @debug 'permit apply rules', access-request

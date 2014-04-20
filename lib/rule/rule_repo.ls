@@ -43,7 +43,7 @@ module.exports = class RuleRepo implements Debugger
     @clean act
 
   subject-clazz: (subject)->
-    if _.is-type 'Object', subject
+    if typeof! subject is 'Object'
       subject-clazz = subject.constructor.display-name
     else
       subject-clazz = subject
@@ -55,7 +55,7 @@ module.exports = class RuleRepo implements Debugger
 
     if typeof! subject is 'Array'
       self = @
-      return subject.find (subj) ->
+      return lo.find subject, (subj) ->
         self.find-matching-subject subjects, subj
 
     unless _.is-type 'String' subject
@@ -85,7 +85,7 @@ module.exports = class RuleRepo implements Debugger
 
   match-subject-clazz: (action-subjects, subj-clazz) ->
     @debug 'match-subject-clazz', action-subjects, subj-clazz
-    return false unless _.is-type 'Array', action-subjects
+    return false unless typeof! action-subjects is 'Array'
     @find-matching-subject action-subjects, subj-clazz
 
   match-manage-rule: (rule-container, subj-clazz) ->
@@ -108,7 +108,7 @@ module.exports = class RuleRepo implements Debugger
 
   # for now, lets forget about ctx
   add-rule: (rule-container, action, subjects) ->
-    throw Error("Container must be an object") unless _.is-type 'Object' rule-container
+    throw Error("Container must be an object") unless typeof! rule-container is 'Object'
     rule-subjects = rule-container[action] || []
 
     subjects = normalize subjects
@@ -141,7 +141,7 @@ module.exports = class RuleRepo implements Debugger
   container-for: (act) ->
     act = act.to-lower-case!
     c = @["#{act}Rules"]
-    throw Error "No valid rule container for: #{act}" unless _.is-type 'Object', c
+    throw Error "No valid rule container for: #{act}" unless typeof! c is 'Object'
     c
 
   # rule-container
