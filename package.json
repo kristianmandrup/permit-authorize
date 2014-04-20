@@ -18,10 +18,7 @@
     "access"
   ],
   "dependencies": {
-    "lodash":       "*",
-    "prelude-ls":   "*",
-    "sugar":        "*",
-    "util":         "*"
+    "lodash":       "*"
   },
   "scripts": {
     "test":     "make test",

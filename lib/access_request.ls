@@ -2,8 +2,6 @@ requires  = require '../requires'
 normalize = requires.util 'normalize'
 Debugger  = requires.lib 'debugger'
 
-util = require 'util'
-
 module.exports = class AccessRequest implements Debugger
   # factory method
   @from  = (obj) ->
@@ -27,7 +25,7 @@ module.exports = class AccessRequest implements Debugger
 
   validate: ->
     unless typeof! @action is 'String'
-      throw new Error "Missing action name. Must authorize an action to be performed on a subject, was: #{util.inspect @action}, #{typeof! @action}"
+      throw new Error "Missing action name. Must authorize an action to be performed on a subject, was: #{@action}, #{typeof! @action}"
 
     unless @subject?
       throw new Error "Missing subject. Must authorize a subject to perform an action: #{@action}"

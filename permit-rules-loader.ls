@@ -2,7 +2,7 @@ class PermitRulesLoader
   (@file-path) ->
  
   load-rules-file: (file-path) -> 
-    fs = require('fs')
+    fs = require 'fs'
     file-path ||= @file-path
     throw Error "Error: Missing filepath" unless file-path?
  
@@ -20,13 +20,14 @@ class PermitRulesLoader
     throw Error "Rules not loaded" unless @loaded-rules?
  
     @processed-rules = {}
-    @loaded-rules.each (key, rule) ->
-      rules[key] = @rule-for rule
+    self = @
+    lo.each @loaded-rules, (key, rule) ->
+      rules[key] = self.rule-for rule
     
     @processed-rules
  
   create-rules-at: (permit, place) ->
-    unless _.is-type 'Function', permit
+    unless typeof! permitis 'Function'
       throw Error "Not a permit, was: #{permit}" 
       
     if place?
@@ -37,7 +38,7 @@ class PermitRulesLoader
       permit.rules = @processed-rules
  
   rule-for: (rule) ->
-    key = _.keys(rule).first
+    key = _.keys(rule).0
     unless ['can', 'cannot'].include key
       throw Error "Not a valid rule key, must be 'can' or 'cannot', was: #{key}"
     

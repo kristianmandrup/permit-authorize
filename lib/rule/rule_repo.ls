@@ -9,7 +9,6 @@ requires  = require '../../requires'
 _         = require 'prelude-ls'
 lo        = require 'lodash'
 require 'sugar'
-util = require 'util'
 
 normalize = requires.util 'normalize'
 Debugger  = requires.lib 'debugger'
@@ -64,7 +63,7 @@ module.exports = class RuleRepo implements Debugger
         self.find-matching-subject subjects, subj
 
     unless _.is-type 'String' subject
-      throw Error "find-matching-subject: Subject must be a String to be matched, was #{util.inspect subject}"
+      throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
 
     camelized = subject?.camelize true
     subjects.index-of(camelized) != -1
@@ -105,8 +104,11 @@ module.exports = class RuleRepo implements Debugger
       match-subject-clazz action-subjects, subj-clazz
 
   manage-action-subjects: (rule-container) ->
-    ['create', 'edit', 'delete'].map (action) ->
+    lo.map @manage-actions, (action) ->
       rule-container[action]
+
+  manage-actions: ->
+    ['create', 'edit', 'delete']
 
   # for now, lets forget about ctx
   add-rule: (rule-container, action, subjects) ->
@@ -116,7 +118,7 @@ module.exports = class RuleRepo implements Debugger
     subjects = normalize subjects
     rule-subjects = rule-subjects.concat subjects
 
-    rule-subjects = rule-subjects.map (subject) ->
+    rule-subjects = lo.map rule-subjects, (subject) ->
       val = subject.camelize true
       if val is 'Any' then '*' else val
 
@@ -131,7 +133,7 @@ module.exports = class RuleRepo implements Debugger
 
     if action is 'manage'
       self = @
-      ['create', 'edit', 'delete'].each (action) ->
+      lo.each @manage-actions, (action) ->
         rule-container[action] = self.register-action-subjects action-subjects, unique-subjects
 
     # console.log 'action subjects', rule-container[action]
