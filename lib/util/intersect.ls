@@ -1,5 +1,3 @@
-_ = require 'prelude-ls'
-
 module.exports = ->
   countProps = (obj) ->
     count = 0
@@ -22,7 +20,7 @@ module.exports = ->
   recursivePartialEqual = (partialObj, compareObj) ->
     res = {}
     return false unless partialObj? and compareObj?
-    return false if _.is-type 'Unknown' partialObj or _.is-type 'Unknown' compareObj
+    return false if typeof! partialObj is 'Unknown' or typeof! compareObj is 'Unknown'
 
     for key in _.keys partialObj
       res[key] = false

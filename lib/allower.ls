@@ -1,8 +1,5 @@
 requires = require '../requires'
-
-_   = require 'prelude-ls'
 lo  = require 'lodash'
-require 'sugar'
 
 Permit        = requires.lib    'permit'
 PermitFilter  = requires.permit 'permit_filter'

@@ -1,6 +1,4 @@
 requires = require '../requires'
-
-_   = require 'prelude-ls'
 lo  = require 'lodash'
 
 permit-filter = requires.permit 'permit_filter'

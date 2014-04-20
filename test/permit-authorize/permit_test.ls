@@ -2,8 +2,6 @@ requires  = require '../../requires'
 
 requires.test 'test_setup'
 
-_         = require 'prelude-ls'
-
 Permit          = requires.lib 'permit'
 RuleRepo        = requires.rule 'rule_repo'
 RuleApplier     = requires.rule 'rule_applier'

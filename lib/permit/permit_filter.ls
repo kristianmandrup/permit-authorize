@@ -1,7 +1,5 @@
-requires = require '../../requires'
-
-_       = require 'prelude-ls'
-lo      = require 'lodash'
+requires  = require '../../requires'
+lo        = require 'lodash'
 
 Permit          = requires.lib 'permit'
 PermitRegistry  = requires.permit 'permit_registry'
@@ -22,7 +20,7 @@ module.exports = class PermitFilter implements Debugger
       permit.matches access-request
 
     permits = @permits!
-    unless _.is-type 'Array', permits
+    unless typeof! permits is 'Array'
       throw Error "permits which contain all registered permits, must be an Array, was: #{typeof permits}"
 
     @debug 'filter permits', permits, access-request

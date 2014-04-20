@@ -2,8 +2,6 @@ requires        = require '../../../requires'
 
 requires.test 'test_setup'
 
-_               = require 'prelude-ls'
-
 Permit          = requires.lib 'permit'
 PermitRegistry  = requires.permit 'permit-registry'
 PermitMatcher   = requires.permit 'permit_matcher'

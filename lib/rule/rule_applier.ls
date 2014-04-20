@@ -4,10 +4,7 @@
 # or just apply a subset depending on the context (fx the action of the incoming access-request)
 
 requires  = require '../../requires'
-
-_         = require 'prelude-ls'
 lo        = require 'lodash'
-require 'sugar'
 
 Debugger  = requires.lib 'debugger'
 
@@ -206,14 +203,14 @@ module.exports = class RuleApplier implements Debugger
     @
 
   # should iterate through rules object recursively and execute any function found
-  # using sugar .each: http://sugarjs.com/api
   apply-all-rules: ->
     switch typeof @rules
     when 'object'
       rules = @rules
       ctx = @
-      _.keys(rules).each (key) ->
-        recurse key, rules[key], ctx
+      self = @
+      lo.each _.keys(rules), (key) ->
+        self.recurse key, rules[key], ctx
     else
       throw Error "rules must be an Object was: #{typeof @rules}"
     @

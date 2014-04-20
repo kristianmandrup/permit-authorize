@@ -1,5 +1,4 @@
 requires  = require '../../requires'
-_         = require 'prelude-ls'
 lo        = require 'lodash'
 
 Permit    = requires.lib 'permit'
@@ -10,7 +9,7 @@ Permit    = requires.lib 'permit'
 # use Permit class as default if first arg is a String (ie. name)
 module.exports = (base-clazz, name, base-obj, debug) ->
   # tweak args if no base class as first arg
-  if _.is-type 'String', base-clazz
+  if typeof! base-clazz is 'String'
     base-obj = name
     name = base-clazz
     base-clazz = Permit
@@ -22,6 +21,6 @@ module.exports = (base-clazz, name, base-obj, debug) ->
     base-obj = base-obj!
 
   # extend permit with custom functionality
-  if _.is-type 'Object', base-obj
+  if typeof! base-obj is 'Object'
     permit = permit.use base-obj
   permit.init!

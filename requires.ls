@@ -1,9 +1,7 @@
 lo = require 'lodash'
-_  = require 'prelude-ls'
 
 file-path = (...paths) ->
-  upaths = flatten(paths)
-  lo.flatten ['.', upaths] .join '/'
+  lo.flatten ['.', paths] .join '/'
 
 test-path = (...paths) ->
   file-path 'test', ...paths

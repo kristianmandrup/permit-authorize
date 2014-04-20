@@ -5,11 +5,7 @@
 # Simple!
 
 requires  = require '../../requires'
-
-_         = require 'prelude-ls'
 lo        = require 'lodash'
-require 'sugar'
-
 normalize = requires.util 'normalize'
 Debugger  = requires.lib 'debugger'
 

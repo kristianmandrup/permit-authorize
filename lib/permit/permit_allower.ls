@@ -1,13 +1,11 @@
 requires = require '../../requires'
-
-_   = require 'prelude-ls'
 lo  = require 'lodash'
 
 Debugger  = requires.lib 'debugger'
 
 module.exports = class PermitAllower implements Debugger
   (@rule-repo, @debugging) ->
-    unless _.is-type 'Object', @rule-repo
+    unless typeof! @rule-repo is 'Object'
       throw Error "PermitAllower must take a RuleRepo in constructor, was: #{@rule-repo}"
 
   test-access: (act, access-request) ->

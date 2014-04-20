@@ -3,8 +3,6 @@ requires  = require '../../requires'
 requires.test 'test_setup'
 
 ability         = require './ability/abilities'
-
-_               = require 'prelude-ls'
 lo              = require 'lodash'
 
 User            = requires.fix 'user'

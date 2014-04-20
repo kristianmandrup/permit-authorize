@@ -2,8 +2,6 @@ requires  = require '../../requires'
 
 requires.test 'test_setup'
 
-_             = require 'prelude-ls'
-
 Book          = requires.fix 'book'
 User          = requires.fix 'user'
 

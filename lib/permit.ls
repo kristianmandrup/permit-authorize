@@ -1,11 +1,7 @@
 requires  = require '../requires'
-
-_         = require 'prelude-ls'
 lo        = require 'lodash'
-require 'sugar'
 
 PermitRegistry  = requires.permit 'permit_registry'
-
 PermitMatcher   = requires.permit 'permit_matcher'
 PermitAllower   = requires.permit 'permit_allower'
 RuleApplier     = requires.rule 'rule_applier'
@@ -20,7 +16,6 @@ ContextMatcher  = matchers.ContextMatcher
 AccessMatcher   = matchers.AccessMatcher
 
 Util            = requires.lib 'util'
-
 Debugger        = requires.lib 'debugger'
 
 module.exports = class Permit implements Debugger

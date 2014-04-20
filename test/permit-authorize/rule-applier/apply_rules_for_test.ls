@@ -2,8 +2,6 @@ requires        = require '../../../requires'
 
 requires.test 'test_setup'
 
-_             = require 'prelude-ls'
-
 User          = requires.fix 'user'
 Book          = requires.fix 'book'
 
@@ -21,7 +19,7 @@ describe 'Rule Applier (RuleApplier)' ->
     console.log repo.cannot-rules
 
   before ->
-    book          := new Book 'Far and away'
+    book  := new Book 'Far and away'
 
   describe 'apply-rules-for' ->
     var access-request, rule-repo, rule-applier, rules

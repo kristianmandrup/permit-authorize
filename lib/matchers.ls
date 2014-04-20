@@ -1,10 +1,6 @@
-requires = require '../requires'
-
+requires  = require '../requires'
 Intersect = requires.util 'intersect'
-
-_   = require 'prelude-ls'
 lo  = require 'lodash'
-require 'sugar'
 
 Debugger = requires.lib 'debugger'
 

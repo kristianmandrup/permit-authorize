@@ -1,7 +1,5 @@
 requires  = require '../../requires'
-_         = require 'prelude-ls'
 lo        = require 'lodash'
-require 'sugar'
 
 Util          = requires.lib 'util'
 Intersect     = requires.util 'intersect'

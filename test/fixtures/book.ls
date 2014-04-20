@@ -1,8 +1,7 @@
-_ = require 'prelude-ls'
-
+lo = require 'lodash'
 
 module.exports = class Book
   (@obj) ->
-    if _.is-type 'Object', @obj
-      for key in _.keys(@obj)
+    if typeof! @obj is 'Object'
+      for key in lo.keys @obj
         @[key] = @obj[key]

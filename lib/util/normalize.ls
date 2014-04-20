@@ -1,5 +1,3 @@
-_ = require 'prelude-ls'
-
 flatten = (items, res) ->
   res = [] if not res
   return items if typeof! items is 'String'
