@@ -4,10 +4,12 @@
 # Then you can match an access-request (action, subject)
 # Simple!
 
-requires  = require '../../requires'
-lo        = require 'lodash'
-normalize = requires.util 'normalize'
-Debugger  = requires.lib 'debugger'
+requires    = require '../../requires'
+lo          = require 'lodash'
+camel-case  = requires.util 'string-util' .camel-case
+normalize   = requires.util 'normalize'
+Debugger    = requires.lib 'debugger'
+
 
 module.exports = class RuleRepo implements Debugger
   (@name) ->
@@ -48,9 +50,11 @@ module.exports = class RuleRepo implements Debugger
     else
       subject-clazz = subject
 
+  wildcards: ['*', 'any']
+
   find-matching-subject: (subjects, subject) ->
     # first try wild-card 'any' or '*'
-    return true if ['*', 'any'].any (wildcard) ->
+    return true if lo.find @wildcards, (wildcard) ->
       subjects.index-of(wildcard) != -1
 
     if typeof! subject is 'Array'
@@ -58,17 +62,17 @@ module.exports = class RuleRepo implements Debugger
       return lo.find subject, (subj) ->
         self.find-matching-subject subjects, subj
 
-    unless _.is-type 'String' subject
+    unless typeof! subject is 'String'
       throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
 
-    camelized = subject?.camelize true
+    camelized = camel-case subject
     subjects.index-of(camelized) != -1
 
   # TODO: simplify, extract methods and one or more classes!!!
   match-rule: (act, access-request) ->
     @debug 'match-rule', act, access-request
 
-    act = act.camelize(true)
+    act = camel-case act
     action = access-request.action
     subject = access-request.subject
 
@@ -115,14 +119,14 @@ module.exports = class RuleRepo implements Debugger
     rule-subjects = rule-subjects.concat subjects
 
     rule-subjects = lo.map rule-subjects, (subject) ->
-      val = subject.camelize true
+      val = camel-case subject
       if val is 'Any' then '*' else val
 
-    unique-subjects = _.unique rule-subjects
+    unique-subjects = lo.unique rule-subjects
 
     action-subjects = rule-container[action]
 
-    unless _.is-type 'Array', action-subjects
+    unless typeof! action-subjects is 'Array'
       action-subjects = []
 
     rule-container[action] = @register-action-subjects action-subjects, unique-subjects
@@ -136,7 +140,7 @@ module.exports = class RuleRepo implements Debugger
 
   register-action-subjects: (action-container, subjects) ->
     # console.log "action-container", action-container, subjects
-    action-container.concat(subjects).unique!
+    lo.unique action-container.concat(subjects)
 
   container-for: (act) ->
     act = act.to-lower-case!

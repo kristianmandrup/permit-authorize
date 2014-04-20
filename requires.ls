@@ -1,7 +1,10 @@
 lo = require 'lodash'
 
+underscore = (str) ->
+  str.replace /-/, '_'
+
 file-path = (...paths) ->
-  lo.flatten ['.', paths] .join '/'
+  underscore(lo.flatten ['.', paths] .join '/')
 
 test-path = (...paths) ->
   file-path 'test', ...paths

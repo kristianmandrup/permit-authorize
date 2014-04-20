@@ -33,7 +33,7 @@ class ActionMatcher extends BaseMatcher
     @action ||= if @access-request? then @access-request.action else ''
 
   match: (action) ->
-    if _.is-type 'Function' action
+    if typeof! action is 'Function'
       return action.call @action
 
     return true if @death-match 'action', action
@@ -50,7 +50,7 @@ class UserMatcher extends BaseMatcher
     @user ||= if @access-request? then @access-request.user else {}
 
   match: (user) ->
-    if _.is-type 'Function' user
+    if typeof! user is 'Function'
       return user.call @user
 
     return true if @death-match 'user', user

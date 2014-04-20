@@ -8,13 +8,13 @@ lo        = require 'lodash'
 
 Debugger  = requires.lib 'debugger'
 
-recurse = (key, val, ctx) ->
+recurse = (val, ctx) ->
   switch typeof! val
   when 'Function'
     val.call ctx
   when 'Object'
-    for each k in val
-      recurse key, k, ctx
+    for k of val
+      recurse k, ctx
 
 valid_rules = (rules)->
   typeof! rules is 'Object' or typeof! rules is 'Function'
@@ -94,12 +94,12 @@ module.exports = class RuleApplier implements Debugger
 
     @debug 'apply-obj-rules-for', obj, context, rules
 
-    obj-keys = _.keys(obj)
+    obj-keys = lo.keys(obj)
 
     if obj.clazz is 'User'
       obj-keys = ['name', 'role']
 
-    for each key of obj-keys
+    for key of obj-keys
       val = obj[key]
 
       if obj.clazz is 'User'
@@ -210,8 +210,8 @@ module.exports = class RuleApplier implements Debugger
       ctx = @
       self = @
       keys = lo.keys rules
-      for each key of keys
-        self.recurse key, rules[key], ctx
+      for key of keys
+        self.recurse rules[key], ctx
     else
       throw Error "rules must be an Object was: #{typeof @rules}"
     @

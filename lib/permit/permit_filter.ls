@@ -24,11 +24,11 @@ module.exports = class PermitFilter implements Debugger
       throw Error "permits which contain all registered permits, must be an Array, was: #{typeof permits}"
 
     @debug 'filter permits', permits, access-request
-    res = _.filter matching-fun, permits
+    res = lo.filter permits, matching-fun
     @debug 'filtered', res
     res
 
   @permits = ->
-    _.values PermitRegistry.permits
+    lo.values PermitRegistry.permits
 
 lo.extend PermitFilter, Debugger
