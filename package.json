@@ -1,0 +1,41 @@
+{
+  "name": "permit-authorize",
+  "version": "0.0.1",
+  "main": "index",
+  "repository": {
+    "type": "git",
+    "url":  "https://github.com/kristianmandrup/permit-authorize.git"
+  },
+  "keywords": [
+    "authorize",
+    "authorizer",
+    "authorization",
+    "approve",
+    "permit",
+    "allow",
+    "ability",
+    "rules",
+    "access"
+  ],
+  "dependencies": {
+    "lodash":       "*",
+    "prelude-ls":   "*",
+    "sugar":        "*",
+    "util":         "*"
+  },
+  "scripts": {
+    "test":     "make test",
+    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R test -t 5000"
+  },
+  "devDependencies": {
+    "LiveScript":               "x",
+    "mocha":                    "x",
+    "expect.js":                "x",
+    "istanbul":                 "x",
+    "should":                   "x",
+    "grunt":                    "x",
+    "grunt-mocha-test":         "x",
+    "grunt-istanbul":           "x",
+    "grunt-istanbul-coverage":  "x"
+  }
+}
