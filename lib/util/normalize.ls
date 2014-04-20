@@ -13,7 +13,7 @@ flatten = (items, res) ->
 normalize = (items, recursed) ->
   normalized = switch typeof! items
   when 'Function'
-    normalize items! true
+    normalize items!, true
   when 'String'
     if recursed then items else [items]
   when 'Array'

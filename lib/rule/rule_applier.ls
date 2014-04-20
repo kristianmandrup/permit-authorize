@@ -114,7 +114,7 @@ module.exports = class RuleApplier implements Debugger
       return context
 
     return @rules unless typeof! context is 'String'
-    if _.is-type 'Object' @rules[context]
+    if typeof! @rules[context] is 'Object'
       @rules[context]
     else
       @debug "no such rules context: #{context}", @rules

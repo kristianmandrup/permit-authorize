@@ -47,7 +47,7 @@ module.exports = class PermitRegistry implements Debugger
     @@clear-permits!
 
   @permit-list = ->
-    _.values @@permits
+    lo.values @@permits
 
   @clean-permits = ->
     for permit in @@permit-list!
