@@ -264,21 +264,38 @@ Use `xdescribe`, `describe.skip` and `describe.only` to select which tests to ex
 
 ### Caching
 
-A caching strategy has been implemented, so rules are not evaluated
-each time for the same `AccessRequest` (user, action, subject, context) .
-Instead a cached authorization result for that `AccessRequest` will be retrieved from the cache and returned.
+A caching strategy has been implemented as `CachedAbility`.
+
+When using a `CachedAbility`, a cached authorization result for an `AccessRequest` will be retrieved
+from the cache and returned if present. If not found, a result will be generated and cached.
+The caching solution uses a fingerprint of the `AccessRequest` to determine the cache key.
+
+*Fingerprinting*
 
 For each of the elements making up the `AccessRequest` to get the "fingerprint":
 - Object: `hash` function is attempted called defaulting to JSON stringify if not present.
 - String: value is fingerprint
 - Array: values combined with '.'
 
-Each of these fingerprints is concatenated into one *access request fingerprint*.
-If an `AccessRequest` with the same fingerprint (hash) is evaluated again, the cached authorization result is fetched
-for much better performance!
+Each of these fingerprints are concatenated into one fingerprint to be used as the cache key.
+If an `AccessRequest` with the same fingerprint (hash) is evaluated again later, the cached authorization result is fetched
+immediately for much better performance!
 
-Please note that the current implementation could use some refactoring to remove code duplication of the can- and cannot-cache
-since they are essentially the same.
+Please not that it is highly recommended to add a `hash` method to your `User` and subject models in order for the fingerprinting to work
+correctly and efficiently.
+
+### Performance using CachedAbility
+
+The result can be seen by running *cached_ability_test.js*
+
+```LiveScript
+for i from 1 to 10
+  ability.guest.not-allowed-for(action: 'write', subject: book).should.be.true
+```
+
+`guest ability: uncached: 123ms` vs `guest ability: cached: 2ms`
+
+Pretty cool :)
 
 ## Design
 
