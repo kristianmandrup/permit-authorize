@@ -20,7 +20,6 @@
     "access"
   ],
   "dependencies": {
-    "lodash":       "x"
   },
   "scripts": {
     "test":     "make test",
@@ -29,9 +28,10 @@
   "devDependencies": {
     "LiveScript":               "x",
     "mocha":                    "x",
+    "chai":                     "x",
     "expect.js":                "x",
-    "istanbul":                 "x",
     "should":                   "x",
+    "istanbul":                 "x",
     "grunt":                    "x",
     "grunt-mocha-test":         "x",
     "grunt-istanbul":           "x",

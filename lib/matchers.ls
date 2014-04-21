@@ -1,6 +1,6 @@
 requires  = require '../requires'
 Intersect = requires.util 'intersect'
-lo  = require 'lodash'
+lo  = requires.util 'lodash-lite'
 
 Debugger = requires.lib 'debugger'
 

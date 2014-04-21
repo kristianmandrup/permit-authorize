@@ -1,5 +1,5 @@
 requires = require '../requires'
-lo  = require 'lodash'
+lo  = requires.util 'lodash-lite'
 
 Permit        = requires.lib    'permit'
 PermitFilter  = requires.permit 'permit_filter'

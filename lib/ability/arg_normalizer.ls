@@ -1,5 +1,5 @@
 requires = require '../../requires'
-lo  = require 'lodash'
+lo  = requires.util 'lodash-lite'
 
 module.exports = class ArgNormalizer
   (@args) ->
