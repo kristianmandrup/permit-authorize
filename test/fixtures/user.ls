@@ -1,4 +1,4 @@
-lo = require 'lodash'
+lo = requires.util 'lodash-lite'
 
 module.exports = class User
   (user) ->

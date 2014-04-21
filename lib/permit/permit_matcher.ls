@@ -1,5 +1,5 @@
 requires  = require '../../requires'
-lo        = require 'lodash'
+lo        = requires.util 'lodash-lite'
 
 Intersect     = requires.util 'intersect'
 AccessMatcher = requires.lib('matchers').AccessMatcher

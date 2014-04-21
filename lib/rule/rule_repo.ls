@@ -5,7 +5,7 @@
 # Simple!
 
 requires    = require '../../requires'
-lo          = require 'lodash'
+lo          = requires.util 'lodash-lite'
 camel-case  = requires.util 'string-util' .camel-case
 normalize   = requires.util 'normalize'
 Debugger    = requires.lib 'debugger'

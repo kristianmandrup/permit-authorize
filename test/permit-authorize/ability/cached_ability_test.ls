@@ -3,7 +3,7 @@ requires  = require '../../../requires'
 requires.test 'test_setup'
 
 ability         = require './cached_abilities'
-lo              = require 'lodash'
+lo              = requires.util 'lodash-lite'
 
 User            = requires.fix 'user'
 Book            = requires.fix 'book'

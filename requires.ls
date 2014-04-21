@@ -1,4 +1,4 @@
-lo = require 'lodash'
+lo = requires.util 'lodash-lite'
 
 underscore = (str) ->
   str.replace /-/, '_'

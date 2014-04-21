@@ -2,7 +2,7 @@ requires  = require '../../requires'
 
 requires.test 'test_setup'
 
-lo            = require 'lodash'
+lo            = requires.util 'lodash-lite'
 Debugger      = requires.lib 'debugger'
 
 class TestDebug implements Debugger

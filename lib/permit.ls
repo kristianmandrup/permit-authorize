@@ -1,5 +1,5 @@
 requires  = require '../requires'
-lo        = require 'lodash'
+lo        = requires.util 'lodash-lite'
 
 PermitRegistry  = requires.permit 'permit_registry'
 PermitMatcher   = requires.permit 'permit_matcher'

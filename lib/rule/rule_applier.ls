@@ -4,7 +4,7 @@
 # or just apply a subset depending on the context (fx the action of the incoming access-request)
 
 requires  = require '../../requires'
-lo        = require 'lodash'
+lo        = requires.util 'lodash-lite'
 
 Debugger  = requires.lib 'debugger'
 

@@ -1,4 +1,4 @@
-lo = require 'lodash'
+lo = require 'lodash-lite'
 
 module.exports =
   debugging: false
