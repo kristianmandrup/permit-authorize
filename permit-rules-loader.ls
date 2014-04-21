@@ -38,7 +38,7 @@ class PermitRulesLoader
       permit.rules = @processed-rules
  
   rule-for: (rule) ->
-    key = lo.keys(rule).0
+    key = Object.keys(rule).0
     unless ['can', 'cannot'].include key
       throw Error "Not a valid rule key, must be 'can' or 'cannot', was: #{key}"
     

@@ -114,7 +114,7 @@ class AccessMatcher
 
   match-on: (hash) ->
     all = hash
-    for key in lo.keys hash
+    for key of hash
       match-fun   = @[key]
       match-value = hash[key]
 

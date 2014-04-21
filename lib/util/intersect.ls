@@ -1,46 +1,45 @@
 lo = requires.util 'lodash-lite'
 
 module.exports = ->
-  countProps = (obj) ->
+  count-props = (obj) ->
     count = 0
     for k in obj
-      count++ if (obj.hasOwnProperty(k))
+      count++ if (obj.has-own-property(k))
     count;
 
-  objectEquals = (v1, v2) ->
+  object-equals = (v1, v2) ->
     return false if typeof(v1) is not typeof(v2)
-    if v1 instanceof Object && v2 instanceof Object
-      return false if countProps(v1) isnt countProps(v2)
+    if typeof! v1 is 'Object' and typeof! v2 is 'Object'
+      return false if count-props(v1) isnt count-props(v2)
       r = true
       for k in v1
-        r = objectEquals v1[k], v2[k]
+        r = object-equals v1[k], v2[k]
         return false unless r
       return true
     else
       return v1 is v2
 
-  recursivePartialEqual = (partialObj, compareObj) ->
+  recursive-partial-equal = (partial-obj, compare-obj) ->
     res = {}
-    return false unless partialObj? and compareObj?
-    return false if typeof! partialObj is 'Unknown' or typeof! compareObj is 'Unknown'
+    return false if partial-obj is void or compare-obj is void
 
-    for key in lo.keys partialObj
+    for key of partial-obj
       res[key] = false
-      partial = partialObj[key]
-      compare = compareObj[key]
-      continue if partial is 'undefined'
+      partial = partial-obj[key]
+      compare = compare-obj[key]
+      continue if partial is void
 
-      if partial instanceof Object && compare instanceof Object
-        equals = recursivePartialEqual partial, compare if compare?
+      if typeof! partial is 'Object' and typeof! compare is 'Object'
+        equals = recursive-partial-equal partial, compare if compare?
       else
-        equals = objectEquals partial, compare
+        equals = object-equals partial, compare
 
       res[key] = true if equals
 
-    for key in lo.keys partialObj
+    for key of partial-obj
       unless res[key]
         return false
     true
 
   on: (partial, obj) ->
-    recursivePartialEqual partial, obj
+    recursive-partial-equal partial, obj

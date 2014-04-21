@@ -94,7 +94,7 @@ module.exports = class RuleApplier implements Debugger
 
     @debug 'apply-obj-rules-for', obj, context, rules
 
-    obj-keys = lo.keys(obj)
+    obj-keys = Object.keys(obj)
 
     if obj.clazz is 'User'
       obj-keys = ['name', 'role']
@@ -209,8 +209,7 @@ module.exports = class RuleApplier implements Debugger
       rules = @rules
       ctx = @
       self = @
-      keys = lo.keys rules
-      for key of keys
+      for key of rules
         self.recurse rules[key], ctx
     else
       throw Error "rules must be an Object was: #{typeof @rules}"
