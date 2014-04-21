@@ -69,25 +69,17 @@
         });
       });
     });
-    describe('allower', function(){
-      specify('return Allower instance', function(){
-        return ability.kris.allower(requests.empty).constructor.should.eql(Allower);
-      });
-      return specify('Allower sets own access-request obj', function(){
-        return ability.kris.allower(requests.user).accessRequest.should.eql(requests.user);
-      });
-    });
-    describe('allowed-for', function(){
+    describe('can', function(){
       before(function(){});
       context('guest ability', function(){
         specify('read a book access should be allowed for guest user', function(){
-          return ability.guest.allowedFor({
+          return ability.guest.can({
             action: 'read',
             subject: book
           }).should.be['true'];
         });
         return specify('write a book access should NOT be allowed for guest user', function(){
-          return ability.guest.allowedFor({
+          return ability.guest.can({
             action: 'write',
             subject: book
           }).should.be['false'];
@@ -95,35 +87,43 @@
       });
       return context('admin ability', function(){
         return specify('write a book access should NOT be allowed for admin user', function(){
-          return ability.admin.allowedFor({
+          return ability.admin.can({
             action: 'write',
             subject: book
           }).should.be['false'];
         });
       });
     });
-    return describe('not-allowed-for', function(){
+    return describe('cannot', function(){
       before(function(){});
       context('guest ability', function(){
         specify('read a book access should be allowed for admin user', function(){
-          return ability.guest.notAllowedFor({
+          return ability.guest.cannot({
             action: 'read',
             subject: book
           }).should.be['false'];
         });
         return specify('write a book access should NOT be allowed for guest user', function(){
-          return ability.guest.notAllowedFor({
+          return ability.guest.cannot({
             action: 'write',
             subject: book
           }).should.be['true'];
         });
       });
       return context('admin ability', function(){
-        return specify('write a book access should NOT be allowed for admin user', function(){
-          return ability.admin.notAllowedFor({
-            action: 'write',
-            subject: book
-          }).should.be['true'];
+        specify('write a book access should NOT be allowed for admin user', function(){
+          return ability.admin.cannot('write', book).should.be['true'];
+        });
+        specify('write a book access should NOT be allowed for admin user', function(){
+          return ability.admin.cannot(['write', book]).should.be['true'];
+        });
+        return describe('allower', function(){
+          specify('return Allower instance', function(){
+            return ability.admin.allower().constructor.should.eql(Allower);
+          });
+          return specify('Ability transfers access-request to Allower', function(){
+            return ability.admin.allower().accessRequest.should.eql(ability.admin.accessRequest());
+          });
         });
       });
     });

@@ -1,8 +1,8 @@
-requires  = require '../../requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
-ability         = require './ability/cached_abilities'
+ability         = require './cached_abilities'
 lo              = require 'lodash'
 
 User            = requires.fix 'user'
@@ -13,7 +13,7 @@ create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 
 Allower         = requires.lib 'allower'
-CachedAbility   = requires.lib 'cached-ability'
+CachedAbility   = requires.ability 'cached-ability'
 
 Permit          = requires.lib 'permit'
 permit-for      = requires.permit 'permit_for'
@@ -67,48 +67,41 @@ describe 'CachedAbility' ->
         specify 'has user kris' ->
           ability.kris.user.should.eql users.kris
 
-  describe 'allower' ->
-    specify 'return Allower instance' ->
-      ability.kris.allower(requests.empty).constructor.should.eql Allower
-
-    specify 'Allower sets own access-request obj' ->
-      ability.kris.allower(requests.user).access-request.should.eql requests.user
-
-  describe 'allowed-for' ->
+  describe 'can' ->
     before ->
 
     context 'guest ability' ->
       specify 'read a book access should be allowed for guest user' ->
-        ability.guest.allowed-for(action: 'read', subject: book).should.be.true
+        ability.guest.can(action: 'read', subject: book).should.be.true
 
       specify 'write a book access should NOT be allowed for guest user' ->
-        ability.guest.allowed-for(action: 'write', subject: book).should.be.false
+        ability.guest.can(action: 'write', subject: book).should.be.false
 
     context 'admin ability' ->
       specify 'write a book access should NOT be allowed for admin user' ->
-        ability.admin.allowed-for(action: 'write', subject: book).should.be.false
+        ability.admin.can(action: 'write', subject: book).should.be.false
 
-  describe 'not-allowed-for' ->
+  describe 'cannot' ->
     before ->
-      # init local vars
+      console.time 'guest ability: uncached'
+
+    after ->
+      console.time-end 'guest ability: uncached'
 
     context 'guest ability' ->
-      before ->
-        console.time 'guest ability: uncached'
-
-      after ->
-        console.time-end 'guest ability: uncached'
-
       specify 'read a book access should be allowed for admin user' ->
-        ability.guest.not-allowed-for(action: 'read', subject: book).should.be.false
+        ability.guest.cannot(action: 'read', subject: book).should.be.false
 
       specify 'write a book access should NOT be allowed for guest user' ->
         for i from 1 to 10
-          ability.guest.not-allowed-for(action: 'write', subject: book).should.be.true
+          ability.guest.cannot(action: 'write', subject: book).should.be.true
 
     context 'admin ability' ->
       specify 'write a book access should NOT be allowed for admin user' ->
-          ability.admin.not-allowed-for(action: 'write', subject: book).should.be.true
+        ability.admin.cannot('write', book).should.be.true
+
+      specify 'write a book access should NOT be allowed for admin user' ->
+        ability.admin.cannot(['write', book]).should.be.true
 
     context 'guest ability' ->
       before ->
@@ -118,9 +111,9 @@ describe 'CachedAbility' ->
         console.time-end 'guest ability: cached'
 
       specify 'read a book access should be allowed for admin user' ->
-        ability.guest.not-allowed-for(action: 'read', subject: book).should.be.false
+        ability.guest.cannot(action: 'read', subject: book).should.be.false
 
       specify 'write a book access should NOT be allowed for guest user' ->
         for i from 1 to 10
-          ability.guest.not-allowed-for(action: 'write', subject: book).should.be.true
+          ability.guest.cannot(action: 'write', subject: book).should.be.true
 

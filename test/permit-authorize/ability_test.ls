@@ -67,38 +67,43 @@ describe 'Ability' ->
         specify 'has user kris' ->
           ability.kris.user.should.eql users.kris
 
-  describe 'allower' ->
-    specify 'return Allower instance' ->
-      ability.kris.allower(requests.empty).constructor.should.eql Allower
-
-    specify 'Allower sets own access-request obj' ->
-      ability.kris.allower(requests.user).access-request.should.eql requests.user
-
-  describe 'allowed-for' ->
+  describe 'can' ->
     before ->
+      # ability.guest.debug-on!
 
     context 'guest ability' ->
       specify 'read a book access should be allowed for guest user' ->
-        ability.guest.allowed-for(action: 'read', subject: book).should.be.true
+        ability.guest.can(action: 'read', subject: book).should.be.true
 
       specify 'write a book access should NOT be allowed for guest user' ->
-        ability.guest.allowed-for(action: 'write', subject: book).should.be.false
+        ability.guest.can(action: 'write', subject: book).should.be.false
 
     context 'admin ability' ->
       specify 'write a book access should NOT be allowed for admin user' ->
-        ability.admin.allowed-for(action: 'write', subject: book).should.be.false
+        ability.admin.can(action: 'write', subject: book).should.be.false
 
-  describe 'not-allowed-for' ->
+  describe 'cannot' ->
     before ->
       # init local vars
+      # ability.admin.debug-on!
 
     context 'guest ability' ->
       specify 'read a book access should be allowed for admin user' ->
-        ability.guest.not-allowed-for(action: 'read', subject: book).should.be.false
+        ability.guest.cannot(action: 'read', subject: book).should.be.false
 
       specify 'write a book access should NOT be allowed for guest user' ->
-        ability.guest.not-allowed-for(action: 'write', subject: book).should.be.true
+        ability.guest.cannot(action: 'write', subject: book).should.be.true
 
     context 'admin ability' ->
       specify 'write a book access should NOT be allowed for admin user' ->
-        ability.admin.not-allowed-for(action: 'write', subject: book).should.be.true
+        ability.admin.cannot('write', book).should.be.true
+
+      specify 'write a book access should NOT be allowed for admin user' ->
+        ability.admin.cannot(['write', book]).should.be.true
+
+      describe 'allower' ->
+        specify 'return Allower instance' ->
+          ability.admin.allower!.constructor.should.eql Allower
+
+        specify 'Ability transfers access-request to Allower' ->
+          ability.admin.allower!.access-request.should.eql ability.admin.access-request!

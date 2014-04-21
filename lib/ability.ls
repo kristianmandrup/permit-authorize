@@ -6,39 +6,56 @@ Allower       = requires.lib 'allower'
 AccessRequest = requires.lib 'access_request'
 Debugger      = requires.lib 'debugger'
 
+ArgNormalizer = requires.ability 'arg-normalizer'
+
 # Always one Ability per User
 module.exports = class Ability implements Debugger
   (@user) ->
+    @validate-user!
 
-  # adds the user of the ability to the access-request object
-  access-obj: (access-request) ->
-    lo.merge access-request, {user : @user}
+  validate-user: ->
+    if @user is void
+      throw new Error "Ability must be for a User, was void"
+    unless typeof! @user is 'Object'
+      throw new Error "User must be an Object, was #{@user}"
 
-  permits: (access-request) ->
-    permit-filter.filter access-request
+  permits: ->
+    permit-filter.filter @access-request!
 
-  allower: (access-request) ->
-    a = new Allower(@access-obj access-request)
-    a.debug-on! if @debugging
-    a
+  allower: ->
+    new Allower @access-request!
 
-  allowed-for: (access-request) ->
-    @allower(access-request).allows!
+  allowed: ->
+    @allower!.allows!
 
-  not-allowed-for: (access-request) ->
-    @allower(access-request).disallows!
+  not-allowed: ->
+    @allower!.disallows!
 
   # alias for: allowed-for
-  can: (access-request) ->
-    @debug 'can', access-request
-    result = @allowed-for access-request
-    @debug 'can-res', result
-    result
+  can: (...@args) ->
+    @authorize 'can'
 
   # alias for: not-allowed-for
-  cannot: (access-request) ->
-    @debug 'cannot', access-request
-    result = @not-allowed-for access-request
-    @debug 'cannot-res', result
-    result
+  cannot: (...@args) ->
+    @authorize 'cannot'
 
+  auth-result: ->
+    @_result ||= if @act is 'can' then @allowed! else @not-allowed!
+
+  # alias for: allowed-for
+  authorize: (@act) ->
+    @clear!
+    @debug 'can result:', @auth-result!
+    @auth-result!
+
+  clear: ->
+    @_result = void
+    @_access-request = void
+
+  access-request:  ->
+    @_access-request ||= AccessRequest.from @normalized-args!, @debugging
+
+  normalized-args: ->
+    @args = lo.flatten @args
+    @debug 'normalize args', @args
+    new ArgNormalizer(@args).set-user(@user).normalized!

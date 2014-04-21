@@ -1,6 +1,6 @@
 requires = require '../../../requires'
 
-CachedAbility = requires.lib 'cached_ability'
+CachedAbility = requires.ability 'cached-ability'
 create-user   = requires.fac 'create-user'
 
 ability = (user) ->

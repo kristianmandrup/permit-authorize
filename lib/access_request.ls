@@ -6,13 +6,12 @@ Fingerprints  = requires.access-request 'fingerprints'
 
 module.exports = class AccessRequest implements Debugger, Fingerprints
   # factory method
-  @from  = (obj) ->
+  @from  = (obj, debugging) ->
     throw new Error "Must be an Object, was: #{obj}" unless typeof! obj is 'Object'
-    new AccessRequest(obj.user, obj.action, obj.subject, obj.ctx)
+    new AccessRequest(obj.user, obj.action, obj.subject, obj.ctx, debugging)
 
   # constructor
-  (@user, @action, @subject, @ctx, debug) ->
-    @debug-on! if debug
+  (@user, @action, @subject, @ctx, @debugging) ->
     @debug 'create AccessRequest user:', @user, 'action:', @action, 'subject:', @subject, 'ctx:', @ctx
     @validate!
     @normalize!
@@ -35,7 +34,7 @@ module.exports = class AccessRequest implements Debugger, Fingerprints
       throw new Error "Missing subject. Must authorize a subject to perform an action: #{@action}"
 
     unless @valid-user!
-      throw new Error "Missing user. Must authorize a user to perform an action: #{@action} on the subject"
+      throw new Error "Missing or invalid user. Must authorize a user to perform an action: #{@action} on the subject, was: #{@user} of type: #{typeof! @user}"
 
   valid-subject: ->
     @subject?

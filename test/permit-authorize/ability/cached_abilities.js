@@ -2,7 +2,7 @@
 (function(){
   var requires, CachedAbility, createUser, ability;
   requires = require('../../../requires');
-  CachedAbility = requires.lib('cached_ability');
+  CachedAbility = requires.ability('cached-ability');
   createUser = requires.fac('create-user');
   ability = function(user){
     return new CachedAbility(user);

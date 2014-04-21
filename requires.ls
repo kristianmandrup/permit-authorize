@@ -28,6 +28,8 @@ module.exports =
   access-request: (path) ->
     @lib 'access_request', path
 
+  ability: (path) ->
+    @lib 'ability', path
 
   test: (...paths) ->
     require test-path(paths)

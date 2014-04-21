@@ -11,7 +11,7 @@ module.exports = class Allower implements Debugger
   # example
   # { user: user, action: 'read', subject: book, ctx: {} }
 
-  (@access-request) ->
+  (@access-request, @debugging) ->
     # filter to only use permits that make sense for current access request
     @permits = PermitFilter.filter(@access-request)
 

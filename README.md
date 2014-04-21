@@ -137,8 +137,6 @@ var lo, authorize, Permit, permitFor, Ability,
     user, ability, aBook, currentUser, currentAbility,
     userCan, readBook;
 
-lo = require('lodash');
-
 authorize = require('permit-authorize');
 
 Ability = authorize.Ability;
@@ -166,11 +164,6 @@ guestUser = new GuestUser({
 We define a permit to use for authorization
 
 ```
-GuestPermit = new Permit('guest');
-
-// The GuestPermit only applies if the access request contains a user with role = 'guest'
-GuestPermit.prototype.
-
 guestPermit = permitFor('guest', {
   // Determine when the permit applies
   match: function(access){
@@ -246,7 +239,9 @@ if (userCan({action: 'read', subject: aBook})) {
   readBook(currentUser, aBook);
 }
 
-if (userCannot({action: 'read', subject: 'Book'})) {
+// or using implicit hash in the implied order: action, subject, context
+
+if (userCannot('read', 'Book')) {
   throw new Error("Stupid illiterate user!");
 }
 ```

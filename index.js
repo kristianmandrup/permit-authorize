@@ -6,7 +6,7 @@
     Authorizer: requires.lib('authorizer'),
     Ability: requires.lib('ability'),
     Allower: requires.lib('allower'),
-    CachedAbility: requires.lib('cached_ability'),
+    CachedAbility: requires.ability('cached_ability'),
     Permit: requires.lib('permit'),
     permitFor: requires.permit('permit-for')
   };

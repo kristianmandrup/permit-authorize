@@ -36,6 +36,9 @@
     accessRequest: function(path){
       return this.lib('access_request', path);
     },
+    ability: function(path){
+      return this.lib('ability', path);
+    },
     test: function(){
       var paths;
       paths = slice$.call(arguments);
