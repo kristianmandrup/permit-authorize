@@ -1,6 +1,5 @@
 requires = require '../../../requires'
-
-deep-extend = require 'deep-extend'
+lo = require 'lodash'
 
 create-user     = requires.fac 'create-permit'
 create-request  = requires.fac 'create-request'
@@ -26,4 +25,4 @@ module.exports =
       ctx:
         auth: true
 
-    kris-admin   : deep-extend {}, @admin, @kris
+    kris-admin   : lo.merge {}, @admin, @kris
