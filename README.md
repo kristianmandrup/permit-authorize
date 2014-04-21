@@ -250,8 +250,6 @@ if (userCannot('read', 'Book')) {
 
 All tests are passing :)
 
-Note to self: *rule-applier* needs more tests...
-
 To facilitate testing, each class implements `Debugger` which allows using `debug-on!` on the class or instance level to track
  what goes on inside.
 
@@ -303,6 +301,12 @@ Since it is faster/easier to develop the basic functionality. Should be easy lat
 See reasoning for Livescript. Was simply easier/faster to implement using classes.
 
 Feel free to fork this project and provide a version without classes if that is a MUST for you...
+
+## TODO
+
+- *rule-applier* needs more tests...
+- refactor *rule-applier* and some other core modules that have functions of more than 3 lines!
+- optimize for speed! I think the engine could be at least twice as fast with some optimizations... (mostly: caching and lazy loads)
 
 ## Testing
 
