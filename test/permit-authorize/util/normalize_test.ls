@@ -1,4 +1,4 @@
-requires  = require '../../requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 User      = requires.fix  'user'

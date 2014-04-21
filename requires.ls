@@ -25,6 +25,10 @@ module.exports =
   permit: (path) ->
     @lib 'permit', path
 
+  access-request: (path) ->
+    @lib 'access_request', path
+
+
   test: (...paths) ->
     require test-path(paths)
 

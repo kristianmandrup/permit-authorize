@@ -111,7 +111,7 @@
           };
           return execRuleApplier(rules.manageAny);
         });
-        return specify('should add can-rule: read *', function(){
+        return specify('should add can-rule: manage *', function(){
           return ruleRepo.canRules.should.eql({
             manage: ['*'],
             create: ['*'],

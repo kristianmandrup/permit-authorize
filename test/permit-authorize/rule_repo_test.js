@@ -85,9 +85,6 @@
         specify('matches Book on list of books', function(){
           return ruleRepo.findMatchingSubject(books, 'Book').should.be['true'];
         });
-        specify('does not match BooK on list of books (since can not be camelized to Book)', function(){
-          return ruleRepo.findMatchingSubject(books, 'BooK').should.be['false'];
-        });
         return specify('does not match BoAk on list of books', function(){
           return ruleRepo.findMatchingSubject(books, 'BoAk').should.be['false'];
         });

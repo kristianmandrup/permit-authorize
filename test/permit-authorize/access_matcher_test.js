@@ -38,26 +38,8 @@
       beforeEach(function(){
         return accessMatchers.complex = accessMatcher(requests.complex);
       });
-      specify('should match chaining: role(admin).action(read)', function(){
+      return specify('should match chaining: role(admin).action(read)', function(){
         return accessMatchers.complex.role('admin').action('read').result().should.be['true'];
-      });
-      xdescribe('has-action calls result!', function(){
-        return specify('should match chaining: role(admin).action(read)', function(){
-          return accessMatchers.complex.role('admin').hasAction('read').should.be['true'];
-        });
-      });
-      xdescribe('has-user calls result!', function(){
-        specify('should match chaining: role(admin).action(read).hasUser()', function(){
-          return accessMatchers.complex.role('admin').action('read').hasUser().should.be['true'];
-        });
-        return specify('should match chaining: role(admin).action(read).hasUser()', function(){
-          return accessMatchers.userless.role('admin').action('read').hasUser().should.be['false'];
-        });
-      });
-      return xdescribe('has-subject calls result!', function(){
-        return specify('should match chaining: role(admin).action(read).user().hasSubject()', function(){
-          return accessMatchers.complex.role('admin').action('read').user().hasSubject().should.be['true'];
-        });
       });
     });
     return describe('match-on', function(){

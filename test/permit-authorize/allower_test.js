@@ -91,10 +91,10 @@
         specify('read a book access should be allowed', function(){
           return allowers.readBook.allows().should.be['true'];
         });
-        specify('write a book access should not be allowed', function(){
-          return allowers.writeBook.allows().should.be['false'];
+        specify('Editor write a book should be allowed', function(){
+          return allowers.writeBook.allows().should.be['true'];
         });
-        return specify('write a book should NOT be allowed for ', function(){
+        return specify('Guest write a book should NOT be allowed', function(){
           return allowers.notWriteBook.allows().should.be['false'];
         });
       });
@@ -102,11 +102,11 @@
         beforeEach(function(){
           return PermitRegistry.cleanPermits();
         });
-        specify('read a book access should NOT be disallowed', function(){
+        specify('Guest read a book access should NOT be disallowed', function(){
           return allowers.readBook.disallows().should.be['false'];
         });
-        return specify('write a book should be disallowed', function(){
-          return allowers.writeBook.disallows().should.be['true'];
+        return specify('Editor write a book should NOT be disallowed', function(){
+          return allowers.writeBook.disallows().should.be['false'];
         });
       });
     });

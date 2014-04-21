@@ -20,6 +20,7 @@ solution. The authorize-mw project is part of a general purpose middleware stack
 ## Code
 
 The code has been developed in [LiveScript](http://livescript.net/) which is very similar too [Coffee script](http://coffeescript.org/).
+See [coffee-to-ls](http://livescript.net/#coffee-to-ls)
 
 ## Installation
 
@@ -171,14 +172,14 @@ GuestPermit = new Permit('guest');
 GuestPermit.prototype.
 
 guestPermit = permitFor('guest', {
-  // to determine when the permit applies
+  // Determine when the permit applies
   match: function(access){
       return this.matches(access).user({
         role: 'guest'
   },
   // authorization rules to apply when permit applies
   rules: {
-    // context dependent rules
+    // context dependent rules (dynamic)
     ctx: {
       area: {
         guest: function(){
@@ -189,7 +190,7 @@ guestPermit = permitFor('guest', {
         }
       }
     },
-    // action rules
+    // action rules (dynamic)
     read: function(){
       return this.ucan('read', 'Book');
     },
@@ -197,6 +198,7 @@ guestPermit = permitFor('guest', {
       return this.ucan('write', 'Book');
     },
     // default rule always applies for any user, action, subject or context
+    // static rules
     'default': function(){
       return this.ucan('read', 'any');
     }
@@ -238,7 +240,8 @@ aBook           = book('some book');
 currentUser     = user('kris');
 currentAbility  = ability(currentUser);
 
-// and finally, here we go
+// Finally, here we go :)
+
 if (userCan({action: 'read', subject: aBook})) {
   readBook(currentUser, aBook);
 }
@@ -259,19 +262,23 @@ To facilitate testing, each class implements `Debugger` which allows using `debu
 
 Use `xdescribe`, `describe.skip` and `describe.only` to select which tests to execute.
 
-### Caching via fingerprinting
+### Caching
 
-A caching strategy should be implemented, so rules are not evaluated
-each time for the same *action request* (action, subject, object, context) `AccReq`, instead a cached previous result for that
-`AccReq` should be retrieved from cache (session cache?) and returned.
+A caching strategy has been implemented, so rules are not evaluated
+each time for the same `AccessRequest` (user, action, subject, context) .
+Instead a cached authorization result for that `AccessRequest` will be retrieved from the cache and returned.
 
-If any of these is an object, a `.hash` function should be attempted called on that object to get the "fingerprint"
-If no `hash` function on object, fingerprinting is done via JSON stringify.
+For each of the elements making up the `AccessRequest` to get the "fingerprint":
+- Object: `hash` function is attempted called defaulting to JSON stringify if not present.
+- String: value is fingerprint
+- Array: values combined with '.'
 
-Then each of these fingerprints should be concatenated into one *access request fingerprint*.
-If the same AccReq fingerprint comes in again, the cached permit rules should be used for better performance!
+Each of these fingerprints is concatenated into one *access request fingerprint*.
+If an `AccessRequest` with the same fingerprint (hash) is evaluated again, the cached authorization result is fetched
+for much better performance!
 
-Please feel free to contribute a solution to this major performance enhancement.
+Please note that the current implementation could use some refactoring to remove code duplication of the can- and cannot-cache
+since they are essentially the same.
 
 ## Design
 

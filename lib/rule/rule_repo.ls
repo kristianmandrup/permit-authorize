@@ -104,7 +104,7 @@ module.exports = class RuleRepo implements Debugger
       match-subject-clazz action-subjects, subj-clazz
 
   manage-action-subjects: (rule-container) ->
-    lo.map @manage-actions, (action) ->
+    lo.map @manage-actions!, (action) ->
       rule-container[action]
 
   manage-actions: ->
@@ -133,7 +133,7 @@ module.exports = class RuleRepo implements Debugger
 
     if action is 'manage'
       self = @
-      lo.each @manage-actions, (action) ->
+      lo.each @manage-actions!, (action) ->
         rule-container[action] = self.register-action-subjects action-subjects, unique-subjects
 
     # console.log 'action subjects', rule-container[action]

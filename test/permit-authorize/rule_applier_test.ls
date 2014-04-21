@@ -114,7 +114,7 @@ describe 'Rule Applier (RuleApplier)' ->
 
         exec-rule-applier rules.manage-any
 
-      specify 'should add can-rule: read *' ->
+      specify 'should add can-rule: manage *' ->
         rule-repo.can-rules.should.eql {
           manage: ['*']
           create: ['*']

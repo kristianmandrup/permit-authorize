@@ -96,19 +96,19 @@ describe 'Allower', ->
       specify 'read a book access should be allowed' ->
         allowers.read-book.allows!.should.be.true
 
-      specify 'write a book access should not be allowed' ->
-        allowers.write-book.allows!.should.be.false
+      specify 'Editor write a book should be allowed' ->
+        allowers.write-book.allows!.should.be.true
 
-      specify 'write a book should NOT be allowed for ' ->
+      specify 'Guest write a book should NOT be allowed' ->
         allowers.not-write-book.allows!.should.be.false
 
     describe 'disallows!' ->
       before-each ->
         PermitRegistry.clean-permits!
 
-      specify 'read a book access should NOT be disallowed' ->
+      specify 'Guest read a book access should NOT be disallowed' ->
         allowers.read-book.disallows!.should.be.false
 
       # since explit: @ucannot 'write', 'book' on gues-permit
-      specify 'write a book should be disallowed' ->
-        allowers.write-book.disallows!.should.be.true
+      specify 'Editor write a book should NOT be disallowed' ->
+        allowers.write-book.disallows!.should.be.false

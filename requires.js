@@ -33,6 +33,9 @@
     permit: function(path){
       return this.lib('permit', path);
     },
+    accessRequest: function(path){
+      return this.lib('access_request', path);
+    },
     test: function(){
       var paths;
       paths = slice$.call(arguments);

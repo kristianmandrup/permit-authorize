@@ -75,9 +75,6 @@ describe 'Rule Repository (RuleRepo)' ->
       specify 'matches Book on list of books' ->
         rule-repo.find-matching-subject(books, 'Book').should.be.true
 
-      specify 'does not match BooK on list of books (since can not be camelized to Book)' ->
-        rule-repo.find-matching-subject(books, 'BooK').should.be.false
-
       specify 'does not match BoAk on list of books' ->
         rule-repo.find-matching-subject(books, 'BoAk').should.be.false
 

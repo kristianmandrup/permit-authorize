@@ -42,22 +42,6 @@ describe 'AccessMatcher' ->
     specify 'should match chaining: role(admin).action(read)' ->
       access-matchers.complex.role('admin').action('read').result!.should.be.true
 
-    # has-xxxx methods have been deprecated
-    xdescribe 'has-action calls result!' ->
-      specify 'should match chaining: role(admin).action(read)' ->
-        access-matchers.complex.role('admin').has-action('read').should.be.true
-
-    xdescribe 'has-user calls result!' ->
-      specify 'should match chaining: role(admin).action(read).hasUser()' ->
-        access-matchers.complex.role('admin').action('read').has-user!.should.be.true
-
-      specify 'should match chaining: role(admin).action(read).hasUser()' ->
-        access-matchers.userless.role('admin').action('read').has-user!.should.be.false
-
-    xdescribe 'has-subject calls result!' ->
-      specify 'should match chaining: role(admin).action(read).user().hasSubject()' ->
-        access-matchers.complex.role('admin').action('read').user!.has-subject!.should.be.true
-
   describe 'match-on' ->
     before-each ->
       access-matchers.complex     := access-matcher requests.complex

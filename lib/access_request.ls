@@ -2,9 +2,12 @@ requires  = require '../requires'
 normalize = requires.util 'normalize'
 Debugger  = requires.lib 'debugger'
 
-module.exports = class AccessRequest implements Debugger
+Fingerprints  = requires.access-request 'fingerprints'
+
+module.exports = class AccessRequest implements Debugger, Fingerprints
   # factory method
   @from  = (obj) ->
+    throw new Error "Must be an Object, was: #{obj}" unless typeof! obj is 'Object'
     new AccessRequest(obj.user, obj.action, obj.subject, obj.ctx)
 
   # constructor
@@ -22,13 +25,23 @@ module.exports = class AccessRequest implements Debugger
     unless typeof! @subject is 'Object'
       @debug 'normalize subject', @subject
       @subject = normalize @subject
+    @
 
   validate: ->
-    unless typeof! @action is 'String'
+    unless @valid-action!
       throw new Error "Missing action name. Must authorize an action to be performed on a subject, was: #{@action}, #{typeof! @action}"
 
-    unless @subject?
+    unless @valid-subject!
       throw new Error "Missing subject. Must authorize a subject to perform an action: #{@action}"
 
-    unless typeof! @user is 'Object'
+    unless @valid-user!
       throw new Error "Missing user. Must authorize a user to perform an action: #{@action} on the subject"
+
+  valid-subject: ->
+    @subject?
+
+  valid-user: ->
+    typeof! @user is 'Object'
+
+  valid-action: ->
+    typeof! @action is 'String' or typeof! @action is 'Array'
