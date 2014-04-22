@@ -6,4 +6,5 @@ module.exports =
   Allower:       requires.lib 'allower'
   CachedAbility: requires.ability 'cached_ability'
   Permit:        requires.lib 'permit'
+  # RulesLoader:   requires.permit 'permit-rules-loader'
   permit-for:    requires.permit 'permit-for'
