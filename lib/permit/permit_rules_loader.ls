@@ -1,36 +1,71 @@
+requires  = require '../../requires'
 lo = requires.util 'lodash-lite'
 fs = require 'fs'
 
-class PermitRulesLoader
+Array.prototype.contains = (v) ->
+  @indexOf(v) > -1
+
+Debugger      = requires.lib 'debugger'
+
+class PermitRulesLoader implements Debugger
   (@file-path) ->
+    @loaded-rules = {}
  
-  load-rules-file: (file-path) ->
-    file-path ||= @file-path
-    throw Error "Error: Missing filepath" unless file-path?
+  load-rules: (file-path, async = true) ->
+    @file-path ||= file-path
+    @debug "loadRules", @file-path
+    unless @file-path
+      throw Error "Error: Missing filepath"
+
+    if async then @load-rules-async(file-path) else @load-rules-sync(file-path)
+
+  load-rules-async: ->
+    @debug 'loadRulesAsync'
+    self = @
+    fs.read-file @file-path, 'utf8', (err, data) ->
+      self.debug err, data
+      if err
+        @debug err
+        throw Error "Error loading file: #{@file-path} - #{err}"
+
+      self.debug "data", data
+      rules = JSON.parse data
+      self.debug "loaded-rules", rules
+      self.loaded-rules = rules
+      self.process-rules!
+
+  load-rules-sync: ->
+    try
+      data = fs.read-file-sync @file-path, 'utf8' ->
+      @debug "data", data
+      unless typeof! data is 'String'
+        throw Error
+      rules = JSON.parse data
+      @debug "loaded-rules", rules
+      @loaded-rules = rules
+      @process-rules!
+    catch err
+      throw Error "Error loading file: #{@file-path} - #{err}"
  
-    fs.read-file file-path, 'utf8', (err, data) ->
-      throw new Error "Error loading file: #{file-path} - #{err}" if err
-      @loaded-rules = JSON.parse data
-      process-rules!
- 
-  load-rules: (path) ->
-    @load-rules-file path
+  load-rules-from: (path) ->
+    @load-rules path
  
   process-rules: ->
-    throw new Error "Rules not loaded" unless @loaded-rules?
+    @debug "processRules", @loaded-rules
+    throw Error "Rules not loaded or invalid: #{@loaded-rules}" unless typeof! @loaded-rules is 'Object'
  
     @processed-rules = {}
-    self = @
-    for each key, rule of @loaded-rules
+    for key, rule of @loaded-rules
       @process-rule key, rule
     
     @processed-rules
 
   process-rule: (key, rule) ->
+    @debug "processRule", key, rule
     @processed-rules[key] = @rule-for rule
 
   create-rules-at: (permit, place) ->
-    unless typeof! permitis 'Function'
+    unless typeof! permit is 'Function'
       throw Error "Not a permit, was: #{permit}" 
       
     if place?
@@ -41,8 +76,9 @@ class PermitRulesLoader
       permit.rules = @processed-rules
  
   rule-for: (rule) ->
+    @debug "ruleFor", rule
     key = Object.keys(rule).0
-    unless ['can', 'cannot'].include key
+    unless ['can', 'cannot'].contains(key)
       throw Error "Not a valid rule key, must be 'can' or 'cannot', was: #{key}"
     
     @factory-for(key) rule[key]
@@ -58,4 +94,4 @@ class PermitRulesLoader
     ->
       @ucannot action, subject
 
-modules.export = PermitRulesLoader
+module.exports = PermitRulesLoader
