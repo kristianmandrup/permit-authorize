@@ -293,11 +293,37 @@ Pretty cool :)
 ## Loading rules from JSON file
 
 ```LiveScript
+# my/rules/editor_rules.json
+{
+    "editor": {
+        "can": {
+            "edit": "book",
+            "publish": "paper"
+        }
+    }
+}
+```
+
+
+```LiveScript
 authorize = require 'permit-authorize'
 RulesLoader  = authorize.RulesLoader
  
-editor-permit.rules = RulesLoader.load('my/rules/editor_rules.json')
+editor-permit.rules = new RulesLoader.load('my/rules/editor_rules.json')
 ```
+
+Some xtras to facilitate creating permits from rule files or data stores
+
+```LiveScript
+rules-loader  = new RulesLoader('my/rules/editor_rules.json')
+permit        = rules-loader.create-permit 'editor permit'
+
+# or subclass permit from existing AdminPermit class
+rules-loader  = new RulesLoader('my/rules/admin_rules.json')
+permit        = rules-loader.create-permit 'admin permit', AdminPermit
+```
+
+## Load rules from a Data store/base
 
 You can easily extend the `lib/permit/permit_rules_loader.ls` to load authorization rules from a Database.
 See the `lib/permit/permit_rules_db_loader.ls` for a skeleton you can extend to suit your needs.

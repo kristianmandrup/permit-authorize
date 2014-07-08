@@ -7,17 +7,29 @@ Array.prototype.contains = (v) ->
 
 Debugger      = requires.lib 'debugger'
 
+permit-for    = requires.permit 'permit-for'
+
 class PermitRulesLoader implements Debugger
-  (@file-path) ->
+  (@file-path, @options = {}) ->
     @loaded-rules = {}
- 
-  load-rules: (file-path, async = true) ->
+    @async = @options.async
+
+  create-permit: (name, base-clazz) ->
+    base-clazz ||= requires.lib 'permit'
+    loaded-rules = @load-rules!.rules!
+    console.log 'loaded-rules', loaded-rules, @file-path
+    permit-for base-clazz, name, (->
+      rules: loaded-rules
+    )
+
+  load-rules: (file-path, async) ->
     @file-path ||= file-path
+    unless async is void then @async = async else @async ||= true
     @debug "loadRules", @file-path
     unless @file-path
       throw Error "Error: Missing filepath"
 
-    if async then @load-rules-async(file-path) else @load-rules-sync(file-path)
+    if @async then @load-rules-async(file-path) else @load-rules-sync(file-path)
 
   load-rules-async: ->
     @debug 'loadRulesAsync'
@@ -33,6 +45,7 @@ class PermitRulesLoader implements Debugger
       self.debug "loaded-rules", rules
       self.loaded-rules = rules
       self.process-rules!
+    @
 
   load-rules-sync: ->
     try
@@ -44,6 +57,7 @@ class PermitRulesLoader implements Debugger
       @debug "loaded-rules", rules
       @loaded-rules = rules
       @process-rules!
+      @
     catch err
       throw Error "Error loading file: #{@file-path} - #{err}"
  
@@ -93,7 +107,9 @@ class PermitRulesLoader implements Debugger
     for action, subject of rule
       fun = @resolve(act, action, subject)
       rules.push fun
-    rules
+    ->
+      for rule in rules
+        @rule!
 
   resolve: (act, action, subject) ->
     ->

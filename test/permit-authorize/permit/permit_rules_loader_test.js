@@ -60,9 +60,22 @@
           specify('has processed rules', function(){
             return expect(rulesLoader.processedRules).to.not.be.empty;
           });
-          return specify('has processed rules editor - Function', function(){
-            expect(rulesLoader.processedRules.editor[0]).to.be.a('function');
-            return expect(rulesLoader.processedRules.editor[1]).to.be.a('function');
+          specify('has processed rules editor - Function', function(){
+            return expect(rulesLoader.processedRules.editor).to.be.a('function');
+          });
+          return describe('create-permit', function(){
+            var permit;
+            beforeEach(function(){
+              return permit = rulesLoader.createPermit('editor permit');
+            });
+            specify('permit created', function(){
+              console.log(permit);
+              return expect(permit).to.be.an.instanceOf(Permit);
+            });
+            return specify('permit has rules', function(){
+              console.log(permit.rules);
+              return expect(permit.rules).to.not.be.empty;
+            });
           });
         });
       });

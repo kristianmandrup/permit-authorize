@@ -54,5 +54,18 @@ describe 'Permit' ->
 
         specify 'has processed rules editor - Function' ->
           # console.log 'editor', rules-loader.processed-rules.editor
-          expect(rules-loader.processed-rules.editor.0).to.be.a 'function'
-          expect(rules-loader.processed-rules.editor.1).to.be.a 'function'
+          expect(rules-loader.processed-rules.editor).to.be.a 'function'
+
+        describe 'create-permit' ->
+          var permit
+
+          before-each ->
+            permit := rules-loader.create-permit 'editor permit'
+
+          specify 'permit created' ->
+            console.log permit
+            expect(permit).to.be.an.instance-of Permit
+
+          specify 'permit has rules' ->
+            console.log permit.rules
+            expect(permit.rules).to.not.be.empty
