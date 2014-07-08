@@ -83,7 +83,7 @@ guest-user   = new GuestUser name: 'unknown'
 
 guest-permit = permit-for('guest',
   match: (access) ->
-    @matches(access).user role: 'guest'
+    @match-role access, 'guest'
 
   rules:
     ctx:

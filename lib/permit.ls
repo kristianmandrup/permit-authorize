@@ -79,9 +79,35 @@ module.exports = class Permit implements Debugger
     new @permit-matcher-class @, access-request, @debugging
 
   # See if this permit should apply (be used) for the given access request
+  # TODO: improve using a declarative approach
+  # matches-on:
+  #   roles: ['editor', 'publisher']
+  #   actions: ['edit', 'write', 'publish']
+
   matches: (access-request) ->
     @debug 'matches', access-request
     @matcher(access-request).match!
+
+  match-user: (access-request, user) ->
+    @matches(access-request).user user
+
+  match-role: (access-request, role) ->
+    @matches(access-request).role role
+
+  match-subject: (access-request, subj) ->
+    @matches(access-request).subject subj
+
+  match-subject-clazz: (clazz) ->
+    @matches(access-request).subject-clazz: clazz
+
+  match-action: (action) ->
+    @matches(access-request).action action
+
+  match-context: (ctx) ->
+    @matches(access-request).context ctx
+
+  match-ctx: (ctx) ->
+    @matches(access-request).ctx ctx
 
   # Rule Application
   # ----------------
