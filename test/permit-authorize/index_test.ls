@@ -6,6 +6,7 @@ requires.test 'test_setup'
 authorize = require '../../index'
 
 Ability = authorize.Ability
+PermitRulesLoader  = authorize.RulesLoader
 
 class User
   (@name) ->
@@ -27,6 +28,15 @@ current-user = user 'kris'
 
 # if ability(current-user).allowed-for action: 'read', subject: a-book
 
-describe 'Ability' ->
-  specify 'is an Ability class' ->
-    expect(ability!.constructor).to.equal Ability
+describe 'index' ->
+  describe 'Ability' ->
+    var my-user
+    before-each ->
+      my-user := user 'mike'
+
+    specify 'is an Ability class' ->
+      expect(ability(my-user).constructor).to.equal Ability
+
+  describe 'PermitRulesLoader' ->
+    specify 'is class' ->
+      expect(new PermitRulesLoader('xyz').file-path).to.eql 'xyz'

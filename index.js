@@ -8,6 +8,8 @@
     Allower: requires.lib('allower'),
     CachedAbility: requires.ability('cached_ability'),
     Permit: requires.lib('permit'),
+    RulesLoader: requires.permit('permit_rules_loader'),
+    DbRulesLoader: requires.permit('permit_rules_db_loader'),
     permitFor: requires.permit('permit-for')
   };
 }).call(this);

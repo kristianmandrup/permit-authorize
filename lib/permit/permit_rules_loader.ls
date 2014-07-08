@@ -49,7 +49,10 @@ class PermitRulesLoader implements Debugger
  
   load-rules-from: (path) ->
     @load-rules path
- 
+
+  load: (path) ->
+    @load-rules path
+
   process-rules: ->
     @debug "processRules", @loaded-rules
     throw Error "Rules not loaded or invalid: #{@loaded-rules}" unless typeof! @loaded-rules is 'Object'
@@ -74,24 +77,26 @@ class PermitRulesLoader implements Debugger
       permit.rules[place] = @processed-rules
     else
       permit.rules = @processed-rules
- 
+
+  rules: ->
+    @processed-rules
+
   rule-for: (rule) ->
     @debug "ruleFor", rule
     key = Object.keys(rule).0
     unless ['can', 'cannot'].contains(key)
       throw Error "Not a valid rule key, must be 'can' or 'cannot', was: #{key}"
-    
-    @factory-for(key) rule[key]
+    @factory key, rule[key]
 
-  factory-for: (key) ->
-    @["#{key}Factory"]
+  factory: (act, rule) ->
+    rules = []
+    for action, subject of rule
+      fun = @resolve(act, action, subject)
+      rules.push fun
+    rules
 
-  can-factory: (action, subject) ->
+  resolve: (act, action, subject) ->
     ->
-      @ucan action, subject
- 
-  cannot-factory: (action, subject) ->
-    ->
-      @ucannot action, subject
+      @["u#{act}"] action, subject
 
 module.exports = PermitRulesLoader

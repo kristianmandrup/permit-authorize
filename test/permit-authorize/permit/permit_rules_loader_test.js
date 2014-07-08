@@ -22,9 +22,13 @@
       });
       context('bad file path', function(){
         return specify('file load error', function(){
-          return expect(function(){
+          expect(function(){
             return rulesLoader.loadRules('rules.json', false);
           }).to['throw'](new Error);
+          return specify('sets file path', function(){
+            rulesLoader.loadRules('rules.json', false);
+            return expect(rulesLoader.filePath).to.eq(void 8);
+          });
         });
       });
       return context('good file path', function(){
@@ -37,8 +41,28 @@
           beforeEach(function(){
             return rulesLoader.loadRules(basicRulesFilePath, false);
           });
-          return specify('has loaded rules', function(){
+          specify('sets file path', function(){
+            return expect(rulesLoader.filePath).to.equal(basicRulesFilePath);
+          });
+          specify('has loaded rules', function(){
             return expect(rulesLoader.loadedRules).to.not.be.empty;
+          });
+          specify('has loaded editor rules', function(){
+            return expect(rulesLoader.loadedRules).to.eql({
+              editor: {
+                can: {
+                  edit: 'book',
+                  publish: 'paper'
+                }
+              }
+            });
+          });
+          specify('has processed rules', function(){
+            return expect(rulesLoader.processedRules).to.not.be.empty;
+          });
+          return specify('has processed rules editor - Function', function(){
+            expect(rulesLoader.processedRules.editor[0]).to.be.a('function');
+            return expect(rulesLoader.processedRules.editor[1]).to.be.a('function');
           });
         });
       });

@@ -290,6 +290,40 @@ for i from 1 to 10
 
 Pretty cool :)
 
+## Loading rules from JSON file
+
+```LiveScript
+authorize = require 'permit-authorize'
+RulesLoader  = authorize.RulesLoader
+ 
+editor-permit.rules = RulesLoader.load('my/rules/editor_rules.json')
+```
+
+You can easily extend the `lib/permit/permit_rules_loader.ls` to load authorization rules from a Database.
+See the `lib/permit/permit_rules_db_loader.ls` for a skeleton you can extend to suit your needs.
+
+```LiveScript
+  load-db: (@options = {}) ->
+    @connect-db!
+    @load-data!
+    @loaded-rules = JSON.parse data
+    @process-rules!
+
+  # connect to DB
+  connect-db: ->
+
+  # load the rules from DB into a JSON structure
+  load-data: ->
+```
+
+Simply override the `connect-db` and `load-data` functions as needed. 
+Then use it something like this.
+
+```LiveScript
+DbRulesLoader  = authorize.DbRulesLoader
+rules = DbRulesLoader.load-db('http://my/connect/url:12345', {user: 'myname', password: 'secret'})
+```
+
 ## Design
 
 *Why LiveScript?*
