@@ -17,6 +17,12 @@ Most important sections:
 This project was extracted from [authorize-mw](https://github.com/kristianmandrup/authorize-mw) to provide a self contained authorization
 solution. The authorize-mw project is part of a general purpose middleware stack.
 
+## Concepts
+
+The basic idea is as follows:
+
+A *subject* (fx a user) can perform an *action* on a given *object* if the subject has a *permit* for that action.
+
 ## Code
 
 The code has been developed in [LiveScript](http://livescript.net/) which is very similar too [Coffee script](http://coffeescript.org/).
@@ -59,40 +65,70 @@ Try [browserify](http://browserify.org)
 
 The following is a complete example, using LiveScript syntax for a clearer picture.
 
+First we require the basic modules
+
 ```LiveScript
 lo = require 'lodash'
 
-authorize = require 'permit-authorize'
-
+authorize   = require 'permit-authorize'
 Permit      = authorize.Permit
 permit-for  = authorize.permit-for
+```
 
+Then we define a `Book` model to be used as a "protected resource" (object).
+
+```
 class Book extends Base
   (obj) ->
     super ...
 
-book = new Book title: title
+book = (title) ->
+  new Book title
 
+a-book = book 'some book'
+```
+
+Load Ability class and define convenience helper method
+
+```
+Ability     = authorize.Ability
+
+ability = (user) ->
+  new Ability user
+```
+
+
+Then we create a `GuestUser` class and a `guest-user` (subject)
+
+```
 class GuestUser extends User
   (obj) ->
     super ...
 
   role: 'guest'
 
-guest-user   = new GuestUser name: 'unknown'
+user = (name) ->
+  new User name
 
+guest-user = (name) ->
+  new GuestUser name
+
+current-user = user 'kris'
+
+a-guest-user = guest-user 'unknown'
+
+current-ability = ability(current-user)
+```
+
+Now we need to define a permit that matches for a guest user (role) and 
+defines what actions the subject (guest user) can perform on a Book (subject).  
+
+```
 guest-permit = permit-for('guest',
   match: (access) ->
     @match-role access, 'guest'
 
   rules:
-    ctx:
-      area:
-        guest: ->
-          @ucan 'publish', 'Paper'
-        admin: ->
-          @ucannot 'publish', 'Paper'
-
     read: ->
       @ucan 'read' 'Book'
     write: ->
@@ -100,26 +136,18 @@ guest-permit = permit-for('guest',
     default: ->
       @ucan 'read' 'any'
 )
+```
 
-Ability     = authorize.Ability
+Define helper method `user-can`
 
-user = (name) ->
-  new User name
-
-book = (title) ->
-  new Book title
-
-ability = (user) ->
-  new Ability user
-
-a-book = book 'some book'
-current-user = user 'kris'
-
-current-ability = ability(current-user)
-
+```
 user-can = (access-request) ->
   current-ability.can access-request
+```
 
+And use it like this
+
+```
 if user-can action: 'read', subject: a-book
   # code to read the book
 ```
@@ -172,17 +200,6 @@ guestPermit = permitFor('guest', {
   },
   // authorization rules to apply when permit applies
   rules: {
-    // context dependent rules (dynamic)
-    ctx: {
-      area: {
-        guest: function(){
-          return this.ucan('publish', 'Paper');
-        },
-        admin: function(){
-          return this.ucannot('publish', 'Paper');
-        }
-      }
-    },
     // action rules (dynamic)
     read: function(){
       return this.ucan('read', 'Book');

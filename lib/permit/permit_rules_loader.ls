@@ -14,13 +14,14 @@ class PermitRulesLoader implements Debugger
     @loaded-rules = {}
     @async = @options.async
 
-  create-permit: (name, base-clazz) ->
-    base-clazz ||= requires.lib 'permit'
+  create-permit: (name, options = {}) ->
+    base-clazz ||= options.clazz or requires.lib('permit')
     loaded-rules = @load-rules!.rules!
     console.log 'loaded-rules', loaded-rules, @file-path
-    permit-for base-clazz, name, (->
-      rules: loaded-rules
+    permit = permit-for base-clazz, name, (->
+      rules: {}
     )
+    if options.key then permit.rules[key] = loaded-rules else permit.rules = loaded-rules
 
   load-rules: (file-path, async) ->
     @file-path ||= file-path
