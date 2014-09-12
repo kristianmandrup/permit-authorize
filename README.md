@@ -86,6 +86,16 @@ Standalone files available:
  Using `bower install` will install `permit-authorize.min.js` in the 
 bower components folder of your app (default: `bower_components`).
 
+## Usage with bower
+
+Latest release: *0.6.0*
+
+See http://stackoverflow.com/questions/19456091/bower-register-new-version
+
+`bower info permit-authorize`
+
+`bower install permit-authorize --save`
+
 ## Usage examples
 
 The following is a complete example, using LiveScript syntax for a clearer picture.
