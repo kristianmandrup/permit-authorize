@@ -1,7 +1,7 @@
-requires  = require '../../requires'
-lo = requires.util 'lodash-lite'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
 
-class PermitRulesDbLoader extends PermitRulesLoader
+class PermitRulesDbLoader extends PermitRulesLoader implements Debugger
   (@file-path) ->
     super
 

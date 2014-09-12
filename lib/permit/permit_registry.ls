@@ -1,8 +1,7 @@
-requires  = require '../../requires'
-lo        = requires.util 'lodash-lite'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
 
-Debugger  = requires.lib 'debugger'
-
+# TODO: allow creation of multiple registries and select one to use per environment
 todo = "allow creation of multiple registries and select one to use per environment"
 
 module.exports = class PermitRegistry implements Debugger

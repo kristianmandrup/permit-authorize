@@ -1,6 +1,5 @@
-requires = require '../../requires'
-
-Ability       = requires.lib 'ability'
+Ability       = require '../ability'
+fingerprints  = require '../access_request/fingerprints'
 
 # Always one Ability per User
 module.exports = class CachedAbility extends Ability
@@ -18,7 +17,7 @@ module.exports = class CachedAbility extends Ability
   @cannot-cache = ->
     @_cannot-cache ||= {}
 
-  user-hash: requires.access-request 'fingerprints' .user-hash
+  user-hash: fingerprints.user-hash
 
   user-key: ->
     @user-key = @user-hash!

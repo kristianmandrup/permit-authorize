@@ -1,5 +1,3 @@
-lo = require 'lodash-lite'
-
 module.exports =
   debugging: false
 

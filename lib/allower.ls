@@ -1,10 +1,8 @@
-requires = require '../requires'
-lo  = requires.util 'lodash-lite'
+lo            = require './util/lodash_lite'
+Debugger      = require './debugger'
 
-Permit        = requires.lib    'permit'
-PermitFilter  = requires.permit 'permit_filter'
-
-Debugger      = requires.lib 'debugger'
+Permit        = require './permit'
+PermitFilter  = require './permit/permit_filter'
 
 module.exports = class Allower implements Debugger
   # access rule

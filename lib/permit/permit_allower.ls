@@ -1,7 +1,5 @@
-requires = require '../../requires'
-lo  = requires.util 'lodash-lite'
-
-Debugger  = requires.lib 'debugger'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
 
 module.exports = class PermitAllower implements Debugger
   (@rule-repo, @debugging) ->

@@ -1,11 +1,9 @@
-requires = require '../requires'
-
-BaseMatcher     = requires.matcher 'base'
-UserMatcher     = requires.matcher 'user'
-ActionMatcher   = requires.matcher 'action'
-SubjectMatcher  = requires.matcher 'subject'
-ContextMatcher  = requires.matcher 'context'
-AccessMatcher   = requires.matcher 'access'
+BaseMatcher     = require './matcher/base_matcher'
+UserMatcher     = require './matcher/user_matcher'
+ActionMatcher   = require './matcher/action_matcher'
+SubjectMatcher  = require './matcher/subject_matcher'
+ContextMatcher  = require './matcher/context_matcher'
+AccessMatcher   = require './matcher/access_matcher'
 
 module.exports =
   BaseMatcher     : BaseMatcher

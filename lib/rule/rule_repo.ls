@@ -4,11 +4,11 @@
 # Then you can match an access-request (action, subject)
 # Simple!
 
-requires    = require '../../requires'
-lo          = requires.util 'lodash-lite'
-camel-case  = requires.util 'string-util' .camel-case
-normalize   = requires.util 'normalize'
-Debugger    = requires.lib 'debugger'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
+
+camel-case  = require '../util/string_util' .camel-case
+normalize   = require '../util/normalize'
 
 
 module.exports = class RuleRepo implements Debugger

@@ -1,5 +1,4 @@
-requires = require '../../requires'
-lo  = requires.util 'lodash-lite'
+lo  = requires '../util/lodash_lite'
 
 # TODO
 module.exports = class AbilityCache

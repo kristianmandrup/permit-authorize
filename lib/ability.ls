@@ -1,12 +1,9 @@
-requires = require '../requires'
-lo  = requires.util 'lodash-lite'
-
-permit-filter = requires.permit 'permit_filter'
-Allower       = requires.lib 'allower'
-AccessRequest = requires.lib 'access_request'
-Debugger      = requires.lib 'debugger'
-
-ArgNormalizer = requires.ability 'arg-normalizer'
+lo            = require './util/lodash_lite'
+permit-filter = require './permit/permit_filter'
+Allower       = require './allower'
+AccessRequest = require './access_request'
+Debugger      = require './debugger'
+ArgNormalizer = require './ability/arg_normalizer'
 
 # Always one Ability per User
 module.exports = class Ability implements Debugger

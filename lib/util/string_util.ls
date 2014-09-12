@@ -1,4 +1,3 @@
-
 module.exports =
   camel-case: (s) ->
     (s or '').to-lower-case!.replace /(\b|-)\w/g, (m) ->

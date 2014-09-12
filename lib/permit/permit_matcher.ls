@@ -1,8 +1,7 @@
-requires  = require '../../requires'
-lo        = requires.util 'lodash-lite'
+lo            = require '../util/lodash_lite'
 
-Intersect     = requires.util 'intersect'
-AccessMatcher = requires.lib('matchers').AccessMatcher
+Intersect     = require '../util/intersect'
+AccessMatcher = require '../matcher/access_matcher'
 
 # The matcher is used to determine if the Permit should apply at all in the given access context
 # Given an access-request, it should check the permit via:

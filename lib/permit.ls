@@ -1,21 +1,19 @@
-requires  = require '../requires'
-lo        = requires.util 'lodash-lite'
+lo              = require './util/lodash_lite'
+Debugger        = require './debugger'
 
-PermitRegistry  = requires.permit 'permit_registry'
-PermitMatcher   = requires.permit 'permit_matcher'
-PermitAllower   = requires.permit 'permit_allower'
-RuleApplier     = requires.rule 'rule_applier'
-RuleRepo        = requires.rule 'rule_repo'
+PermitRegistry  = require './permit/permit_registry'
+PermitMatcher   = require './permit/permit_matcher'
+PermitAllower   = require './permit/permit_allower'
+RuleApplier     = require './rule/rule_applier'
+RuleRepo        = require './rule/rule_repo'
 
-matchers        = requires.lib 'matchers'
+matchers        = require './matchers'
 
 UserMatcher     = matchers.UserMatcher
 SubjectMatcher  = matchers.SubjectMatcher
 ActionMatcher   = matchers.ActionMatcher
 ContextMatcher  = matchers.ContextMatcher
 AccessMatcher   = matchers.AccessMatcher
-
-Debugger        = requires.lib 'debugger'
 
 module.exports = class Permit implements Debugger
   (@name, @description = '') ->

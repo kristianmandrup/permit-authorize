@@ -1,8 +1,6 @@
-requires  = require '../requires'
-normalize = requires.util 'normalize'
-Debugger  = requires.lib 'debugger'
-
-Fingerprints  = requires.access-request 'fingerprints'
+normalize     = require './util/normalize'
+Debugger      = require './debugger'
+Fingerprints  = require './access_request/fingerprints'
 
 module.exports = class AccessRequest implements Debugger, Fingerprints
   # factory method

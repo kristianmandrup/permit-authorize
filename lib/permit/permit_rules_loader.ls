@@ -1,13 +1,11 @@
-requires  = require '../../requires'
-lo = requires.util 'lodash-lite'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
 fs = require 'fs'
+
+permit-for  = require '../permit/permit_for'
 
 Array.prototype.contains = (v) ->
   @indexOf(v) > -1
-
-Debugger      = requires.lib 'debugger'
-
-permit-for    = requires.permit 'permit-for'
 
 class PermitRulesLoader implements Debugger
   (@file-path, @options = {}) ->

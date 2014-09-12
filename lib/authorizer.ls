@@ -1,9 +1,6 @@
-requires = require '../requires'
-
-Debugger      = requires.lib 'debugger'
-
-AccessRequest = requires.lib 'access_request'
-Ability       = requires.lib 'ability'
+Debugger      = require './debugger'
+AccessRequest = require './access_request'
+Ability       = require './ability'
 
 module.exports = class Authorizer implements Debugger
   (@user) ->

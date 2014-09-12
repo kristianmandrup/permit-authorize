@@ -1,4 +1,4 @@
-lo = requires.util 'lodash-lite'
+lo = require './lodash_lite'
 
 module.exports = ->
   count-props = (obj) ->

@@ -1,8 +1,7 @@
-requires  = require '../../requires'
-lo        = requires.util 'lodash-lite'
-Intersect = requires.util 'intersect'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
 
-Debugger  = requires.lib 'debugger'
+Intersect = requires.util 'intersect'
 
 class BaseMatcher implements Debugger
   (access-request) ->

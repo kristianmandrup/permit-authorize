@@ -1,4 +1,4 @@
-lo = requires.util 'lodash-lite'
+lo = require './lodash_lite'
 
 flatten = (items, res) ->
   res = [] if not res

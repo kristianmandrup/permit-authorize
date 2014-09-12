@@ -30,7 +30,7 @@ A *subject* (fx a user) can perform an *action* on a given *object* if the subje
 - Turn debugging on/off on classes or instances
 - Load permit rules from JSON (f.ex from file or data store) 
 - Huge test suite included
-- Only 15kb minified :) 
+- Only 53kb minified :) 
 
 ## Code
 
@@ -73,18 +73,18 @@ Try [browserify](http://browserify.org)
 
 `browserify index.js -o permit-authorize.js`
 
-or minimized and uglified:
+To uglify and minimize...
 
-`permit-authorize.js | uglifyjs > permit-authorize.min.js`
+`uglifyjs permit-authorize.js -cm > permit-authorize.min.js`
 
-or via [uglifyify](https://github.com/hughsk/uglifyify)
+Standalone files available: 
 
-A standalone file `permit-authorize.js` is available in the root. 
-It is available for use via `bower install` and can be used directly in a browser app.
+- `permit-authorize.js` 
+- `permit-authorize.ugly.js`
+- `permit-authorize.min.js`
 
-Important: Currently, the modules use a custom `requires` DSL. 
-This needs to be changed to `require` statements in order that browserify can traverse the module dependency graph.
-I expect this to be done for `0.2.0`.
+ Using `bower install` will install `permit-authorize.min.js` in the 
+bower components folder of your app (default: `bower_components`).
 
 ## Usage examples
 
@@ -93,8 +93,6 @@ The following is a complete example, using LiveScript syntax for a clearer pictu
 First we require the basic modules
 
 ```LiveScript
-lo = require 'lodash'
-
 authorize   = require 'permit-authorize'
 Permit      = authorize.Permit
 permit-for  = authorize.permit-for

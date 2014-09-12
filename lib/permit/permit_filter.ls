@@ -1,10 +1,8 @@
-requires  = require '../../requires'
-lo        = requires.util 'lodash-lite'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
 
-Permit          = requires.lib 'permit'
-PermitRegistry  = requires.permit 'permit_registry'
-
-Debugger  = requires.lib 'debugger'
+Permit          = require '../permit'
+PermitRegistry  = require '../permit/permit_registry'
 
 module.exports = class PermitFilter implements Debugger
   # go through all permits

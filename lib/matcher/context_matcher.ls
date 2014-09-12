@@ -1,8 +1,7 @@
-requires        = require '../../requires'
-lo              = requires.util 'lodash-lite'
+lo          = require '../util/lodash_lite'
+Debugger    = require '../debugger'
 
-Debugger        = requires.lib 'debugger'
-BaseMatcher     = requires.matcher 'base'
+BaseMatcher = require './base_matcher'
 
 class ContextMatcher extends BaseMatcher
   (@access-request) ->

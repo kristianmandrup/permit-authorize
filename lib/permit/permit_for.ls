@@ -1,7 +1,5 @@
-requires  = require '../../requires'
-lo        = requires.util 'lodash-lite'
-
-Permit    = requires.lib 'permit'
+lo        = require '../util/lodash_lite'
+Permit    = require '../permit'
 
 # makes an instance of a Permit class, adds specific functionality (such as rules) and registers the permit globally
 

@@ -3,10 +3,8 @@
 # The permit can be setup to either apply all rules, (iterating through the rules object)
 # or just apply a subset depending on the context (fx the action of the incoming access-request)
 
-requires  = require '../../requires'
-lo        = requires.util 'lodash-lite'
-
-Debugger  = requires.lib 'debugger'
+lo        = require '../util/lodash_lite'
+Debugger  = require '../debugger'
 
 recurse = (val, ctx) ->
   switch typeof! val

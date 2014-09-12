@@ -1,11 +1,10 @@
-requires        = require '../../requires'
-lo              = requires.util 'lodash-lite'
+lo          = require '../util/lodash_lite'
+Debugger    = require '../debugger'
 
-Debugger        = requires.lib 'debugger'
-UserMatcher     = requires.matcher 'user'
-ActionMatcher   = requires.matcher 'action'
-SubjectMatcher  = requires.matcher 'subject'
-ContextMatcher  = requires.matcher 'context'
+UserMatcher     = require './user_matcher'
+ActionMatcher   = require './action_matcher'
+SubjectMatcher  = require './subject_matcher'
+ContextMatcher  = require './context_matcher'
 
 class AccessMatcher implements Debugger
   (@access-request) ->
