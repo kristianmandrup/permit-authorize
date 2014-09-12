@@ -16,7 +16,7 @@ AccessMatcher = require '../matcher/access_matcher'
 # To enable debugging, simply do:
 #   PermitMatcher.debug-on!
 
-Debugger = requires.lib 'debugger'
+Debugger = require '../debugger'
 
 module.exports = class PermitMatcher implements Debugger
   (@permit, @access-request, @debugging) ->
