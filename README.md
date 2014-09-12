@@ -23,6 +23,15 @@ The basic idea is as follows:
 
 A *subject* (fx a user) can perform an *action* on a given *object* if the subject has a *permit* for that action.
 
+## Main features
+
+- Simple DSL based permit configuration (via `permit-for`)
+- Ability Caching for enhanced performance (2ms lookup!)
+- Turn debugging on/off on classes or instances
+- Load permit rules from JSON (f.ex from file or data store) 
+- Huge test suite included
+- Only 15kb minified :) 
+
 ## Code
 
 The code has been developed in [LiveScript](http://livescript.net/) which is very similar too [Coffee script](http://coffeescript.org/).
@@ -55,11 +64,27 @@ permit-for  = authorize.permit-for;
 
 `permit-for` is a factory method to create permits. The other keys all point to constructor functions in the form of LiveScript "classes".
 
-## Browser usage
+## Non CommonJS (Node) usage
+
+To use this library outside a CommonJS environment (using `require` for module loading), you can generate
+ a single file that contains all the library code concatenated. 
 
 Try [browserify](http://browserify.org)
 
 `browserify index.js -o permit-authorize.js`
+
+or minimized and uglified:
+
+`permit-authorize.js | uglifyjs > permit-authorize.min.js`
+
+or via [uglifyify](https://github.com/hughsk/uglifyify)
+
+A standalone file `permit-authorize.js` is available in the root. 
+It is available for use via `bower install` and can be used directly in a browser app.
+
+Important: Currently, the modules use a custom `requires` DSL. 
+This needs to be changed to `require` statements in order that browserify can traverse the module dependency graph.
+I expect this to be done for `0.2.0`.
 
 ## Usage examples
 
@@ -77,7 +102,7 @@ permit-for  = authorize.permit-for
 
 Then we define a `Book` model to be used as a "protected resource" (object).
 
-```
+```LiveScript
 class Book extends Base
   (obj) ->
     super ...
@@ -90,7 +115,7 @@ a-book = book 'some book'
 
 Load Ability class and define convenience helper method
 
-```
+```LiveScript
 Ability     = authorize.Ability
 
 ability = (user) ->
@@ -100,7 +125,7 @@ ability = (user) ->
 
 Then we create a `GuestUser` class and a `guest-user` (subject)
 
-```
+```LiveScript
 class GuestUser extends User
   (obj) ->
     super ...
@@ -112,21 +137,25 @@ user = (name) ->
 
 guest-user = (name) ->
   new GuestUser name
+```
 
-current-user = user 'kris'
+Define some useful variables
 
+```LiveScript
 a-guest-user = guest-user 'unknown'
+
+current-user = a-guest-user
 
 current-ability = ability(current-user)
 ```
 
 Now we need to define a permit that matches for a guest user (role) and 
-defines what actions the subject (guest user) can perform on a Book (subject).  
+defines what actions the subject (guest user) can perform on a Book (object).  
 
-```
+```LiveScript
 guest-permit = permit-for('guest',
-  match: (access) ->
-    @match-role access, 'guest'
+  matches-on: 
+    role: 'guest'
 
   rules:
     read: ->
@@ -194,9 +223,8 @@ We define a permit to use for authorization
 ```
 guestPermit = permitFor('guest', {
   // Determine when the permit applies
-  match: function(access){
-      return this.matches(access).user({
-        role: 'guest'
+  matches-on: {
+    role: 'guest'
   },
   // authorization rules to apply when permit applies
   rules: {
@@ -250,7 +278,7 @@ aBook           = book('some book');
 currentUser     = user('kris');
 currentAbility  = ability(currentUser);
 
-// Finally, here we go :)
+// here we go :)
 
 if (userCan({action: 'read', subject: aBook})) {
   readBook(currentUser, aBook);
@@ -329,7 +357,7 @@ RulesLoader  = authorize.RulesLoader
 editor-permit.rules = new RulesLoader.load('my/rules/editor_rules.json')
 ```
 
-Some xtras to facilitate creating permits from rule files or data stores
+Some extras to facilitate creating permits from rule files or data stores
 
 ```LiveScript
 rules-loader  = new RulesLoader('my/rules/editor_rules.json')

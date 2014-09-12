@@ -1,16 +1,18 @@
 {
   "name": "permit-authorize",
   "main": "permit-authorize.js",
-  "version": "0.1.0",
+  "version": "0.1.9",
   "homepage": "https://github.com/kristianmandrup/permit-authorize",
   "authors": [
     "Kristian Mandrup <kmandrup@gmail.com>"
   ],
   "description": "Authorization using permits",
   "keywords": [
+    "auth",
     "authorize",
     "authorization",
     "permits",
+    "permit",
     "rules",
     "users",
     "roles",

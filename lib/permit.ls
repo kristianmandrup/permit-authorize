@@ -32,8 +32,33 @@ module.exports = class Permit implements Debugger
     PermitRegistry.get name
 
   init: ->
+    @debug 'permit init'
     @apply-rules!
+    @configure-matchers!
     @
+
+  configure-matchers: ->
+    @debug "configure-matchers", @matches-on
+    return unless typeof! @matches-on is 'Object'
+
+    @compiled-list = []
+    @debug "compile..."
+    for key of @matches-on
+      @compile-for key, @matches-on[key]
+    @debug 'compiled matchers:', @compiled-list
+
+  compile-for: (key, list) ->
+    @debug "compile for", key, list
+    fun = @compiled-matcher(key, list)
+    @debug 'fun', fun
+    @compiled-list.push fun
+
+  compiled-matcher: (type, match-list) ->
+    self = @
+    (access-request) ->
+      match-obj = {(type): match-list}
+      self.debug 'compiled fun: match-on', access-request
+      self.match-on access-request, match-obj
 
   clean: ->
     @rule-repo.clean!
@@ -79,35 +104,35 @@ module.exports = class Permit implements Debugger
     new @permit-matcher-class @, access-request, @debugging
 
   # See if this permit should apply (be used) for the given access request
-  # TODO: improve using a declarative approach
-  # matches-on:
-  #   roles: ['editor', 'publisher']
-  #   actions: ['edit', 'write', 'publish']
-
   matches: (access-request) ->
     @debug 'matches', access-request
-    @matcher(access-request).match!
+    permit-matcher = @matcher(access-request)
+    @debug 'permit matcher', permit-matcher
+    permit-matcher.match!
+
+  match-on: (access-request, match-obj) ->
+    @matching(access-request).match-on match-obj
 
   match-user: (access-request, user) ->
-    @matches(access-request).user user
+    @matching(access-request).user user
 
   match-role: (access-request, role) ->
-    @matches(access-request).role role
+    @matching(access-request).role role
 
   match-subject: (access-request, subj) ->
-    @matches(access-request).subject subj
+    @matching(access-request).subject subj
 
   match-subject-clazz: (clazz) ->
-    @matches(access-request).subject-clazz: clazz
+    @matching(access-request).subject-clazz: clazz
 
   match-action: (action) ->
-    @matches(access-request).action action
+    @matching(access-request).action action
 
   match-context: (ctx) ->
     @matches(access-request).context ctx
 
   match-ctx: (ctx) ->
-    @matches(access-request).ctx ctx
+    @matching(access-request).ctx ctx
 
   # Rule Application
   # ----------------

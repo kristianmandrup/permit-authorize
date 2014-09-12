@@ -57,3 +57,25 @@ describe 'AccessMatcher' ->
 
     specify 'should NOT match role: admin and action: write' ->
       access-matchers.complex.match-on(role: 'admin', action: 'write').should.be.false
+
+  context 'using roles:' ->
+    describe 'match' ->
+      before-each ->
+        access-matchers.complex     := access-matcher requests.complex
+
+      specify 'should match admin role' ->
+        access-matchers.complex.role('admin').result!.should.be.true
+
+      specify 'should match admin role' ->
+        access-matchers.complex.roles('admin', 'guest').result!.should.be.true
+
+  context 'using actions:' ->
+    describe 'match' ->
+      before-each ->
+        access-matchers.complex     := access-matcher requests.complex
+
+      specify 'should match admin role' ->
+        access-matchers.complex.action('read').result!.should.be.true
+
+      specify 'should match admin role' ->
+        access-matchers.complex.actions('read', 'write').result!.should.be.true

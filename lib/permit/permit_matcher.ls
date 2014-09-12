@@ -22,11 +22,30 @@ Debugger = requires.lib 'debugger'
 module.exports = class PermitMatcher implements Debugger
   (@permit, @access-request, @debugging) ->
     @intersect = Intersect()
+    @debug-on! if @debugging
     @validate!
 
-  match: ->
+  match: (options = {})->
+    @debug 'permit-matcher match'
     # includes and excludes can contain a partial (object) used to do intersection test on access-request
-    (@include! or @custom-match!) and not (@exclude! or @custom-ex-match!)
+    res = (@include! or @custom-match!) and not (@exclude! or @custom-ex-match!)
+    return res if options.compiled is false
+    @debug 'compiled result:', @match-compiled!
+    mc = @match-compiled!
+    @debug 'mc res', mc
+    res or mc
+
+  match-compiled: ->
+    @debug "match-compiled", @permit.compiled-list
+    return false unless typeof! @permit.compiled-list is 'Array'
+    @debug "compiled matchers: #{@permit.compiled-list.length}"
+    res = false
+    for match-fun in @permit.compiled-list
+      # console.log match-fun(@access-request)
+      res = true if match-fun(@access-request)
+      @debug 'compile fun res', res
+      break if res
+    res
 
   include: ->
     @intersect-on @permit.includes

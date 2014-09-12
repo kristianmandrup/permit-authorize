@@ -83,3 +83,27 @@ describe 'Permit' ->
     specify 'will NOT match request to publish a book' ->
       permits.hello.matches(publish-book-request).should.be.false
 
+    describe 'matches-on' ->
+      context 'roles and actions' ->
+        before ->
+          permits.on-multi = permit-for('on-multi',
+            matches-on:
+              roles: ['editor', 'publisher']
+              actions: ['edit', 'write', 'publish']
+          )
+
+        specify 'match' ->
+          # permits.special.debug-on!
+          permits.on-multi.matches(publish-book-request).should.be.true
+
+      context 'role and action' ->
+        before ->
+          permits.on-single = permit-for('on-single',
+            matches-on:
+              action: 'publish'
+              role: 'publisher'
+          )
+
+        specify 'match' ->
+          # permits.on-single.debug-on!
+          permits.on-single.matches(publish-book-request).should.be.true

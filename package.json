@@ -1,6 +1,6 @@
 {
   "name": "permit-authorize",
-  "version": "0.1.3",
+  "version": "0.1.9",
   "main": "index",
   "repository": {
     "type": "git",
@@ -17,7 +17,8 @@
     "cancan",
     "ability",
     "rules",
-    "access"
+    "access",
+    "security"
   ],
   "dependencies": {
   },

@@ -42,7 +42,7 @@
         return accessMatchers.complex.role('admin').action('read').result().should.be['true'];
       });
     });
-    return describe('match-on', function(){
+    describe('match-on', function(){
       beforeEach(function(){
         return accessMatchers.complex = accessMatcher(requests.complex);
       });
@@ -67,6 +67,32 @@
           role: 'admin',
           action: 'write'
         }).should.be['false'];
+      });
+    });
+    context('using roles:', function(){
+      return describe('match', function(){
+        beforeEach(function(){
+          return accessMatchers.complex = accessMatcher(requests.complex);
+        });
+        specify('should match admin role', function(){
+          return accessMatchers.complex.role('admin').result().should.be['true'];
+        });
+        return specify('should match admin role', function(){
+          return accessMatchers.complex.roles('admin', 'guest').result().should.be['true'];
+        });
+      });
+    });
+    return context('using actions:', function(){
+      return describe('match', function(){
+        beforeEach(function(){
+          return accessMatchers.complex = accessMatcher(requests.complex);
+        });
+        specify('should match admin role', function(){
+          return accessMatchers.complex.action('read').result().should.be['true'];
+        });
+        return specify('should match admin role', function(){
+          return accessMatchers.complex.actions('read', 'write').result().should.be['true'];
+        });
       });
     });
   });

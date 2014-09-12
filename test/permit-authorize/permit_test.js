@@ -89,8 +89,36 @@
       specify('will match request to read a book', function(){
         return permits.hello.matches(readBookRequest).should.be['true'];
       });
-      return specify('will NOT match request to publish a book', function(){
+      specify('will NOT match request to publish a book', function(){
         return permits.hello.matches(publishBookRequest).should.be['false'];
+      });
+      return describe('matches-on', function(){
+        context('roles and actions', function(){
+          before(function(){
+            return permits.onMulti = permitFor('on-multi', {
+              matchesOn: {
+                roles: ['editor', 'publisher'],
+                actions: ['edit', 'write', 'publish']
+              }
+            });
+          });
+          return specify('match', function(){
+            return permits.onMulti.matches(publishBookRequest).should.be['true'];
+          });
+        });
+        return context('role and action', function(){
+          before(function(){
+            return permits.onSingle = permitFor('on-single', {
+              matchesOn: {
+                action: 'publish',
+                role: 'publisher'
+              }
+            });
+          });
+          return specify('match', function(){
+            return permits.onSingle.matches(publishBookRequest).should.be['true'];
+          });
+        });
       });
     });
   });

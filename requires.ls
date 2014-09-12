@@ -1,4 +1,4 @@
-lo = requires.util 'lodash-lite'
+lo = require './lib/util/lodash_lite'
 
 underscore = (str) ->
   str.replace /-/, '_'
@@ -24,6 +24,9 @@ module.exports =
 
   permit: (path) ->
     @lib 'permit', path
+
+  matcher: (path) ->
+    @lib 'matcher', "#{path}_matcher"
 
   access-request: (path) ->
     @lib 'access_request', path
