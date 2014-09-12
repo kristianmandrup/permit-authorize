@@ -10,6 +10,7 @@ module.exports = class AccessRequest implements Debugger, Fingerprints
 
   # constructor
   (@user, @action, @subject, @ctx, @debugging) ->
+    @ar-obj = {user: @user, action: @action, subject: @subject, ctx: @ctx}
     @debug 'create AccessRequest user:', @user, 'action:', @action, 'subject:', @subject, 'ctx:', @ctx
     @validate!
     @normalize!
@@ -26,13 +27,16 @@ module.exports = class AccessRequest implements Debugger, Fingerprints
 
   validate: ->
     unless @valid-action!
+      console.log "ar", @ar-obj
       throw new Error "Missing action name. Must authorize an action to be performed on a subject, was: #{@action}, #{typeof! @action}"
 
     unless @valid-subject!
-      throw new Error "Missing subject. Must authorize a subject to perform an action: #{@action}"
+      console.log "ar", @ar-obj
+      throw new Error "Missing subject. Must authorize a subject: #{@subject} to perform an action: #{@action}"
 
     unless @valid-user!
-      throw new Error "Missing or invalid user. Must authorize a user to perform an action: #{@action} on the subject, was: #{@user} of type: #{typeof! @user}"
+      console.log "ar", @ar-obj
+      throw new Error "Missing or invalid user. Must authorize a user: #{@user} to perform an action: #{@action}"
 
   valid-subject: ->
     @subject?

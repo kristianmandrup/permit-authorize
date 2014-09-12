@@ -47,15 +47,15 @@ describe 'Ability' ->
       specify 'only user and guest permit if guest request' ->
         PermitFilter.filter(requests.guest).should.eql [permits.user, permits.guest]
 
-    context 'kris-ability' ->
+    context.skip 'kris-ability' ->
       # change to match all?
       specify 'empty request matches no permits' ->
         ability.kris.permits(requests.empty).should.eql []
 
-      specify 'admin user request matchies user and admin permits' ->
+      specify 'admin user request matches user and admin permits' ->
         ability.kris.permits(requests.admin).should.eql [permits.user, permits.admin]
 
-      specify 'guest user request matchies user and guest permits' ->
+      specify 'guest user request matches user and guest permits' ->
         ability.kris.permits(requests.guest).should.eql [permits.user, permits.guest]
 
     context 'guest-ability' ->

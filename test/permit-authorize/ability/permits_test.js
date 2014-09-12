@@ -43,14 +43,14 @@
           return PermitFilter.filter(requests.guest).should.eql([permits.user, permits.guest]);
         });
       });
-      context('kris-ability', function(){
+      context.skip('kris-ability', function(){
         specify('empty request matches no permits', function(){
           return ability.kris.permits(requests.empty).should.eql([]);
         });
-        specify('admin user request matchies user and admin permits', function(){
+        specify('admin user request matches user and admin permits', function(){
           return ability.kris.permits(requests.admin).should.eql([permits.user, permits.admin]);
         });
-        return specify('guest user request matchies user and guest permits', function(){
+        return specify('guest user request matches user and guest permits', function(){
           return ability.kris.permits(requests.guest).should.eql([permits.user, permits.guest]);
         });
       });
