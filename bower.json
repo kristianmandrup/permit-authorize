@@ -1,6 +1,6 @@
 {
   "name": "permit-authorize",
-  "main": "permit-authorize.min.js",
+  "main": "permit-authorize.js",
   "version": "0.6.0",
   "homepage": "https://github.com/kristianmandrup/permit-authorize",
   "authors": [
