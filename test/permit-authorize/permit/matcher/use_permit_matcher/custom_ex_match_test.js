@@ -3,7 +3,7 @@
   var requires, setup, Book, User, Permit, permitFor, PermitMatcher, PermitRegistry, createUser, createRequest, createPermit;
   requires = require('../../../requires');
   requires.test('test_setup');
-  setup = require('./permits').setup;
+  setup = require('./../permits').setup;
   Book = requires.fix('user');
   User = requires.fix('book');
   Permit = requires.lib('permit');

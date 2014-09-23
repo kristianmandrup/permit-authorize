@@ -9,7 +9,7 @@
   permitFor = requires.permit('permit-for');
   PermitMatcher = requires.permit('permit_matcher');
   PermitRegistry = requires.permit('permit-registry');
-  setup = require('./permits').setup;
+  setup = require('./../permits').setup;
   createUser = requires.fac('create-user');
   createRequest = requires.fac('create-request');
   createPermit = requires.fac('create-permit');
@@ -21,41 +21,38 @@
     matching = {};
     noneMatching = {};
     before(function(){
-      users.kris = createUser.kris();
-      users.emily = createUser.emily();
+      users.kris = createUser.kris;
       requests.user = {
         user: users.kris
       };
       permits.user = setup.userPermit();
       return permitMatcher = new PermitMatcher(permits.user, requests.user);
     });
-    return describe('exclude', function(){
-      describe('excludes user.name: kris', function(){
+    return describe('include', function(){
+      describe('includes user.name: kris', function(){
         before(function(){
-          return permits.user.excludes = {
+          return permits.user.includes = {
             user: users.kris
           };
         });
-        return specify('matches access-request on excludes intersect', function(){
-          return permitMatcher.exclude().should.be['true'];
+        return specify('matches access-request on includes intersect', function(){
+          return permitMatcher.include().should.be['true'];
         });
       });
-      describe('excludes empty {}', function(){
+      describe('includes empty {}', function(){
         before(function(){
-          return permits.user.excludes = {};
+          return permits.user.includes = {};
         });
-        return specify('matches access-request since empty excludes always intersect', function(){
-          return permitMatcher.exclude().should.be['true'];
+        return specify('matches access-request since empty includes always intersect', function(){
+          return permitMatcher.include().should.be['true'];
         });
       });
-      return describe('excludes other user', function(){
+      return describe('includes is nil', function(){
         before(function(){
-          return permits.user.excludes = {
-            user: users.emily
-          };
+          return permits.user.includes = void 8;
         });
-        return specify('does NOT match access-request since NO excludes intersect', function(){
-          return permitMatcher.exclude().should.be['false'];
+        return specify('does NOT match access-request since NO includes intersect', function(){
+          return permitMatcher.include().should.be['false'];
         });
       });
     });

@@ -9,7 +9,6 @@
     var paths, flatPath;
     paths = slice$.call(arguments);
     flatPath = flatten(['.', paths]);
-    console.log(flatPath);
     return underscore(flatPath.join('/'));
   };
   testPath = function(){

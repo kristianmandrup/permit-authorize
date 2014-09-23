@@ -5,7 +5,6 @@ underscore = (str) ->
 
 file-path = (...paths) ->
   flat-path = flatten ['.', paths]
-  console.log flat-path
   underscore(flat-path .join '/')
 
 test-path = (...paths) ->
