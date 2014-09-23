@@ -1,9 +1,9 @@
-requires  = require '../../requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
 obj           = requires.util 'obj_util'
-Debugger      = requires.lib 'debugger'
+Debugger      = requires.util 'debugger'
 
 class TestDebug implements Debugger
   ->

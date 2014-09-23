@@ -1,7 +1,7 @@
 flatten = require './lib/util/array_util' .flatten
 
 underscore = (str) ->
-  str.replace /-/, '_'
+  str.replace /-/, '_' .replace ',', '/'
 
 file-path = (...paths) ->
   flat-path = flatten ['.', paths]

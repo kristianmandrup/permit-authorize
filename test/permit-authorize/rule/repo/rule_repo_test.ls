@@ -1,11 +1,11 @@
-requires  = require '../../requires'
+requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
 User        = requires.fix 'user'
 Book        = requires.fix 'book'
 
-RuleRepo    = requires.rule 'rule_repo'
+RuleRepo    = requires.rule 'repo/rule_repo'
 
 describe 'Rule Repository (RuleRepo)' ->
   var access-request, rule, rule-repo

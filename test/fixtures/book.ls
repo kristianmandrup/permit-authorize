@@ -1,7 +1,5 @@
-lo = requires.util 'lodash-lite'
-
 module.exports = class Book
   (@obj) ->
     if typeof! @obj is 'Object'
-      for key in Object.keys @obj
+      for key of @obj
         @[key] = @obj[key]

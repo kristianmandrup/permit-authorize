@@ -5,7 +5,7 @@
   requires.test('test_setup');
   User = requires.fix('user');
   Book = requires.fix('book');
-  RuleRepo = requires.rule('rule_repo');
+  RuleRepo = requires.rule('repo/rule_repo');
   describe('Rule Repository (RuleRepo)', function(){
     var accessRequest, rule, ruleRepo, book, can, cannot;
     context('basic repo', function(){

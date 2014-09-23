@@ -1,7 +1,7 @@
 module.exports =
-  array:      require './array_util'
-  object:     require './obj_util'
-  string:     require './string_util'
+  array:      require './array'
+  object:     require './object'
+  string:     require './string'
   normalize:  require './normalize'
 
   Intersect:  require './intersect'

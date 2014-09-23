@@ -4,14 +4,18 @@
 # Then you can match an access-request (action, subject)
 # Simple!
 util      = require '../../util'
-arr       = util.array
-obj       = util.object
+array     = util.array
+contains  = array.contains
+unique    = array.unique
+
+object    = util.object
+
 Debugger  = util.Debugger
 
 camel-case  = util.string.camel-case
 normalize   = util.normalize
 
-class RuleRepo implements Debugger
+module.exports = class RuleRepo implements Debugger
   (@name) ->
 
   can-rules: {}
@@ -54,13 +58,11 @@ class RuleRepo implements Debugger
 
   find-matching-subject: (subjects, subject) ->
     # first try wild-card 'any' or '*'
-    return true if arr.find @wildcards, (wildcard) ->
-      subjects.index-of(wildcard) != -1
+    return true if contains @wildcards, subject
 
     if typeof! subject is 'Array'
       self = @
-      return arr.find subject, (subj) ->
-        self.find-matching-subject subjects, subj
+      return contains subjects, subject
 
     unless typeof! subject is 'String'
       throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
@@ -122,7 +124,7 @@ class RuleRepo implements Debugger
       val = camel-case subject
       if val is 'Any' then '*' else val
 
-    unique-subjects = arr.unique rule-subjects
+    unique-subjects = unique rule-subjects
 
     action-subjects = rule-container[action]
 
@@ -139,7 +141,7 @@ class RuleRepo implements Debugger
 
   register-action-subjects: (action-container, subjects) ->
     # console.log "action-container", action-container, subjects
-    arr.unique action-container.concat(subjects)
+    unique action-container.concat(subjects)
 
   container-for: (act) ->
     act = act.to-lower-case!
@@ -159,6 +161,4 @@ class RuleRepo implements Debugger
       # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
       @add-rule rule-container, action, subjects
 
-obj.extend RuleRepo, Debugger
-
-module.exports = RuleRepo
+RuleRepo <<< Debugger
