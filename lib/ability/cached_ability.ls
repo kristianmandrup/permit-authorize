@@ -1,8 +1,9 @@
-Ability       = require '../ability'
-fingerprints  = require '../access_request/fingerprints'
+Ability       = require './ability'
+fingerprints  = require '../access_request' .fingerprint.fingerprints
+Debugger      = require '../util' .Debugger
 
 # Always one Ability per User
-module.exports = class CachedAbility extends Ability
+class CachedAbility extends Ability
   (@user) ->
     super ...
     @user-key!
@@ -53,3 +54,7 @@ module.exports = class CachedAbility extends Ability
 
   cannot-cache: ->
     @@cannot-cache![@user-key] || {}
+
+CachedAbility <<< Debugger
+
+module.exports = CachedAbility

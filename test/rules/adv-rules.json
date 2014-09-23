@@ -1,0 +1,16 @@
+{
+    "matches": {
+        "roles": ["admin"],
+        "subjects": ["Book", "Paper"]
+    },
+    "rules": {
+        "subject": {
+            "editor": {
+                "can": {
+                    "edit": "book",
+                    "publish": "paper"
+                }
+            }
+        }
+    }
+}

@@ -1,5 +1,6 @@
 requires = require '../../../requires'
-lo = requires.util 'lodash-lite'
+
+obj = requires.util 'obj_util'
 
 create-user     = requires.fac 'create-permit'
 create-request  = requires.fac 'create-request'
@@ -25,4 +26,4 @@ module.exports =
       ctx:
         auth: true
 
-    kris-admin   : lo.merge {}, @admin, @kris
+    kris-admin   : ({} <<< @admin) <<< @kris

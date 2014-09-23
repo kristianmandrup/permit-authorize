@@ -5,5 +5,5 @@ module.exports = class User
     @set user
 
   set: (user)->
-    for key in lo.keys user
+    for key in Object.keys user
       @[key] = user[key]

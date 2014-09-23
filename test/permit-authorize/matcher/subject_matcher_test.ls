@@ -2,7 +2,7 @@ requires        = require '../../../requires'
 
 requires.test 'test_setup'
 Book            = requires.fix 'book'
-matchers        = requires.lib 'matchers'
+matchers        = requires.lib 'access_request/matchers'
 
 SubjectMatcher  = matchers.SubjectMatcher
 

@@ -3,10 +3,10 @@ requires  = require '../../requires'
 expect = require 'expect.js'
 requires.test 'test_setup'
 
-authorize = require '../../index'
+authorize = require '../../lib/index'
 
-Ability = authorize.Ability
-PermitRulesLoader  = authorize.RulesLoader
+Ability = authorize.ability.Ability
+PermitRulesLoader  = authorize.permit.rule.loader.RulesFileLoader
 
 class User
   (@name) ->
@@ -28,6 +28,9 @@ current-user = user 'kris'
 
 # if ability(current-user).allowed-for action: 'read', subject: a-book
 
+cb = (rules) ->
+  console.log rules
+
 describe 'index' ->
   describe 'Ability' ->
     var my-user
@@ -39,4 +42,4 @@ describe 'index' ->
 
   describe 'PermitRulesLoader' ->
     specify 'is class' ->
-      expect(new PermitRulesLoader('xyz').file-path).to.eql 'xyz'
+      expect(new PermitRulesLoader('xyz', cb).file-path).to.eql 'xyz'

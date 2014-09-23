@@ -35,90 +35,116 @@ A *subject* (fx a user) can perform an *action* on a given *object* if the subje
 ## Code
 
 The code has been developed in [LiveScript](http://livescript.net/) which is very similar too [Coffee script](http://coffeescript.org/).
+
 See [coffee-to-ls](http://livescript.net/#coffee-to-ls)
 
 ## Installation
 
-The main file is `index.js` which exposes the following:
+### Bower
 
-```
-Authorizer :   requires.lib 'authorizer'
-Ability :      requires.lib 'ability'
-Allower :      requires.lib 'allower'
-Permit :       requires.lib 'permit'
-permit-for:    requires.permit 'permit-for'
-```
-
-To use this library...
-
-```javascript
-authorize = require('permit-authorize');
-```
-
-Then require what you need as demonstrated in the usage examples below.
-
-```javascript
-Permit      = authorize.Permit;
-permit-for  = authorize.permit-for;
-```
-
-`permit-for` is a factory method to create permits. The other keys all point to constructor functions in the form of LiveScript "classes".
-
-## Non CommonJS (Node) usage
-
-To use this library outside a CommonJS environment (using `require` for module loading), you can generate
- a single file that contains all the library code concatenated. 
-
-Try [browserify](http://browserify.org)
-
-`browserify index.js -o permit-authorize.js`
-
-To uglify and minimize...
-
-`uglifyjs permit-authorize.js -cm > permit-authorize.min.js`
-
-Standalone files available: 
+Standalone files available in `/dist` folder: 
 
 - `permit-authorize.js` 
-- `permit-authorize.ugly.js`
 - `permit-authorize.min.js`
+- `es6/permit-authorize.js`
 
- Using `bower install` will install `permit-authorize.min.js` in the 
-bower components folder of your app (default: `bower_components`).
-
-## Usage with bower
-
-Latest release: *0.6.0*
-
-See http://stackoverflow.com/questions/19456091/bower-register-new-version
+Using `bower install` will install all these files in the *bower components* folder of your app (default: `bower_components`).
 
 `bower info permit-authorize`
-
 `bower install permit-authorize --save`
+
+The main file is `index.js` which exposes the following keys:
+
+```coffeescript
+  Authorizer
+  Ability
+  Allower
+  Permit
+  AccessRequest
+  RuleApplier
+  RuleRepo
+  RulesLoader
+  DbRulesLoader
+  permitFor
+  fingerprint
+```
+
+This should allow you great flexibility to override/customize any functionality you need by "monkey patching", ie. change whatever functions or classes to your liking (if need be).
 
 ## Usage examples
 
-The following is a complete example, using LiveScript syntax for a clearer picture.
+### index.html
 
-First we require the basic modules
+Loads global variable `permitAuthorize` object with all the exposed keys outlined above (see `index.js`)
 
-```LiveScript
-authorize   = require 'permit-authorize'
-Permit      = authorize.Permit
-permit-for  = authorize.permit-for
+```html
+<script src="/bower_components/permit-authorize/dist/permit-authorize.js"></script>
 ```
 
-Then we define a `Book` model to be used as a "protected resource" (object).
+### Node.js
+
+Simply use `require`
+
+```javascript
+var authorize   = require('permit-authorize');
+
+// define local "shorthand" vars
+var Ability       = authorize.Ability;
+var RulesLoader   = authorize.RulesLoader;
+var permitFor     = authorize.permitFor;
+```
+
+### ES6 modules 
+
+For an Ember CLI app:
+
+AMD module imported into app as `'permit-authorize'`.
+
+```Brocile
+app.import('/bower_components/permit-authorize/dist/permit-authorize.js', {
+  'permit-authorize': [
+    'permit-for',
+    'Ability',
+    'RulesLoader',
+    'Authorizer'
+  ]
+})
+```
+
+Alternatively directly import `permit-authorize` as an ES6 module from the `/dist/es6` folder.
+
+```Brocile
+app.import('/bower_components/permit-authorize/dist/es6/permit-authorize.js')
+```
+
+Now import the modules you need in each of your local app module ;)
+
+```javascript
+import { Ability, permitFor } from 'permit-authorize';
+```
+
+`Ability` is a useful wrapper for a `User` object, such as `currentUser` which is sent along with the `AccessRequest`object to the `Allower` to be resolved. `permitFor` is a factory method to create permits that hold permission rules. 
+`RulesLoader` can be used to load rules into a permit from a JSON source, such as a JSON file.
+
+## Full usage example (LiveScript)
+
+Note: LiveScript is very similar to coffeescript. One extra feature is that it turns dashed names into camelCase
+
+`permit-for` => (resolved to) `permitFor`
+
+First we define a `Book` model to be used as a "protected resource" (object).
 
 ```LiveScript
 class Book extends Base
   (obj) ->
     super ...
 
+# helper facotory method
 book = (title) ->
   new Book title
 
-a-book = book 'some book'
+# create scifiBook
+scifi-book = book 'A journey to Mars'
 ```
 
 Load Ability class and define convenience helper method
@@ -126,12 +152,14 @@ Load Ability class and define convenience helper method
 ```LiveScript
 Ability     = authorize.Ability
 
+# factory method
 ability = (user) ->
   new Ability user
 ```
 
 
-Then we create a `GuestUser` class and a `guest-user` (subject)
+Then we create a `GuestUser` class and a `guest-user` (subject). 
+We assume here that we already have a `User` class.
 
 ```LiveScript
 class GuestUser extends User
@@ -140,20 +168,26 @@ class GuestUser extends User
 
   role: 'guest'
 
+# user factory method
 user = (name) ->
   new User name
 
+# guestUser factory method
 guest-user = (name) ->
   new GuestUser name
 ```
 
-Define some useful variables
+Define some users
 
 ```LiveScript
 a-guest-user = guest-user 'unknown'
 
 current-user = a-guest-user
+```
 
+wrap the current user in an ability
+
+```LiveScript
 current-ability = ability(current-user)
 ```
 
@@ -177,153 +211,82 @@ guest-permit = permit-for('guest',
 
 Define helper method `user-can`
 
-```
+```LiveScript
 user-can = (access-request) ->
   current-ability.can access-request
 ```
 
 And use it like this
 
-```
+```LiveScript
 if user-can action: 'read', subject: a-book
   # code to read the book
 ```
 
-The same example in Javascript (see *usage-examples* folder):
+### Permit Container
 
-First we include the main authorize modules to be used
+All permits are registered in the same PermitRegistry singleton. When filtering, which permits should be taken into account,
+ the default implementation is to iterate through the whole registry.
+However for many use cases, it makes sense to group permits in categories, f.ex by environment (dev, test, prod) or by domain 
+(guest, user, admin) etc. To enable this, you can add a permit to a specific PermitContainer, then set one container as active.
+ 
+Example:
+ 
+```LiveScript
+permit-container = (name, desc)
+    new PermitContainer(name, desc)
 
-```javascript
+containers = 
+    dev: permit-container 'dev', 'permits for development only'
+    prod: permit-container 'prod', 'permits for production' 
 
-var lo, authorize, Permit, permitFor, Ability,
-    Book, book,
-    GuestUser, guestUser,
-    GuestPermit, guestPermit,
-    user, ability, aBook, currentUser, currentAbility,
-    userCan, readBook;
+containers.prod.activate!
 
-authorize = require('permit-authorize');
+admin-permit = permit-for 'admin user', ->
+    ...
+    
+# add this permit to dev container (will be ignored, since this container is not active)
+containers.dev.add admin-permit
 
-Ability = authorize.Ability;
-Permit = authorize.Permit;
-permitFor = authorize.permitFor;
+# add this permit to prod container (will be used, since this container is active)
+containers.prod.add prod-admin-permit
+
+# you can active/deactivate containers as you like
+containers.prod.deactivate!
+containers.dev.activate!
+containers.test.activate!
+containers.admin.activate!
 ```
-
-Then we set up some user models:
-
-```
-User = require(./models/user');
-
-GuestUser = function(properties){
-  // User prototypical inheritance?
-  // guest user constructor code...
-}
-// all guest users have a role of guest
-GuestUser.prototype.role = 'guest';
-
-guestUser = new GuestUser({
-  name: 'a guest'
-});
-```
-
-We define a permit to use for authorization
-
-```
-guestPermit = permitFor('guest', {
-  // Determine when the permit applies
-  matches-on: {
-    role: 'guest'
-  },
-  // authorization rules to apply when permit applies
-  rules: {
-    // action rules (dynamic)
-    read: function(){
-      return this.ucan('read', 'Book');
-    },
-    write: function(){
-      return this.ucan('write', 'Book');
-    },
-    // default rule always applies for any user, action, subject or context
-    // static rules
-    'default': function(){
-      return this.ucan('read', 'any');
-    }
-  }
-});
-
-// utility functions and constructors...
-user = function(name){
-  return new User(name);
-};
-
-Book = function(properties){
-  // book constructor code...
-}
-
-book = function(title){
-  return new Book(title);
-};
-
-ability = function(user){
-  return new Ability(user);
-};
-
-userCan = function(accessRequest){
-  return currentAbility.can(accessRequest);
-};
-
-userCannot = function(accessRequest){
-  return currentAbility.cannot(accessRequest);
-};
+ 
 
 
-readBook = function(user, book){
-  // code for user to read the book
-};
-
-
-aBook           = book('some book');
-currentUser     = user('kris');
-currentAbility  = ability(currentUser);
-
-// here we go :)
-
-if (userCan({action: 'read', subject: aBook})) {
-  readBook(currentUser, aBook);
-}
-
-// or using implicit hash in the implied order: action, subject, context
-
-if (userCannot('read', 'Book')) {
-  throw new Error("Stupid illiterate user!");
-}
-```
-
-## Current status
-
-All tests are passing :)
+### Debugging
 
 To facilitate testing, each class implements `Debugger` which allows using `debug-on!` on the class or instance level to track
  what goes on inside.
+
+### Testing
 
 Use `xdescribe`, `describe.skip` and `describe.only` to select which tests to execute.
 
 ### Caching
 
-A caching strategy has been implemented as `CachedAbility`.
+A caching strategy for Ability has been implemented as `CachedAbility`.
 
 When using a `CachedAbility`, a cached authorization result for an `AccessRequest` will be retrieved
 from the cache and returned if present. If not found, a result will be generated and cached.
-The caching solution uses a fingerprint of the `AccessRequest` to determine the cache key.
+The caching solution uses a *fingerprint* of the `AccessRequest` to determine the cache key.
+The fingerprinting can be customized...
 
 *Fingerprinting*
 
-For each of the elements making up the `AccessRequest` to get the "fingerprint":
+The incoming `AccessRequest` is an object with keys and values.
+For each of the values making up the `AccessRequest`, to create the *fingerprint*:
 - Object: `hash` function is attempted called defaulting to JSON stringify if not present.
 - String: value is fingerprint
-- Array: values combined with '.'
+- Array: fingeprints of all items concatenated with '.'
 
-Each of these fingerprints are concatenated into one fingerprint to be used as the cache key.
+Each of these fingerprints are concatenated into one fingerprint to be used as the full cache key.
 If an `AccessRequest` with the same fingerprint (hash) is evaluated again later, the cached authorization result is fetched
 immediately for much better performance!
 
@@ -403,24 +366,6 @@ DbRulesLoader  = authorize.DbRulesLoader
 rules = DbRulesLoader.load-db('http://my/connect/url:12345', {user: 'myname', password: 'secret'})
 ```
 
-## Design
-
-*Why LiveScript?*
-
-Since it is faster/easier to develop the basic functionality. Should be easy later refactor the code to use another approach.
-
-*Why classes and not prototypical inheritance?*
-
-See reasoning for Livescript. Was simply easier/faster to implement using classes.
-
-Feel free to fork this project and provide a version without classes if that is a MUST for you...
-
-## TODO
-
-- *rule-applier* needs more tests...
-- refactor *rule-applier* and some other core modules that have functions of more than 3 lines!
-- optimize for speed! I think the engine could be at least twice as fast with some optimizations... (mostly: caching and lazy loads)
-
 ## Testing
 
 Run `mocha` on all files in test folder
@@ -451,9 +396,57 @@ open coverage/lcov-report/index.html
 
  `$ istanbul cover _mocha test/authorize-mw/permit_test.js`
 
+## Design
+
+*Why LiveScript?*
+
+Since it is faster/easier to develop the basic functionality. Should be easy later refactor the code to use another approach.
+
+*Why classes and not prototypical inheritance?*
+
+See reasoning for Livescript. Was simply easier/faster to implement using classes.
+
+## Roadmap towards 1.0
+
+- RuleApplier* needs more tests...
+- refactor *RuleApplier* and some other core modules for more granularity and better testing
+- optimize for speed!
+
 ## Contribution
 
 Please help improve this project, suggest improvements, add better tests etc. ;)
+
+### Utility functions + dependencies
+
+Currently dependencies to a few lodash functions
+
+[lodash custom builds](http://lodash.com/custom-builds)
+
+```bash
+$ npm install -g lodash-cli
+$ lodash include=extend,filter,find,map,unique
+```
+
+### Browserify
+
+[browserify](http://browserify.org)
+
+Exposes a single global variable `permitAuthorize`
+
+`browserify index.js --s permitAuthorize > permit-authorize.js`
+
+To uglify (minimize)
+
+`uglifyjs permit-authorize.js -cm > permit-authorize.min.js`
+
+For convenience, simply run the `browserify-all.sh` shell script in the project root.
+
+## ES6 compatible modules
+
+Experimental `e6ify.js` now included:
+
+- http://thlorenz.github.io/es6ify/
+- https://github.com/thlorenz/es6ify/blob/master/example/build.js
 
 ## Licence
 

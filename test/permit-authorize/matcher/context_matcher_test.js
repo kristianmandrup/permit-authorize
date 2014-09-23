@@ -4,7 +4,7 @@
   requires = require('../../../requires');
   requires.test('test_setup');
   ability = require('../ability/abilities');
-  matchers = requires.lib('matchers');
+  matchers = requires.lib('access_request/matchers');
   ContextMatcher = matchers.ContextMatcher;
   describe('ContextMatcher', function(){
     var ctxMatcher, areaCtx, requests;

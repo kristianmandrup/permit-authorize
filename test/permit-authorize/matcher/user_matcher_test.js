@@ -4,7 +4,7 @@
   requires = require('../../../requires');
   requires.test('test_setup');
   User = requires.fix('user');
-  matchers = requires.lib('matchers');
+  matchers = requires.lib('access_request/matchers');
   UserMatcher = matchers.UserMatcher;
   describe('UserMatcher', function(){
     var userMatcher, users, requests;

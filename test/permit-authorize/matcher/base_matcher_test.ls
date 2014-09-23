@@ -1,9 +1,9 @@
 requires        = require '../../../requires'
 
 requires.test 'test_setup'
-ability       = require '../ability/abilities'
-matchers      = requires.lib 'matchers'
-BaseMatcher   = matchers.BaseMatcher
+ability         = require '../ability/abilities'
+matchers        = requires.lib 'access_request/matchers'
+BaseMatcher     = matchers.BaseMatcher
 
 describe 'BaseMatcher' ->
   var matcher

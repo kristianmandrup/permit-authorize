@@ -1,10 +1,12 @@
-lo = require './lib/util/lodash_lite'
+flatten = require './lib/util/array_util' .flatten
 
 underscore = (str) ->
   str.replace /-/, '_'
 
 file-path = (...paths) ->
-  underscore(lo.flatten ['.', paths] .join '/')
+  flat-path = flatten ['.', paths]
+  console.log flat-path
+  underscore(flat-path .join '/')
 
 test-path = (...paths) ->
   file-path 'test', ...paths

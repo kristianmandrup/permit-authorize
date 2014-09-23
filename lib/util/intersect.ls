@@ -1,5 +1,3 @@
-lo = require './lodash_lite'
-
 module.exports = ->
   count-props = (obj) ->
     count = 0

@@ -2,7 +2,7 @@ requires  = require '../../requires'
 
 requires.test 'test_setup'
 
-lo            = requires.util 'lodash-lite'
+obj           = requires.util 'obj_util'
 Debugger      = requires.lib 'debugger'
 
 class TestDebug implements Debugger
@@ -16,7 +16,7 @@ class TestDebug implements Debugger
     @debug "inst-meth", "called"
 
 # extend TestDebug class methods with Debugger
-lo.extend TestDebug, Debugger
+obj.extend TestDebug, Debugger
 
 describe 'Debugger' ->
   describe 'class level' ->
