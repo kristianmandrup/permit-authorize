@@ -1,20 +1,15 @@
 Debugger  = require '../../util' .Debugger
-Intersect = require '../../util' .intersect
+Intersect = require '../../util' .Intersect
 
 module.exports = class BaseMatcher implements Debugger
-  (access-request) ->
-    @set-access-request access-request
-    @set-intersect!
+  (@access-request = {}) ->
+    @intersect ||= Intersect()
 
+  # by default a permit doesn't match an access-request
   match: (value) ->
     false
 
   death-match: (name, value) ->
-    return true if @[name] and value is void
-    false
+    @[name] and value is void
 
-  set-access-request: (access-request) ->
-    @access-request = if access-request then access-request else {}
 
-  set-intersect: ->
-    @intersect ||= Intersect()

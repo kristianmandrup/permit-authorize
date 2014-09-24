@@ -1,10 +1,11 @@
-requires        = require '../../../requires'
+requires        = require '../../../../requires'
 
 requires.test 'test_setup'
-Book            = requires.fix 'book'
-matchers        = requires.lib 'access_request/matchers'
 
-SubjectMatcher  = matchers.SubjectMatcher
+Matcher   = requires.lib 'access_request' .matcher.SubjectMatcher
+
+matcher = (req) ->
+  new Matcher req
 
 describe 'SubjectMatcher' ->
   var subject-matcher  
@@ -18,14 +19,14 @@ describe 'SubjectMatcher' ->
 
   describe 'create' ->
     before-each ->
-      subject-matcher  := new SubjectMatcher  requests.book
+      subject-matcher  := matcher requests.book
 
     specify 'must have admin access request' ->
       subject-matcher.access-request.should.eql  requests.book
 
   describe 'match' ->
     before-each ->
-      subject-matcher  := new SubjectMatcher  requests.book
+      subject-matcher  := matcher requests.book
 
     specify 'should match book: the return of the jedi' ->
       subject-matcher.match(title: book.title).should.be.true

@@ -1,7 +1,7 @@
 requires  = require '../../requires'
 
 Permit        = requires.lib 'permit'
-permit-for    = requires.permit 'permit-for'
+permit-for    = requires.permit 'factory' .permit-for
 
 permit-class  = requires.fix  'permit-class'
 

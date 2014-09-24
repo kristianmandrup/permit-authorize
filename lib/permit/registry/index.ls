@@ -1,2 +1,2 @@
 module.exports =
-  PermitRegistry: require './permit_registry'
+  PermitRegistry : require './permit_registry'

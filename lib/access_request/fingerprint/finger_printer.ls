@@ -1,12 +1,15 @@
 ObjectFingerprint = require './object_fingerprint'
 ArrayFingerprint  = require './array_fingerprint'
-join = require '../../util' .array.join
+util = require '../../util'
+join = util.array.join
+
+md5  = require '../util' .md5
 
 module.exports = class FingerPrinter
   (@ar) ->
 
   fingerprint: ->
-    @access-hash!
+    @_fingerprint ||= md5 @access-hash!
 
   access-hash: ->
     @_access-hash ||= [@action-hash!, @subject-hash!, @ctx-hash!].join ':'

@@ -3,7 +3,7 @@
   var requires, Permit, permitFor, permitClass, GuestPermit;
   requires = require('../../requires');
   Permit = requires.lib('permit');
-  permitFor = requires.permit('permit-for');
+  permitFor = requires.permit('factory').permitFor;
   permitClass = requires.fix('permit-class');
   GuestPermit = permitClass.GuestPermit;
   module.exports = {

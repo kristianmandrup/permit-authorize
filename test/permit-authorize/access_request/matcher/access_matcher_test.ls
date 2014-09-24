@@ -3,18 +3,16 @@ requires  = require '../../requires'
 requires.test 'test_setup'
 
 Book          = requires.fix 'book'
-matchers      = requires.lib 'access_request/matchers'
+Matcher   = requires.lib 'access_request' .matcher.AccessMatcher
 
-AccessMatcher = matchers.AccessMatcher
+matcher = (req) ->
+  new Matcher req
 
 describe 'AccessMatcher' ->
   var book
 
   access-matchers = {}
   requests        = {}
-
-  access-matcher = (request) ->
-    new AccessMatcher request
 
   before ->
     book := new Book 'a book'
@@ -28,8 +26,8 @@ describe 'AccessMatcher' ->
       action: 'read'
       subject: book
 
-    access-matchers.complex     := access-matcher requests.complex
-    access-matchers.userless    := access-matcher requests.userless
+    access-matchers.complex     := matcher requests.complex
+    access-matchers.userless    := matcher requests.userless
 
   describe 'create' ->
     specify 'must have complex access request' ->
@@ -37,14 +35,14 @@ describe 'AccessMatcher' ->
 
   describe 'chaining' ->
     before-each ->
-      access-matchers.complex     := access-matcher requests.complex
+      access-matchers.complex     := matcher requests.complex
 
     specify 'should match chaining: role(admin).action(read)' ->
       access-matchers.complex.role('admin').action('read').result!.should.be.true
 
   describe 'match-on' ->
     before-each ->
-      access-matchers.complex     := access-matcher requests.complex
+      access-matchers.complex     := matcher requests.complex
 
     specify 'should match action: read' ->
       access-matchers.complex.match-on(action: 'read').should.be.true
@@ -61,7 +59,7 @@ describe 'AccessMatcher' ->
   context 'using roles:' ->
     describe 'match' ->
       before-each ->
-        access-matchers.complex     := access-matcher requests.complex
+        access-matchers.complex     := matcher requests.complex
 
       specify 'should match admin role' ->
         access-matchers.complex.role('admin').result!.should.be.true
@@ -72,7 +70,7 @@ describe 'AccessMatcher' ->
   context 'using actions:' ->
     describe 'match' ->
       before-each ->
-        access-matchers.complex     := access-matcher requests.complex
+        access-matchers.complex     := matcher requests.complex
 
       specify 'should match admin role' ->
         access-matchers.complex.action('read').result!.should.be.true

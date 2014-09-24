@@ -2,7 +2,7 @@
 (function(){
   var requires, Permit, AdminPermit, GuestPermit;
   requires = require('../../requires');
-  Permit = requires.lib('permit');
+  Permit = requires.lib('permit').Permit;
   module.exports = {
     AdminPermit: AdminPermit = (function(superclass){
       var prototype = extend$((import$(AdminPermit, superclass).displayName = 'AdminPermit', AdminPermit), superclass).prototype, constructor = AdminPermit;

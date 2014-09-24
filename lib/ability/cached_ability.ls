@@ -1,5 +1,5 @@
 Ability       = require './ability'
-fingerprints  = require '../access_request' .fingerprint.fingerprints
+FingerPrinter = require '../access_request' .fingerprint.FingerPrinter
 Debugger      = require '../util' .Debugger
 
 # Always one Ability per User
@@ -18,7 +18,8 @@ class CachedAbility extends Ability
   @cannot-cache = ->
     @_cannot-cache ||= {}
 
-  user-hash: fingerprints.user-hash
+  user-hash: ->
+    new FingerPrinter(user).user-hash!
 
   user-key: ->
     @user-key = @user-hash!
@@ -30,7 +31,7 @@ class CachedAbility extends Ability
     @auth-result!
 
   acc-req-key: ->
-    @access-request!.access-hash!
+    @access-request!.fingerprint!
 
   has-cached-result: ->
     @cached-result! isnt void

@@ -16,7 +16,7 @@ module.exports =
 
   # uses cache via fingerprinting of accessRequest
   matching: (accessRequest) ->
-    fingerprint = accessRequest.access-hash!
+    fingerprint = accessRequest.fingerprint!
     unless @cached_matchers[fingerprint]
       @cached_matchers[fingerprint] = new AccessMatcher accessRequest
     @cached_matchers[fingerprint]

@@ -1,10 +1,9 @@
 Debugger        = require '../util/debugger'
 
 /*
-PermitRegistry  = require './registry'  .permit_registry
-PermitAllower   = require '../allower'  .PermitAllower
-RuleApplier     = require './rule'      .RuleApplier
-RuleRepo        = require './rule'      .RuleRepo
+
+
+
 
 matchers        = require '../access_request' .matcher
 
@@ -16,22 +15,35 @@ AccessMatcher   = matchers.AccessMatcher
 
 PermitMatch     = require './permit_match_mixin'
 PermitAllow     = require './permit_allow_mixin'
-PermitRuleApply = require './permit_rule_apply_mixin'
+
 PermitCompileStatic = require './permit_compile_static'
 */
+var RuleRepo, RuleApplier, PermitRegistry, UsePermitMatcher, PermitAllower
 
-class Permit implements Debugger
+module.exports = class Permit implements Debugger
   # Registers a permit in the PermitRegistry by name
   # @name - String
   # @description -String
 
   (@name, @description = '', @debugging) ->
-    PermitRegistry.register-permit @
-    @rule-repo = new RuleRepo @name
-    @rule-applier = new PermitRuleApplier @, @debugging
+    RuleRepo          := require '../rule'      .repo.RuleRepo
+    RuleApplier       := require './rule'       .PermitRuleApplier
+    PermitRegistry    := require './registry'   .PermitRegistry
+    UsePermitMatcher  := require './matcher'    .UsePermitMatcher
+    PermitAllower     := require '../allower'   .PermitAllower
+
+    Permit.registry ||= new PermitRegistry
+
+    @registry!.register-permit @
+
+    @rule-repo          = new RuleRepo @name
+    @rule-applier       = new RuleApplier @, @debugging
     @use-permit-matcher = new UsePermitMatcher @, @access-request
-    @permit-allower = new PermitAllower @rule-repo
+    @permit-allower     = new PermitAllower @rule-repo
     @
+
+  registry: ->
+    @@registry
 
   # get a named permit
   @get = (name) ->
@@ -67,5 +79,3 @@ class Permit implements Debugger
     @rule-repo.cannot-rules
 
 Permit <<< Debugger
-
-module.exports = Permit

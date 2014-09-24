@@ -1,5 +1,1 @@
-/**
- * User: kristianmandrup
- * Date: 23/09/14
- * Time: 20:29
- */
+# TODO: Normalizer test for AccessRequest :P

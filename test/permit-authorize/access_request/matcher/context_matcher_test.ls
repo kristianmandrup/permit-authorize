@@ -1,9 +1,11 @@
-requires        = require '../../../requires'
+requires        = require '../../../../requires'
 
 requires.test 'test_setup'
-ability         = require '../ability/abilities'
-matchers        = requires.lib 'access_request/matchers'
-ContextMatcher  = matchers.ContextMatcher
+
+Matcher   = requires.lib 'access_request' .matcher.ContextMatcher
+
+matcher = (req) ->
+  new Matcher req
 
 describe 'ContextMatcher' ->
   var ctx-matcher
@@ -18,14 +20,14 @@ describe 'ContextMatcher' ->
 
   describe 'create' ->
     before-each ->
-      ctx-matcher  := new ContextMatcher requests.visitor
+      ctx-matcher  := matcher requests.visitor
 
     specify 'must have admin access request' ->
       ctx-matcher.access-request.should.eql requests.visitor
 
   describe 'match' ->
     before-each ->
-      ctx-matcher  := new ContextMatcher requests.visitor
+      ctx-matcher  := matcher requests.visitor
 
     specify 'should match area: visitor' ->
       ctx-matcher.match(area-ctx).should.be.true
@@ -42,7 +44,7 @@ describe 'ContextMatcher' ->
         ctx:
           auth: 'yes'
 
-      ctx-matcher  := new ContextMatcher requests.visitor
+      ctx-matcher  := matcher requests.visitor
 
     specify 'should match -> auth is yes' ->
       ctx-matcher.match( -> @auth is 'yes').should.be.true

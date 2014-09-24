@@ -1,12 +1,14 @@
-requires        = require '../../../requires'
+requires        = require '../../../../requires'
 
 requires.test 'test_setup'
-ability         = require '../ability/abilities'
-matchers        = requires.lib 'access_request/matchers'
-BaseMatcher     = matchers.BaseMatcher
+
+Matcher   = requires.lib 'access_request' .matcher.BaseMatcher
+
+matcher = (req) ->
+  new Matcher req
 
 describe 'BaseMatcher' ->
-  var matcher
+  var base-matcher
   requests = {}
 
   before ->
@@ -15,23 +17,23 @@ describe 'BaseMatcher' ->
   describe 'create' ->
     context 'no access request' ->
       before ->
-        matcher  := new BaseMatcher
+        base-matcher  := matcher!
 
       specify 'must have access request' ->
-        matcher.access-request.should.eql {}
+        base-matcher.access-request.should.eql {}
 
     context 'empty access request' ->
       before ->
-        matcher        := new BaseMatcher requests.empty
+        base-matcher := matcher requests.empty
 
       specify 'must be a user matcher' ->
-        matcher.should.be.an.instance-of BaseMatcher
+        base-matcher.should.be.an.instance-of Matcher
 
       specify 'must have access request' ->
-        matcher.access-request.should.eql requests.empty
+        base-matcher.access-request.should.eql requests.empty
 
       specify 'must have an intersect' ->
-        matcher.intersect.should.have.property 'on'
+        base-matcher.intersect.should.have.property 'on'
 
 
 

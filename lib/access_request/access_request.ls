@@ -18,7 +18,7 @@ module.exports = class AccessRequest implements Debugger
 
   fingerprint: ->
     _fingerprinter ||= new FingerPrinter @ar-obj
-    _fingerprinter.access-hash!
+    _fingerprinter.fingerprint!
 
   # normalize action and subject if they are not each a String
   normalize: ->

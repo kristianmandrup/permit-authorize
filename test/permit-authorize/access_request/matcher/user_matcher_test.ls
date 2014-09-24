@@ -1,11 +1,15 @@
-requires        = require '../../../requires'
+requires        = require '../../../../requires'
 
 requires.test 'test_setup'
 
-User            = requires.fix 'user'
-matchers        = requires.lib 'access_request/matchers'
+User      = requires.fix 'user'
+Matcher   = requires.lib 'access_request' .matcher.UserMatcher
 
-UserMatcher   = matchers.UserMatcher
+matcher = (req) ->
+  new Matcher req
+
+user = (args) ->
+  new User args
 
 describe 'UserMatcher' ->
   var user-matcher  
@@ -20,17 +24,17 @@ describe 'UserMatcher' ->
 
   describe 'create' ->
     before ->
-      user-matcher  := new UserMatcher requests.admin
+      user-matcher  := matcher requests.admin
 
     specify 'must be a user matcher' ->
-      user-matcher.should.be.an.instance-of UserMatcher
+      user-matcher.should.be.an.instance-of Matcher
 
     specify 'must have admin access request' ->
       user-matcher.access-request.should.eql requests.admin
 
   describe 'match' ->
     before-each ->
-      user-matcher  := new UserMatcher requests.admin
+      user-matcher  := matcher requests.admin
 
     specify 'should match admin role' ->
       user-matcher.match(role : 'admin').should.be.true

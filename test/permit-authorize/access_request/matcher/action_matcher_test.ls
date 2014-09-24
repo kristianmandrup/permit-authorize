@@ -1,9 +1,11 @@
-requires        = require '../../../requires'
+requires        = require '../../../../requires'
 
 requires.test 'test_setup'
-ability         = require '../ability/abilities'
-matchers        = requires.lib 'access_request/matchers'
-ActionMatcher   = matchers.ActionMatcher
+
+Matcher   = requires.lib 'access_request' .matcher.ActionMatcher
+
+matcher = (req) ->
+  new Matcher req
 
 describe 'ActionMatcher' ->
   var action-matcher
@@ -16,14 +18,14 @@ describe 'ActionMatcher' ->
 
   describe 'create' ->
     before-each ->
-      action-matcher  := new ActionMatcher requests.read
+      action-matcher  := matcher requests.read
 
     specify 'must have admin access request' ->
       action-matcher.access-request.should.eql requests.read
 
   describe 'match' ->
     before-each ->
-      action-matcher  := new ActionMatcher requests.read
+      action-matcher  := matcher requests.read
 
     specify 'should match read action' ->
       action-matcher.match('read').should.be.true

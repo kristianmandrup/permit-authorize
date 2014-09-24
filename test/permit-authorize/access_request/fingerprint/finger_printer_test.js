@@ -7,7 +7,7 @@
   AccessRequest = requires.lib('access-request').AccessRequest;
   fingerprint = requires.lib('access-request').fingerprint;
   FingerPrinter = fingerprint.FingerPrinter;
-  describe('Fingerprints', function(){
+  describe('FingerPrinter', function(){
     var accessRequest, fingerPrinter;
     fingerPrinter = function(ar, debug){
       debug == null && (debug = true);
@@ -23,7 +23,10 @@
     });
     return describe('fingerprint', function(){
       return specify('has method access-hash', function(){
-        return fingerPrinter(accessRequest).fingerprint().should.not.eql(void 8);
+        var res;
+        res = fingerPrinter(accessRequest).fingerprint();
+        console.log(res);
+        return res.should.eql(ea4fd60a6dc4c0f9b0cc7637f7f5617e);
       });
     });
   });

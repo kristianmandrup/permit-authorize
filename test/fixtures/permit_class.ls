@@ -1,6 +1,6 @@
 requires  = require '../../requires'
 
-Permit    = requires.lib 'permit'
+Permit    = requires.lib 'permit' .Permit
 
 module.exports =
   AdminPermit : class AdminPermit extends Permit

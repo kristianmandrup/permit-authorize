@@ -1,5 +1,26 @@
-/**
- * User: kristianmandrup
- * Date: 23/09/14
- * Time: 20:30
- */
+requires  = require '../../../../requires'
+
+requires.test 'test_setup'
+
+Book            = requires.fix 'book'
+AccessRequest   = requires.lib 'access-request' .AccessRequest
+
+fingerprint     = requires.lib 'access-request' .fingerprint
+FingerPrinter   = fingerprint.ArrayFingerPrint
+
+describe 'ArrayFingerPrint' ->
+  var access-request
+
+  finger-printer = (ar, debug = true) ->
+    new FingerPrinter ar, debug
+
+  before ->
+    access-request := ['hello', 'goodbye']
+
+  describe 'fingerprint' ->
+    specify 'makes a fingerprint' ->
+      res = finger-printer(access-request).fingerprint!
+      console.log res
+      res.should.eql 'hello.goodbye'
+
+
