@@ -1,13 +1,15 @@
-module.exports = class MatchCompiler
-  (@permit) ->
+Debugger = require '../../../util' .Debugger
+
+module.exports = class MatchCompiler implements Debugger
+  (@context) ->
 
   compile: (@type, @match) ->
     @debug "compile", @type, @match
 
-    permit = @permit
+    context = @context
 
     # the resulting matching function added to permit.compiled-list
     (access-request) ->
       match-obj = {(type): @match}
       self.debug 'compiled fun: match-on', access-request
-      permit.match-on access-request, match-obj
+      context.match-on access-request, match-obj

@@ -16,9 +16,7 @@ create-user     = requires.fac 'create-user'
 create-request  = requires.fac 'create-request'
 create-permit   = requires.fac 'create-permit'
 
-
 describe 'PermitMatcher' ->
-  var subject
   var permit-matcher, book
 
   users     = {}
@@ -29,15 +27,47 @@ describe 'PermitMatcher' ->
   none-matching = {}
 
   before ->
-    users.kris      := create-user.kris
-    users.emily     := create-user.emily
-    requests.user :=
+    users.kris        := create-user.kris
+    requests.user     :=
       user: users.kris
 
-    permits.user    := setup.user-permit!
-    permit-matcher  := new PermitMatcher permits.user, requests.user
+    permits.user      := setup.user-permit!
+    permit-matcher    := new PermitMatcher permits.user, requests.user
+
+  describe 'include' ->
+    describe 'includes user.name: kris' ->
+      before ->
+        permits.user.includes =
+          user: users.kris
+
+      specify 'matches access-request on includes intersect' ->
+        permit-matcher.include!.should.be.true
+
+    describe 'includes empty {}' ->
+      before ->
+        permits.user.includes = {}
+
+      specify 'matches access-request since empty includes always intersect' ->
+        permit-matcher.include!.should.be.true
+
+    describe 'includes is nil' ->
+      before ->
+        permits.user.includes = void
+
+      specify 'does NOT match access-request since NO includes intersect' ->
+        permit-matcher.include!.should.be.false
 
   describe 'custom-match' ->
+    var subject
+    var permit-matcher, book
+
+    users     = {}
+    permits   = {}
+    requests  = {}
+
+    matching = {}
+    none-matching = {}
+
     before ->
       book                := new Book title: 'far and away'
       requests.subject :=

@@ -14,13 +14,58 @@
   createRequest = requires.fac('create-request');
   createPermit = requires.fac('create-permit');
   describe('PermitMatcher', function(){
-    var subject, permitMatcher, book, users, permits, requests, matching, noneMatching;
+    var permitMatcher, book, users, permits, requests, matching, noneMatching;
     users = {};
     permits = {};
     requests = {};
     matching = {};
     noneMatching = {};
+    before(function(){
+      users.kris = createUser.kris();
+      users.emily = createUser.emily();
+      requests.user = {
+        user: users.kris
+      };
+      permits.user = setup.userPermit();
+      return permitMatcher = new PermitMatcher(permits.user, requests.user);
+    });
+    describe('exclude', function(){
+      describe('excludes user.name: kris', function(){
+        before(function(){
+          return permits.user.excludes = {
+            user: users.kris
+          };
+        });
+        return specify('matches access-request on excludes intersect', function(){
+          return permitMatcher.exclude().should.be['true'];
+        });
+      });
+      describe('excludes empty {}', function(){
+        before(function(){
+          return permits.user.excludes = {};
+        });
+        return specify('matches access-request since empty excludes always intersect', function(){
+          return permitMatcher.exclude().should.be['true'];
+        });
+      });
+      return describe('excludes other user', function(){
+        before(function(){
+          return permits.user.excludes = {
+            user: users.emily
+          };
+        });
+        return specify('does NOT match access-request since NO excludes intersect', function(){
+          return permitMatcher.exclude().should.be['false'];
+        });
+      });
+    });
     return describe('custom-ex-match', function(){
+      var subject, permitMatcher, book, users, permits, requests, matching, noneMatching;
+      users = {};
+      permits = {};
+      requests = {};
+      matching = {};
+      noneMatching = {};
       before(function(){
         PermitRegistry.clearAll();
         requests.admin = {

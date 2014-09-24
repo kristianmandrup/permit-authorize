@@ -14,7 +14,7 @@
   createRequest = requires.fac('create-request');
   createPermit = requires.fac('create-permit');
   describe('PermitMatcher', function(){
-    var subject, permitMatcher, book, users, permits, requests, matching, noneMatching;
+    var permitMatcher, book, users, permits, requests, matching, noneMatching;
     users = {};
     permits = {};
     requests = {};
@@ -22,14 +22,47 @@
     noneMatching = {};
     before(function(){
       users.kris = createUser.kris;
-      users.emily = createUser.emily;
       requests.user = {
         user: users.kris
       };
       permits.user = setup.userPermit();
       return permitMatcher = new PermitMatcher(permits.user, requests.user);
     });
+    describe('include', function(){
+      describe('includes user.name: kris', function(){
+        before(function(){
+          return permits.user.includes = {
+            user: users.kris
+          };
+        });
+        return specify('matches access-request on includes intersect', function(){
+          return permitMatcher.include().should.be['true'];
+        });
+      });
+      describe('includes empty {}', function(){
+        before(function(){
+          return permits.user.includes = {};
+        });
+        return specify('matches access-request since empty includes always intersect', function(){
+          return permitMatcher.include().should.be['true'];
+        });
+      });
+      return describe('includes is nil', function(){
+        before(function(){
+          return permits.user.includes = void 8;
+        });
+        return specify('does NOT match access-request since NO includes intersect', function(){
+          return permitMatcher.include().should.be['false'];
+        });
+      });
+    });
     return describe('custom-match', function(){
+      var subject, permitMatcher, book, users, permits, requests, matching, noneMatching;
+      users = {};
+      permits = {};
+      requests = {};
+      matching = {};
+      noneMatching = {};
       before(function(){
         book = new Book({
           title: 'far and away'
