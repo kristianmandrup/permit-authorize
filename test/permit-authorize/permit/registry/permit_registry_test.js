@@ -44,10 +44,10 @@
           });
         });
       });
-      describe.only('create a permit', function(){
+      describe('create a permit', function(){
         before(function(){
           permits.guest = createPermit.guest();
-          return reg = Permit.registry();
+          return reg = Permit.registry;
         });
         describe('permits', function(){
           return specify('should have guest permit', function(){
@@ -62,7 +62,7 @@
       });
       return context('guest permit', function(){
         before(function(){
-          reg = Permit.registry();
+          reg = Permit.registry;
           reg.clearAll();
           return permits.guest = createPermit.guest();
         });

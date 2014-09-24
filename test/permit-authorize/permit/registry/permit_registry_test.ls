@@ -38,10 +38,10 @@ describe 'PermitRegistry' ->
           specify 'should generate name Permit-0' ->
             reg.calc-name!.should.eql 'Permit-0'
 
-    describe.only 'create a permit' ->
+    describe 'create a permit' ->
       before ->
         permits.guest = create-permit.guest!
-        reg := Permit.registry!
+        reg := Permit.registry
 
       describe 'permits' ->
         specify 'should have guest permit' ->
@@ -54,9 +54,10 @@ describe 'PermitRegistry' ->
 
     context 'guest permit' ->
       before ->
-        reg := Permit.registry!
+        reg := Permit.registry
         reg.clear-all!
         permits.guest = create-permit.guest!
+
 
       describe 'clear-all' ->
         context 'cleared permits' ->

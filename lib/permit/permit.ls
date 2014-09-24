@@ -1,4 +1,4 @@
-Debugger        = require '../util/debugger'
+Debugger        = require '../util' .Debugger
 
 /*
 
@@ -18,7 +18,7 @@ PermitAllow     = require './permit_allow_mixin'
 
 PermitCompileStatic = require './permit_compile_static'
 */
-var RuleRepo, RuleApplier, PermitRegistry, UsePermitMatcher, PermitAllower
+var RuleRepo, PermitRuleApplier, PermitRegistry, UsePermitMatcher, PermitAllower
 
 module.exports = class Permit implements Debugger
   # Registers a permit in the PermitRegistry by name
@@ -27,7 +27,7 @@ module.exports = class Permit implements Debugger
 
   (@name, @description = '', @debugging) ->
     RuleRepo          := require '../rule'      .repo.RuleRepo
-    RuleApplier       := require './rule'       .PermitRuleApplier
+    PermitRuleApplier := require './rule'       .PermitRuleApplier
     PermitRegistry    := require './registry'   .PermitRegistry
     UsePermitMatcher  := require './matcher'    .UsePermitMatcher
     PermitAllower     := require '../allower'   .PermitAllower
@@ -37,7 +37,7 @@ module.exports = class Permit implements Debugger
     @registry!.register-permit @
 
     @rule-repo          = new RuleRepo @name
-    @rule-applier       = new RuleApplier @, @debugging
+    @rule-applier       = new PermitRuleApplier @, @debugging
     @use-permit-matcher = new UsePermitMatcher @, @access-request
     @permit-allower     = new PermitAllower @rule-repo
     @
@@ -54,9 +54,13 @@ module.exports = class Permit implements Debugger
   # pre-compiles static rules that match
   init: ->
     @debug 'permit init'
-    @rule-applier.apply-static-rules!
+    @rule-applier.apply-rules 'static'
     @configure-matchers!
     @
+
+  configure-matchers: ->
+    PermitMatchesCompiler = require './matches' .PermitMatchesCompiler
+    new PermitMatchesCompiler(@, @debugging).compile-matchers!
 
   clean: ->
     @rule-repo.clean!

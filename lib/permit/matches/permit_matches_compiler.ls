@@ -1,5 +1,7 @@
-module.exports = class PermitMatchesCompiler
-  (@permit) ->
+Debugger        = require '../../util' .Debugger
+
+module.exports = class PermitMatchesCompiler implements Debugger
+  (@permit, @debugging) ->
 
   compile-matchers: ->
     @debug "compile-matchers", @matches-on
@@ -13,7 +15,8 @@ module.exports = class PermitMatchesCompiler
 
     @debug 'compiled matchers:', @compiled-list
 
-  matches-processor: ->
-    @_matches-processor ||= new MatchesProcessor @
+  matches-compiler: ->
+    MatchesCompiler = require './matches_compiler'
+    @_matches-compiler ||= new MatchesCompiler @permit
 
 

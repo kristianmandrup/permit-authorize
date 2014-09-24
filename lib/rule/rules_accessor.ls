@@ -23,7 +23,8 @@ module.exports = class RulesAccessor implements Debugger
       throw Error "AccessRequest must be an Object, was: #{@access-request}"
     @debugging = @debugging
 
-
+# action: ->
+#   accessRequest?.action
 
 delegate = (obj, name, source) ->
   obj[name] = ->
