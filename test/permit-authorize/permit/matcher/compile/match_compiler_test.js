@@ -6,6 +6,13 @@
   MatchCompiler = requires.permit('matcher').compile.MatchCompiler;
   expect = require('chai').expect;
   describe('MatchCompiler', function(){
+    var validContext;
+    before(function(){
+      return validContext = {
+        name: 'hello',
+        matchOn: void 8
+      };
+    });
     describe('create w invalid context', function(){
       return specify('throws', function(){
         return expect(function(){
@@ -17,12 +24,16 @@
       return specify('throws', function(){
         return expect(function(){
           return new MatchCompiler(validContext);
-        }).to.not.throws;
+        }).to.not['throw'];
       });
     });
     return context('created w context', function(){
       var compiler, compiled;
       before(function(){
+        validContext = {
+          name: 'hello',
+          matchOn: void 8
+        };
         return compiler = new MatchCompiler(validContext);
       });
       return describe('compile type, match', function(){
@@ -30,7 +41,7 @@
           return compiled = compiler.compile('role', ['editor', 'admin']);
         });
         return specify('compiles', function(){
-          return expect(compiled).to.eql({});
+          return expect(compiled).to.be.instanceOf(Function);
         });
       });
     });

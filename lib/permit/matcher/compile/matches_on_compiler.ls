@@ -1,5 +1,5 @@
 Debugger        = require '../../../util' .Debugger
-MatchesCompiler = require './matches_compiler'
+MatchCompiler   = require './match_compiler'
 
 # Takes the context of the form
 
@@ -11,8 +11,10 @@ MatchesCompiler = require './matches_compiler'
 
 module.exports = class MatchesOnCompiler implements Debugger
   (@context, @debugging) ->
+    @debug 'context', @context
+    @matches-on = @context.matches-on
 
-  compile-matchers: ->
+  compile: ->
     @debug "compile-matchers", @matches-on
     return unless typeof! @matches-on is 'Object'
 
@@ -20,15 +22,16 @@ module.exports = class MatchesOnCompiler implements Debugger
     @debug "compile..."
     # Compiles the matches object of a permit
     for key of @matches-on
-      @add-compiled compile-for(key)
+      @add-compiled @compile-for(key)
 
     @debug 'compiled matchers:', @compiled-list
+    @compiled-list
 
   add-compiled: (compiled) ->
-    @context.compiled-list.push compiled
+    @compiled-list.push compiled
 
   compile-for: (key) ->
-    @matches-compiler!.process key, @matches-on[key]
+    @match-compiler!.compile key, @matches-on[key]
 
-  matches-compiler: ->
-    @_matches-compiler ||= new MatchesCompiler @context
+  match-compiler: ->
+    @_match-compiler ||= new MatchCompiler @context
