@@ -12,9 +12,12 @@ describe 'Rule Repository (RuleRepo)' ->
   var book
   var can, cannot
 
+  create-rule-repo = (name, debug) ->
+    new RuleRepo name, debug
+
   context 'basic repo' ->
     before ->
-      rule-repo := new RuleRepo
+      rule-repo := create-rule-repo 'repo'
       #book      := new Book 'Far and away'
 
     specify 'has can-rules' ->
@@ -78,9 +81,11 @@ describe 'Rule Repository (RuleRepo)' ->
       specify 'does not match BoAk on list of books' ->
         rule-repo.find-matching-subject(books, 'BoAk').should.be.false
 
-  xdescribe 'match-rule' ->
+  describe 'match-rule' ->
     context 'can-rules - read book' ->
       before ->
+        rule-repo := create-rule-repo 'repo', true
+
         rule-repo.can-rules =
           'read': ['Book']
 

@@ -1,12 +1,14 @@
-requires        = require '../../../requires'
+requires        = require '../../../../../requires'
 
 requires.test 'test_setup'
 
 User          = requires.fix 'user'
 Book          = requires.fix 'book'
 
-RuleApplier   = requires.rule 'rule_applier'
-RuleRepo      = requires.rule 'rule_repo'
+RuleApplier   = requires.rule 'apply' .DynamicRulesApplier
+RuleRepo      = requires.rule 'repo' .RuleRepo
+
+rules         = requires.fix-rules 'rules'
 
 describe 'Rule Applier (RuleApplier)' ->
   var book

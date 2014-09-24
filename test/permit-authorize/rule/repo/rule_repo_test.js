@@ -7,10 +7,13 @@
   Book = requires.fix('book');
   RuleRepo = requires.rule('repo/rule_repo');
   describe('Rule Repository (RuleRepo)', function(){
-    var accessRequest, rule, ruleRepo, book, can, cannot;
+    var accessRequest, rule, ruleRepo, book, can, cannot, createRuleRepo;
+    createRuleRepo = function(name, debug){
+      return new RuleRepo(name, debug);
+    };
     context('basic repo', function(){
       before(function(){
-        return ruleRepo = new RuleRepo;
+        return ruleRepo = createRuleRepo('repo');
       });
       specify('has can-rules', function(){
         return ruleRepo.canRules.should.be.an['instanceof'](Object);
@@ -90,9 +93,10 @@
         });
       });
     });
-    return xdescribe('match-rule', function(){
+    return describe('match-rule', function(){
       return context('can-rules - read book', function(){
         before(function(){
+          ruleRepo = createRuleRepo('repo', true);
           return ruleRepo.canRules = {
             'read': ['Book']
           };

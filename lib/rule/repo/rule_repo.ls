@@ -16,7 +16,7 @@ camel-case  = util.string.camel-case
 normalize   = util.normalize
 
 module.exports = class RuleRepo implements Debugger
-  (@name) ->
+  (@name, @debugging) ->
 
   can-rules: {}
   cannot-rules: {}
@@ -75,18 +75,25 @@ module.exports = class RuleRepo implements Debugger
     @debug 'match-rule', act, access-request
 
     act = camel-case act
+    @debug 'act', act
     action = access-request.action
     subject = access-request.subject
+    @debug 'action', action
+    @debug 'subject', subject
 
     subj-clazz = @subject-clazz subject
     rule-container = @container-for act
+    @debug 'rule-container', rule-container
 
     @match-manage-rule(rule-container, subj-clazz) if action is 'manage'
 
     @debug 'subj-clazz', subj-clazz
-    return unless subj-clazz
+    return false unless subj-clazz
+
     action-subjects = rule-container[action]
-    return unless action-subjects
+    @debug 'action-subjects', action-subjects
+    return false unless action-subjects
+
     @match-subject-clazz action-subjects, subj-clazz
 
   match-subject-clazz: (action-subjects, subj-clazz) ->
@@ -114,6 +121,8 @@ module.exports = class RuleRepo implements Debugger
 
   # for now, lets forget about ctx
   add-rule: (rule-container, action, subjects) ->
+    @debug 'add rule', action, subjects
+
     throw Error("Container must be an object") unless typeof! rule-container is 'Object'
     rule-subjects = rule-container[action] || []
 
@@ -131,16 +140,18 @@ module.exports = class RuleRepo implements Debugger
     unless typeof! action-subjects is 'Array'
       action-subjects = []
 
-    rule-container[action] = @register-action-subjects action-subjects, unique-subjects
+    registered-action-subjects = @register-action-subjects action-subjects, unique-subjects
+
+    rule-container[action] = registered-action-subjects
 
     if action is 'manage'
       for action in @manage-actions!
-        rule-container[action] @register-action-subjects action-subjects, unique-subjects
+        rule-container[action] = registered-action-subjects
 
     # console.log 'action subjects', rule-container[action]
 
   register-action-subjects: (action-container, subjects) ->
-    # console.log "action-container", action-container, subjects
+    @debug "register action subjects", action-container, subjects
     unique action-container.concat(subjects)
 
   container-for: (act) ->
@@ -155,7 +166,7 @@ module.exports = class RuleRepo implements Debugger
     actions = normalize actions
 
     rule-container = @container-for act # can-rules or cannot-rules
-
+    @debug 'rule container', rule-container
     for action in actions
       # should add all subjects to rule in one go I think, then use array test on subject
       # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array

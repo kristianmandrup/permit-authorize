@@ -54,6 +54,9 @@
     fix: function(path){
       return this.fixture(path);
     },
+    fixRules: function(path){
+      return this.fixture('rules/' + path);
+    },
     factory: function(path){
       return this.test('factories', path);
     },

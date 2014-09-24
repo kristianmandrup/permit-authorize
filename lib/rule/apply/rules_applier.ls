@@ -15,9 +15,25 @@ util        = require '../util'
 #   area:
 #     admin: ->
 
+Debugger          = require '../../util' .Debugger
+ExecutionContext  = require './execution_context'
+
 # Base class for Dynamic- and StaticRulesApplier
-module.exports = class RulesApplier
-  (@rules) ->
+module.exports = class RulesApplier implements Debugger
+  (@repo, @rules, @debugging) ->
+    @execution-context = new ExecutionContext @repo
+
+  context-rules: (name)->
+    @debug 'context rules', name
+    if typeof! name is 'Object'
+      return name
+
+    return @rules unless typeof! name is 'String'
+    if typeof! @rules[name] is 'Object'
+      @rules[name]
+    else
+      @debug "no such rules context: #{name}", @rules
+      @rules
 
   # only the static rules
   apply-rules: ->

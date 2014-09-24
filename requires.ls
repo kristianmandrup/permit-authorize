@@ -1,4 +1,4 @@
-flatten = require './lib/util/array_util' .flatten
+flatten = require './lib/util/array' .flatten
 
 underscore = (str) ->
   str.replace /-/, '_' .replace ',', '/'
@@ -44,6 +44,10 @@ module.exports =
   # alias
   fix: (path) ->
     @fixture path
+
+  fix-rules: (path) ->
+    @fixture 'rules/' + path
+
 
   factory: (path) ->
     @test 'factories', path

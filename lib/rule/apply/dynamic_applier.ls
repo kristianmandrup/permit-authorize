@@ -1,7 +1,8 @@
 RulesApplier = require './rules_applier'
 
 module.exports = class DynamicApplier extends RulesApplier
-  (@rules) ->
+  (@repo, @rules, @debugging) ->
+    super ...
 
   apply-rules-for: (name, context) ->
     @debug "apply rules for #{name} in context: #{context}"
@@ -14,11 +15,11 @@ module.exports = class DynamicApplier extends RulesApplier
       return @
       # throw Error "Name to appl rules for must be a String, was: #{name}"
 
-    rules = @rules-accessor.context-rules(context)
+    rules = @context-rules(context)
 
     named-rules = rules[name]
     if typeof! named-rules is 'Function'
-      named-rules.call @, @access-request
+      named-rules.call @execution-context, @access-request
     else
       @debug "rules key for #{name} should be a function that resolves one or more rules"
     @

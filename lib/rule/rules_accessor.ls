@@ -23,32 +23,9 @@ module.exports = class RulesAccessor implements Debugger
       throw Error "AccessRequest must be an Object, was: #{@access-request}"
     @debugging = @debugging
 
-  context-rules: (context)->
-    if typeof! context is 'Object'
-      return context
-
-    return @rules unless typeof! context is 'String'
-    if typeof! @rules[context] is 'Object'
-      @rules[context]
-    else
-      @debug "no such rules context: #{context}", @rules
-      @rules
-
   valid-request: ->
     return false if not @access-request
     if Object.keys(@access-request).length > 0 then true else false
-
-  # so as not to be same name as can method used "from the outside, ie. via Ability"
-  # for the functions within rules object, they are executed with the rule applier as this (@) - ie. the context
-  # and thus have @ucan and @ucannot available within that context!
-  # for the @apply-action-rules, we could return a function, where the current action is also in the context,
-  # and is the default action for all @ucan and @ucannot calls!!
-  ucan: (actions, subjects, ctx) ->
-    @repo.register-rule 'can', actions, subjects, ctx
-
-  ucannot: (actions, subjects, ctx) ->
-    @repo.register-rule 'cannot', actions, subjects, ctx
-
 
 /*
   action: ->

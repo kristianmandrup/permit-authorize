@@ -1,7 +1,9 @@
 RulesApplier = require './rules_applier'
+util         = require '../util'
 
 module.exports = class StaticApplier extends RulesApplier
-  (@rules) ->
+  (@repo, @rules, @debugging) ->
+    super ...
 
   # only the static rules
   apply-rules: ->
@@ -41,27 +43,34 @@ module.exports = class StaticApplier extends RulesApplier
       throw Error "rules must be an Object was: #{typeof @rules}"
     @
 
+  # apply rules for key 'default:'
+  #
+  # rules:
+  #   default: ->
+  #     @ucan ...
+
   apply-default-rules: ->
     @debug 'apply-default-rules'
-    @apply-rules-for 'default'
+    @apply-rules-for 'default', @rules
     @
 
   apply-rules-for: (name, context) ->
     @debug "apply rules for #{name} in context: #{context}"
 
     if typeof! name is 'Object'
-      @apply-obj-rules-for name, context
+      @apply-obj-rules-for name
 
     unless typeof! name is 'String'
       @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
       return @
       # throw Error "Name to appl rules for must be a String, was: #{name}"
 
-    rules = @rules-accessor.context-rules(context)
+    rules = @context-rules context
 
     named-rules = rules[name]
+    @debug "rules function: #{name}", named-rules
     if typeof! named-rules is 'Function'
-      named-rules.call @
+      named-rules.call @execution-context
     else
       @debug "rules key for #{name} should be a function that resolves one or more rules"
     @
