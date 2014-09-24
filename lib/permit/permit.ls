@@ -32,17 +32,10 @@ module.exports = class Permit implements Debugger
     PermitRegistry.get name
 
   # applies static rules
-  # configures matchers and
   # pre-compiles static rules that match
   init: ->
     @debug 'permit init'
     @rule-applier.apply-rules 'static'
-    @configure-matchers!
-    @
-
-  configure-matchers: ->
-    PermitMatchesCompiler = require './matches' .PermitMatchesCompiler
-    new PermitMatchesCompiler(@, @debugging).compile-matchers!
     @
 
   clean: ->

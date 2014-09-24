@@ -2,13 +2,16 @@ AccessMatcher   = require '../../access_request' .matcher.AccessMatcher
 ContextMatcher  = require './context_matcher'
 
 module.exports = class IncludeMatcher extends ContextMatcher
+  (context, @access-request, @debugging) ->
+    super context
+
   match: ->
     @exclude! or @custom-ex-match!
 
   exclude: ->
     @intersect-on @context.excludes
 
-  custom-ex-match: ->
+  match: ->
     if typeof! @context.ex-match is 'Function'
       res = @context.ex-match @access-request
       if res.constructor is AccessMatcher

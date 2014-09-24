@@ -1,23 +1,18 @@
-requires        = require '../../../../../requires'
+requires        = require '../../../../requires'
 
 requires.test 'test_setup'
 
+Matcher         = requires.permit 'matcher'   .ExcludeMatcher
+PermitRegistry  = requires.permit 'registry'  .PermitRegistry
+
+setup           = requires.fix 'permits' .setup
 Book            = requires.fix 'book'
 User            = requires.fix 'user'
 
-Permit          = requires.lib 'permit'
-permit-for      = requires.permit 'factory' .permitFor
-PermitMatcher   = requires.permit 'matcher' .UsePermitMatcher
-PermitRegistry  = requires.permit 'registry' .PermitRegistry
-
-setup           = requires.fix 'permits' .setup
-
 create-user     = requires.fac 'create-user'
-create-request  = requires.fac 'create-request'
-create-permit   = requires.fac 'create-permit'
 
-describe 'PermitMatcher' ->
-  var permit-matcher, book
+describe 'IncludeMatcher' ->
+  var matcher, book
 
   users     = {}
   permits   = {}
@@ -32,7 +27,7 @@ describe 'PermitMatcher' ->
       user: users.kris
 
     permits.user      := setup.user-permit!
-    permit-matcher    := new PermitMatcher permits.user, requests.user
+    matcher    := new PermitMatcher permits.user, requests.user
 
   describe 'include' ->
     describe 'includes user.name: kris' ->
@@ -41,25 +36,25 @@ describe 'PermitMatcher' ->
           user: users.kris
 
       specify 'matches access-request on includes intersect' ->
-        permit-matcher.include!.should.be.true
+        matcher.include!.should.be.true
 
     describe 'includes empty {}' ->
       before ->
         permits.user.includes = {}
 
       specify 'matches access-request since empty includes always intersect' ->
-        permit-matcher.include!.should.be.true
+        matcher.include!.should.be.true
 
     describe 'includes is nil' ->
       before ->
         permits.user.includes = void
 
       specify 'does NOT match access-request since NO includes intersect' ->
-        permit-matcher.include!.should.be.false
+        matcher.include!.should.be.false
 
   describe 'custom-match' ->
     var subject
-    var permit-matcher, book
+    var matcher, book
 
     users     = {}
     permits   = {}
@@ -79,8 +74,8 @@ describe 'PermitMatcher' ->
 
       permits.book    := setup.book-permit!
 
-      matching.permit-matcher       := new PermitMatcher permits.book, requests.subject
-      none-matching.permit-matcher  := new PermitMatcher permits.book, requests.ctx
+      matching.matcher       := new PermitMatcher permits.book, requests.subject
+      none-matching.matcher  := new PermitMatcher permits.book, requests.ctx
 
     context 'matching permit-matcher' ->
       before ->
@@ -94,7 +89,7 @@ describe 'PermitMatcher' ->
 
     context 'matching permit-matcher' ->
       before ->
-        subject := none-matching.permit-matcher
+        subject := none-matching.matcher
 
       specify 'has permit' ->
         subject.permit.should.eql permits.book
@@ -106,11 +101,11 @@ describe 'PermitMatcher' ->
       matching.permit-matcher.custom-match!.should.be.true
 
     specify 'does NOT match access-request since permit.match does NOT match' ->
-      none-matching.permit-matcher.custom-match!.should.be.false
+      none-matching.matcher.custom-match!.should.be.false
 
     describe 'invalid match method' ->
       before ->
         permits.user := setup.invalid-user!
 
       specify 'should throw error' ->
-        ( -> none-matching.permit-matcher.custom-match ).should.throw
+        ( -> none-matching.matcher.custom-match ).should.throw

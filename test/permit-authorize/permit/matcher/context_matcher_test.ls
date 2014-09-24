@@ -2,21 +2,12 @@ requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
-Book          = requires.fix 'book'
-User          = requires.fix 'user'
-
-permit-for    = requires.permit 'factory' .permitFor
-PermitMatcher = requires.permit 'matcher' .UsePermitMatcher
-Permit        = requires.lib 'permit'
-
-setup         = requires.fix 'permits' .setup
+ContextMatcher = requires.permit 'matcher' .ContextMatcher
 
 create-user     = requires.fac 'create-user'
-create-request  = requires.fac 'create-request'
-create-permit   = requires.fac 'create-permit'
 
-describe 'UsePermitMatcher' ->
-  var permit-matcher, book
+describe 'ContextMatcher' ->
+  var permit-matcher, ctx, matcher
 
   users     = {}
   permits   = {}
@@ -35,20 +26,41 @@ describe 'UsePermitMatcher' ->
 
     requests.user     :=
       user: users.kris
+      name: 'hello'
 
-    permits.user     := setup.user-permit
-    permit-matcher    := new PermitMatcher permits.user, requests.user
+    requests.user-and-more     :=
+      user: users.kris
+      name: 'hello'
+      area: 'admin'
+
+    requests.user-and-less     :=
+      user: users.kris
+
+    create-matcher = (ctx) ->
+      new ContextMatcher ctx
+
+    matcher          := create-matcher requests.user
 
   describe 'init' ->
-    specify 'has user-permit' ->
-      permit-matcher.permit.should.eql permits.user
+    specify 'has context' ->
+      matcher.context.should.eql requests.user
 
-    specify 'has own intersect object' ->
-      permit-matcher.intersect.should.have.property 'on'
+  describe 'match' ->
+    specify 'by default always returns false' ->
+      matcher.match!.should.be.false
 
   describe 'intersect-on partial, access-request' ->
     specify 'intersects when same object' ->
-      permit-matcher.intersect-on(requests.user).should.be.true
+      matcher.intersect-on(requests.user).should.be.true
+
+    specify 'intersects when more than context (covers)' ->
+      matcher.intersect-on(requests.user-and-more).should.be.true
+
+    specify 'does not intersects when less than context' ->
+      matcher.intersect-on(requests.user-and-less).should.be.false
+
+    specify 'does not intersects when other object' ->
+      matcher.intersect-on(requests.ctx).should.be.false
 
 
 

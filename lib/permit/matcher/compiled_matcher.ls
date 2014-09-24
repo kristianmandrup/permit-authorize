@@ -2,7 +2,8 @@ Debugger            = require '../../util' .Debugger
 MatchesOnCompiler   = require './compile' .MatchesOnCompiler
 
 module.exports = class CompiledMatcher implements Debugger
-  (@context, @debugging) ->
+  (context, @access-request, @debugging) ->
+    super context
     @compiled-list = @context.compiled-list
     @compile!
     @

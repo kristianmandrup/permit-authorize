@@ -1,9 +1,11 @@
-Debugger = require '../../util' .Debugger
+Debugger    = require '../../util' .Debugger
+Intersect   =  require '../../util' .Intersect
 
 module.exports = class ContextMatcher implements Debugger
   (@context) ->
     unless @context.name
       throw new Error "Match context (permit) missing a name: #{@context}"
+    @intersect ||= Intersect()
 
   match: ->
     false
@@ -13,5 +15,5 @@ module.exports = class ContextMatcher implements Debugger
 
     if typeof! partial is 'Function'
       partial = partial!
-    res = @intersect.on partial, @access-request
-    res
+
+    @intersect.on @context, partial
