@@ -1,9 +1,9 @@
-requires  = require '../../requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
 Book            = requires.fix 'book'
-AccessRequest   = requires.lib 'access-request'
+AccessRequest   = requires.lib 'access-request' .AccessRequest
 
 describe 'AccessRequest' ->
   var book, access-request

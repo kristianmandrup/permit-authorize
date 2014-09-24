@@ -4,7 +4,7 @@
   requires = require('../../../requires');
   requires.test('test_setup');
   Book = requires.fix('book');
-  AccessRequest = requires.lib('access-request');
+  AccessRequest = requires.lib('access-request').AccessRequest;
   describe('AccessRequest', function(){
     var book, accessRequest, requests;
     requests = {};

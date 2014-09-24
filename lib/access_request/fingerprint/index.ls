@@ -1,5 +1,5 @@
 module.exports =
-  fingerprints:         require './fingerprints'
+  FingerPrinter:        require './finger_printer'
   FingerPrint:          require './fingerprint'
   ObjectFingerPrint:    require './object_fingerprint'
   ArrayFingerprint:     require './array_fingerprint'

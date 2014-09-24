@@ -1,8 +1,8 @@
 normalize     = require '../util' .normalize
 Debugger      = require '../util' .Debugger
-Fingerprints  = require './fingerprint' .fingerprints
+FingerPrinter = require './fingerprint' .FingerPrinter
 
-module.exports = class AccessRequest implements Debugger, Fingerprints
+module.exports = class AccessRequest implements Debugger
   # factory method
   @from  = (obj, debugging) ->
     throw new Error "Must be an Object, was: #{obj}" unless typeof! obj is 'Object'
@@ -15,6 +15,10 @@ module.exports = class AccessRequest implements Debugger, Fingerprints
     @validate!
     @normalize!
     @
+
+  fingerprint: ->
+    _fingerprinter ||= new FingerPrinter @ar-obj
+    _fingerprinter.access-hash!
 
   # normalize action and subject if they are not each a String
   normalize: ->
