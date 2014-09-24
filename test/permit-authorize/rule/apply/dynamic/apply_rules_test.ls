@@ -5,19 +5,23 @@ requires.test 'test_setup'
 User          = requires.fix 'user'
 Book          = requires.fix 'book'
 
-RulesApplier   = requires.rule 'apply' .DynamicApplier
-RuleRepo      = requires.rule 'repo' .RuleRepo
+RulesApplier      = requires.rule 'apply' .DynamicApplier
+ExecutionContext  = requires.rule 'apply' .ExecutionContext
+RuleRepo          = requires.rule 'repo' .RuleRepo
 
 fix-rules   = requires.fix-rules 'rules'
-
-create-rules-applier = (rule-repo, rules, read-access-request, debug = true) ->
-  new RulesApplier rule-repo, rules, read-access-request, debug
 
 create-repo = (name = 'dynamic repo', debug = false) ->
   new RuleRepo name, debug .clear!
 
-create-exec-ctx = ->
-  new ExecutionContext create-repo!
+create-exec-ctx = (debug = true) ->
+  new ExecutionContext create-repo!, debug
+
+create-rules-applier = (rules, access-request, debug = true) ->
+  new RulesApplier create-exec-ctx!, rules, access-request, debug
+
+exec-rule-applier = (rules, action-request) ->
+  create-rules-applier(rules, action-request).apply-rules!
 
 describe 'Rule Applier (RuleApplier)' ->
   var book
@@ -47,7 +51,8 @@ describe 'Rule Applier (RuleApplier)' ->
         subject: book
 
       # adds only the 'read' rules (see access-request.action)
-      rule-applier  := create-rules-applier create-exec-ctx!, rules, read-access-request, true
+      rule-applier  := exec-rule-applier rules, read-access-request
+      rule-repo     := rule-applier.repo!
 
       rule-applier.apply-rules!
 
