@@ -3,9 +3,13 @@
 # Could also be by environment, ie: dev, test, prod
 # This can be integrated with PermitFilter as you like
 
+values = require '../../util' .object.values
+
 module.exports = class PermitContainer
   (@name, @desc) ->
     @repo = {}
+    @description = @desc
+    @
 
   add: (permit) ->
     @repo[permit.name] = permit
@@ -18,27 +22,30 @@ module.exports = class PermitContainer
       name = thing.name
     unless @repo[name]
       throw new Error "Permit Repo has no entry for: #{name}"
-    @repo.delete name
+    delete @repo[name]
+    @
 
   activate: ->
-    active = true
+    @active = true
     PermitContainer.add @
+    @
 
   deactivate: ->
-    active = false
+    @active = false
     PermitContainer.remove @
+    @
 
   @add = (container) ->
-    @active-containers[container.name] =container
+    @active-containers[container.name] = container
 
   @remove = (container) ->
-    @active-containers.delete container.name
+    delete @active-containers[container.name]
 
-  @active-containers = []
+  @active-containers = {}
 
-  @active-containers-permits = ->
+  @active-containers-list = ->
     values @active-containers
 
-  @hasAny = ->
-    @active-containers && @active-containers.index > 0
+  @has-any = ->
+    Object.keys @active-containers .length > 0
 
