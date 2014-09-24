@@ -21,7 +21,7 @@ describe 'Rule Applier (RuleApplier)' ->
   create-rules-applier = (rule-repo, rules, read-access-request) ->
     new RulesApplier rule-repo, rules, read-access-request
 
-  create-repo = (name, debug) ->
+  create-repo = (name = 'dynamic repo', debug) ->
     new RuleRepo name, debug .clear!
 
   before ->

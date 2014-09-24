@@ -11,8 +11,10 @@
   describe('StaicApplier', function(){
     var book, ruleRepo, ruleApplier, rules, createRepo, applier, createRuleApplier, execRuleApplier;
     rules = {};
-    createRepo = function(){
-      return new RuleRepo('static repo', true).clear();
+    createRepo = function(name, debug){
+      name == null && (name = 'static repo');
+      debug == null && (debug = true);
+      return new RuleRepo(name, debug).clear();
     };
     applier = function(repo, rules, debug){
       return new StaticApplier(repo, rules, debug);
@@ -27,7 +29,7 @@
     before(function(){
       return book = new Book('Far and away');
     });
-    return describe('manage paper', function(){
+    describe('manage paper', function(){
       return context('applied default rule: manage Paper', function(){
         before(function(){
           rules.managePaper = {
@@ -44,6 +46,41 @@
             edit: ['Paper'],
             'delete': ['Paper']
           });
+        });
+      });
+    });
+    return describe('apply-rules', function(){
+      return describe('static', function(){
+        var readAccessRequest, ruleRepo, ruleApplier, rules;
+        before(function(){
+          rules = {
+            edit: function(){
+              this.ucan('edit', 'Book');
+              return this.ucannot('write', 'Book');
+            },
+            read: function(){
+              this.ucan('read', 'Project');
+              return this.ucannot('delete', 'Paper');
+            },
+            'default': function(){
+              return this.ucan('read', 'Paper');
+            }
+          };
+          readAccessRequest = {
+            action: 'read',
+            subject: book
+          };
+          ruleRepo = createRepo().clear();
+          ruleApplier = createRulesApplier(ruleRepo, rules);
+          return ruleApplier.applyRules();
+        });
+        specify('adds all static can rules', function(){
+          return ruleRepo.canRules.should.be.eql({
+            read: ['Paper']
+          });
+        });
+        return specify('adds all static cannot rules', function(){
+          return ruleRepo.cannotRules.should.be.eql({});
         });
       });
     });

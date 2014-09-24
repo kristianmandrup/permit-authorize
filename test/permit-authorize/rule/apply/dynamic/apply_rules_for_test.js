@@ -8,7 +8,6 @@
   RulesApplier = requires.rule('apply').DynamicApplier;
   RuleRepo = requires.rule('repo').RuleRepo;
   fixRules = requires.fixRules('rules');
-  console.log('RulesApplier', RulesApplier);
   describe('Rule Applier (RuleApplier)', function(){
     var book, debugRepo, createRulesApplier, createRepo;
     debugRepo = function(txt, repo){
@@ -20,7 +19,7 @@
       return new RulesApplier(ruleRepo, rules, readAccessRequest);
     };
     createRepo = function(name, debug){
-      name == null && (name = 'repo');
+      name == null && (name = 'dynamic repo');
       debug == null && (debug = true);
       return new RuleRepo(name, debug).clear();
     };

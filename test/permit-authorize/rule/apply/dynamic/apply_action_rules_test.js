@@ -19,6 +19,7 @@
       return new RulesApplier(ruleRepo, rules, readAccessRequest);
     };
     createRepo = function(name, debug){
+      name == null && (name = 'dynamic repo');
       return new RuleRepo(name, debug).clear();
     };
     before(function(){

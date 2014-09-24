@@ -1,8 +1,40 @@
-RulesApplier = require './rules_applier'
+RulesApplier  = require './rules_applier'
+util          = require '../util'
 
 module.exports = class DynamicApplier extends RulesApplier
-  (@repo, @rules, @debugging) ->
+  (@repo, @rules, @access-request, @debugging) ->
     super ...
+
+  action: ->
+    @access-request?.action
+
+  user: ->
+    @access-request?.user
+
+  subject: ->
+    @access-request?.subject
+
+  ctx: ->
+    @access-request?.ctx
+
+  apply-rules: ->
+    @debug 'apply-rules'
+    unless util.valid-rules @rules
+      # throw Error "No rules defined for permit: #{@name}"
+      @debug 'invalid permit rules could not be applied'
+      return
+
+    @debug 'applying rules', @rules
+
+    switch typeof @rules
+    when 'function'
+      @rules @access-request
+    when 'object'
+      @apply-default-rules!
+
+    else
+      throw Error "rules must be a Function or an Object, was: #{@rules}"
+    @
 
   apply-rules-for: (name, context) ->
     @debug "apply rules for #{name} in context: #{context}"
@@ -15,7 +47,7 @@ module.exports = class DynamicApplier extends RulesApplier
       return @
       # throw Error "Name to appl rules for must be a String, was: #{name}"
 
-    rules = @context-rules(context)
+    rules = @context-rules context
 
     named-rules = rules[name]
     if typeof! named-rules is 'Function'
@@ -25,19 +57,21 @@ module.exports = class DynamicApplier extends RulesApplier
     @
 
   apply-obj-rules-for: (obj, context) ->
+    @debug 'apply-obj-rules-for'
     rules = @rules-accessor.context-rules(context)
 
     @debug 'apply-obj-rules-for', obj, context, rules
 
     obj-keys = Object.keys(obj)
+    is-user = obj.clazz is 'User'
 
-    if obj.clazz is 'User'
+    if is-user
       obj-keys = ['name', 'role']
 
     for key of obj-keys
       val = obj[key]
 
-      if obj.clazz is 'User'
+      if is-user
         @apply-rules-for val, context
 
       key-rules = rules[key]
@@ -45,6 +79,7 @@ module.exports = class DynamicApplier extends RulesApplier
 
   # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->
+    @debug 'apply-action-rules'
     @apply-rules-for @action!
     @apply-rules-for @action!, 'action'
     @
@@ -60,11 +95,13 @@ module.exports = class DynamicApplier extends RulesApplier
   # such as on user name, email or whatever, even age (minor < 18y old!?)
   #
   apply-user-rules: ->
+    @debug 'apply-user-rules'
     @apply-rules-for @user!
     @apply-rules-for @user!, 'user'
     @
 
   apply-subject-rules: ->
+    @debug 'apply-subject-rules'
     @apply-rules-for @subject!
     @apply-rules-for @subject!, 'subject'
     @
@@ -79,6 +116,7 @@ module.exports = class DynamicApplier extends RulesApplier
   #
   #
   apply-ctx-rules: ->
+    @debug 'apply-ctx-rules'
     @apply-rules-for @ctx!
     @apply-rules-for @ctx!, 'ctx'
     @apply-rules-for @ctx!, 'context'
@@ -95,8 +133,9 @@ module.exports = class DynamicApplier extends RulesApplier
     @
 
   apply-default-rules: ->
-    @debug 'apply-default-rules', @access-request, @valid-request!
-    if typeof! @access-request is 'Object' and @valid-request!
+    vr = @valid-request!
+    @debug 'apply-default-rules', @access-request, vr
+    if typeof! @access-request is 'Object' and vr
       @apply-access-rules!
     else
       @apply-rules-for 'default'

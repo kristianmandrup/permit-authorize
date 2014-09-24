@@ -5,8 +5,10 @@ requires.test 'test_setup'
 User          = requires.fix 'user'
 Book          = requires.fix 'book'
 
-RuleApplier   = requires.rule 'apply' .DynamicRulesApplier
+RulesApplier   = requires.rule 'apply' .DynamicApplier
 RuleRepo      = requires.rule 'repo' .RuleRepo
+
+fix-rules   = requires.fix-rules 'rules'
 
 describe 'Rule Applier (RuleApplier)' ->
   var book
@@ -16,71 +18,43 @@ describe 'Rule Applier (RuleApplier)' ->
     console.log repo.can-rules
     console.log repo.cannot-rules
 
+  create-rules-applier = (rule-repo, rules, read-access-request, debug = true) ->
+    new RulesApplier rule-repo, rules, read-access-request, debug
+
+  create-repo = (name = 'dynamic repo', debug = false) ->
+    new RuleRepo name, debug .clear!
+
   before ->
     book  := new Book 'Far and away'
 
-  describe 'apply-rules' ->
-    describe 'static' ->
-      var read-access-request, rule-repo, rule-applier, rules
+  describe 'dynamic' ->
+    var read-access-request, rule-repo, rule-applier, rules
 
-      before ->
-        rules         :=
-          edit: ->
-            @ucan     'edit',   'Book'
-            @ucannot  'write',  'Book'
-          read: ->
-            @ucan    'read',   'Project'
-            @ucannot 'delete', 'Paper'
-          default: ->
-            @ucan    'read',   'Paper'
+    before ->
+      rules :=
+        edit: ->
+          @ucan     'edit',   'Book'
+          @ucannot  'write',  'Book'
+        read: ->
+          @ucan    'read',   'Project'
+          @ucannot 'delete', 'Paper'
 
-        read-access-request :=
-          action: 'read'
-          subject: book
+      read-access-request :=
+        action: 'read'
+        subject: book
 
-        # adds only the 'read' rules (see access-request.action)
-        rule-repo     := new RuleRepo('static repo').clear!
-        rule-applier  := new RuleApplier rule-repo, rules
+      # adds only the 'read' rules (see access-request.action)
+      rule-repo     := create-repo! .clear!
+      rule-applier  := create-rules-applier rule-repo, rules, read-access-request, true
 
-        rule-applier.apply-rules!
+      rule-applier.apply-rules!
 
-      specify 'adds all static can rules' ->
-        rule-repo.can-rules.should.be.eql {
-          read: ['Paper']
-        }
+    specify 'adds all dynamic can rules (only read)' ->
+      rule-repo.can-rules.should.be.eql {
+        read: ['Project']
+      }
 
-      specify 'adds all static cannot rules' ->
-        rule-repo.cannot-rules.should.be.eql {
-        }
-
-    describe 'dynamic' ->
-      var read-access-request, rule-repo, rule-applier, rules
-
-      before ->
-        rules         :=
-          edit: ->
-            @ucan     'edit',   'Book'
-            @ucannot  'write',  'Book'
-          read: ->
-            @ucan    'read',   'Project'
-            @ucannot 'delete', 'Paper'
-
-        read-access-request :=
-          action: 'read'
-          subject: book
-
-        # adds only the 'read' rules (see access-request.action)
-        rule-repo     := new RuleRepo('action repo').clear!
-        rule-applier  := new RuleApplier rule-repo, rules, read-access-request
-
-        rule-applier.apply-rules read-access-request
-
-      specify 'adds all dynamic can rules (only read)' ->
-        rule-repo.can-rules.should.be.eql {
-          read: ['Project']
-        }
-
-      specify 'adds all dynamic cannot rules (only read)' ->
-        rule-repo.cannot-rules.should.be.eql {
-          delete: ['Paper']
-        }
+    specify 'adds all dynamic cannot rules (only read)' ->
+      rule-repo.cannot-rules.should.be.eql {
+        delete: ['Paper']
+      }

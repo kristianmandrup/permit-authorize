@@ -9,7 +9,6 @@ RulesApplier  = requires.rule 'apply' .DynamicApplier
 RuleRepo      = requires.rule 'repo' .RuleRepo
 
 fix-rules   = requires.fix-rules 'rules'
-console.log 'RulesApplier', RulesApplier
 
 describe 'Rule Applier (RuleApplier)' ->
   var book
@@ -22,7 +21,7 @@ describe 'Rule Applier (RuleApplier)' ->
   create-rules-applier = (rule-repo, rules, read-access-request) ->
     new RulesApplier rule-repo, rules, read-access-request
 
-  create-repo = (name = 'repo', debug = true) ->
+  create-repo = (name = 'dynamic repo', debug = true) ->
     new RuleRepo name, debug .clear!
 
   before ->

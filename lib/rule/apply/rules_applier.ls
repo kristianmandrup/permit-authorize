@@ -23,6 +23,11 @@ module.exports = class RulesApplier implements Debugger
   (@repo, @rules, @debugging) ->
     @execution-context = new ExecutionContext @repo
 
+  # TODO: extract into module
+  valid-request: ->
+    return false if not @access-request
+    if Object.keys(@access-request).length > 0 then true else false
+
   context-rules: (name)->
     @debug 'context rules', name
     if typeof! name is 'Object'
@@ -35,31 +40,12 @@ module.exports = class RulesApplier implements Debugger
       @debug "no such rules context: #{name}", @rules
       @rules
 
-  # only the static rules
-  apply-rules: ->
-    unless util.valid-rules @rules
-      # throw Error "No rules defined for permit: #{@name}"
-      @debug 'invalid permit rules could not be applied'
-      return
-
-    @debug 'applying rules', @rules
-
-    switch typeof @rules
-    when 'function'
-      @rules!
-    when 'object'
-      @apply-default-rules!
-
-    else
-      throw Error "rules must be a Function or an Object, was: #{@rules}"
-    @
-
   # should iterate through rules object recursively and execute any function found
   apply-all-rules: ->
     switch typeof @rules
     when 'object'
       rules = @rules
-      ctx = @
+      ctx = @execution-context
       for key of rules
         util.recurse rules[key], ctx
     else

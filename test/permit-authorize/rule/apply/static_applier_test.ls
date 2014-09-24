@@ -19,8 +19,8 @@ describe 'StaicApplier' ->
 
   rules = {}
 
-  create-repo = ->
-    new RuleRepo('static repo', true).clear!
+  create-repo = (name = 'static repo', debug = true) ->
+    new RuleRepo name, debug .clear!
 
   applier = (repo, rules, debug) ->
     new StaticApplier repo, rules, debug
@@ -51,4 +51,39 @@ describe 'StaicApplier' ->
           create: ['Paper']
           edit:   ['Paper']
           delete: ['Paper']
+        }
+
+
+  describe 'apply-rules' ->
+    describe 'static' ->
+      var read-access-request, rule-repo, rule-applier, rules
+
+      before ->
+        rules         :=
+          edit: ->
+            @ucan     'edit',   'Book'
+            @ucannot  'write',  'Book'
+          read: ->
+            @ucan    'read',   'Project'
+            @ucannot 'delete', 'Paper'
+          default: ->
+            @ucan    'read',   'Paper'
+
+        read-access-request :=
+          action: 'read'
+          subject: book
+
+        # adds only the 'read' rules (see access-request.action)
+        rule-repo     := create-repo! .clear!
+        rule-applier  := create-rules-applier rule-repo, rules
+
+        rule-applier.apply-rules!
+
+      specify 'adds all static can rules' ->
+        rule-repo.can-rules.should.be.eql {
+          read: ['Paper']
+        }
+
+      specify 'adds all static cannot rules' ->
+        rule-repo.cannot-rules.should.be.eql {
         }
