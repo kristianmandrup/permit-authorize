@@ -4,6 +4,7 @@ Debugger = require '../../util' .Debugger
 module.exports = class ExecutionContext implements Debugger
   (@repo, @debugging) ->
     @debug 'execute context'
+    @
 
     # so as not to be same name as can method used "from the outside, ie. via Ability"
     # for the functions within rules object, they are executed with the rule applier as this (@) - ie. the context

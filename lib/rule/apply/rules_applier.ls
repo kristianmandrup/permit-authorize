@@ -20,13 +20,33 @@ ExecutionContext  = require './execution_context'
 
 # Base class for Dynamic- and StaticRulesApplier
 module.exports = class RulesApplier implements Debugger
-  (@repo, @rules, @debugging) ->
-    @execution-context = new ExecutionContext @repo
+  (@execution-context, @rules, @debugging) ->
+    @
 
-  # TODO: extract into module
-  valid-request: ->
-    return false if not @access-request
-    if Object.keys(@access-request).length > 0 then true else false
+  repo: ->
+    @execution-context.repo
+
+  apply-rules-for: (name, context) ->
+    @debug "apply rules for #{name} in context:", context
+
+    if typeof! name is 'Object'
+      @apply-obj-rules-for name, context
+
+    unless typeof! name is 'String'
+      @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
+      return @
+      # throw Error "Name to appl rules for must be a String, was: #{name}"
+
+    rules = @context-rules context
+
+    named-rules = rules[name]
+    @debug 'named rules', named-rules
+    if typeof! named-rules is 'Function'
+      @debug 'call rules in', @execution-context
+      named-rules.call @execution-context, @access-request
+    else
+      @debug "rules key for #{name} should be a function that resolves one or more rules"
+    @
 
   context-rules: (name)->
     @debug 'context rules', name
@@ -45,9 +65,8 @@ module.exports = class RulesApplier implements Debugger
     switch typeof @rules
     when 'object'
       rules = @rules
-      ctx = @execution-context
       for key of rules
-        util.recurse rules[key], ctx
+        util.recurse rules[key], @execution-context
     else
       throw Error "rules must be an Object was: #{typeof @rules}"
     @

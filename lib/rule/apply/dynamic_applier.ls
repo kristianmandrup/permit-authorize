@@ -2,8 +2,13 @@ RulesApplier  = require './rules_applier'
 util          = require '../util'
 
 module.exports = class DynamicApplier extends RulesApplier
-  (@repo, @rules, @access-request, @debugging) ->
+  (@execution-context, @rules, @access-request, @debugging) ->
     super ...
+
+  # TODO: extract into module
+  valid-request: ->
+    return false if not @access-request
+    if Object.keys(@access-request).length > 0 then true else false
 
   action: ->
     @access-request?.action
@@ -34,26 +39,6 @@ module.exports = class DynamicApplier extends RulesApplier
 
     else
       throw Error "rules must be a Function or an Object, was: #{@rules}"
-    @
-
-  apply-rules-for: (name, context) ->
-    @debug "apply rules for #{name} in context: #{context}"
-
-    if typeof! name is 'Object'
-      @apply-obj-rules-for name, context
-
-    unless typeof! name is 'String'
-      @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
-      return @
-      # throw Error "Name to appl rules for must be a String, was: #{name}"
-
-    rules = @context-rules context
-
-    named-rules = rules[name]
-    if typeof! named-rules is 'Function'
-      named-rules.call @execution-context, @access-request
-    else
-      @debug "rules key for #{name} should be a function that resolves one or more rules"
     @
 
   apply-obj-rules-for: (obj, context) ->

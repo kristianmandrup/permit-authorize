@@ -7,8 +7,10 @@ Book          = requires.fix 'book'
 
 console.log requires.rule
 
-StaticApplier   = requires.rule 'apply' .StaticApplier
-RuleRepo        = requires.rule 'repo' .RuleRepo
+RulesApplier      = requires.rule 'apply' .StaticApplier
+ExecutionContext  = requires.rule 'apply' .ExecutionContext
+
+RuleRepo          = requires.rule 'repo' .RuleRepo
 
 # Note: Use rule-repo.display! for debugging internals of RuleRepo instances after rule application
 
@@ -19,18 +21,20 @@ describe 'StaicApplier' ->
 
   rules = {}
 
-  create-repo = (name = 'static repo', debug = true) ->
-    new RuleRepo name, debug .clear!
+  applier = (ctx, rules, debug = true) ->
+    new RulesApplier ctx, rules, debug
 
-  applier = (repo, rules, debug) ->
-    new StaticApplier repo, rules, debug
+  create-repo = (name = 'dynamic repo', debug = false) ->
+    new RuleRepo(name, debug).clear!
 
-  create-rule-applier = (rules, action-request) ->
-    rule-repo := create-repo!
-    rule-applier := applier rule-repo, rules, true
+  create-exec-ctx = (debug = true) ->
+    new ExecutionContext(create-repo!, debug)
+
+  create-rule-applier = (rules) ->
+    applier(create-exec-ctx!, rules, true)
 
   exec-rule-applier = (rules, action-request) ->
-    rule-applier := create-rule-applier(rules, action-request).apply-rules!
+    create-rule-applier(rules).apply-rules!
 
   before ->
     book          := new Book 'Far and away'
@@ -43,7 +47,8 @@ describe 'StaicApplier' ->
           default: ->
             @ucan    'manage',   'Paper'
 
-        exec-rule-applier rules.manage-paper
+        rule-applier  := exec-rule-applier rules.manage-paper
+        rule-repo     := rule-applier.repo!
 
       specify 'should add create, edit and delete can-rules' ->
         rule-repo.can-rules.should.eql {
@@ -54,36 +59,30 @@ describe 'StaicApplier' ->
         }
 
 
-  describe 'apply-rules' ->
-    describe 'static' ->
-      var read-access-request, rule-repo, rule-applier, rules
+    describe 'apply-rules' ->
+      describe 'static' ->
+        var rule-repo, rule-applier, rules
 
-      before ->
-        rules         :=
-          edit: ->
-            @ucan     'edit',   'Book'
-            @ucannot  'write',  'Book'
-          read: ->
-            @ucan    'read',   'Project'
-            @ucannot 'delete', 'Paper'
-          default: ->
-            @ucan    'read',   'Paper'
+        before ->
+          rules :=
+            edit: ->
+              @ucan     'edit',   'Book'
+              @ucannot  'write',  'Book'
+            read: ->
+              @ucan    'read',   'Project'
+              @ucannot 'delete', 'Paper'
+            default: ->
+              @ucan    'read',   'Paper'
 
-        read-access-request :=
-          action: 'read'
-          subject: book
+          # adds only the 'read' rules (see access-request.action)
+          rule-applier := exec-rule-applier rules
+          rule-repo    := rule-applier.repo!
 
-        # adds only the 'read' rules (see access-request.action)
-        rule-repo     := create-repo! .clear!
-        rule-applier  := create-rules-applier rule-repo, rules
+        specify 'adds all static can rules' ->
+          rule-repo.can-rules.should.be.eql {
+            read: ['Paper']
+          }
 
-        rule-applier.apply-rules!
-
-      specify 'adds all static can rules' ->
-        rule-repo.can-rules.should.be.eql {
-          read: ['Paper']
-        }
-
-      specify 'adds all static cannot rules' ->
-        rule-repo.cannot-rules.should.be.eql {
-        }
+        specify 'adds all static cannot rules' ->
+          rule-repo.cannot-rules.should.be.eql {
+          }

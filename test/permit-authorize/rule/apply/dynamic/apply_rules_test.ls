@@ -10,6 +10,15 @@ RuleRepo      = requires.rule 'repo' .RuleRepo
 
 fix-rules   = requires.fix-rules 'rules'
 
+create-rules-applier = (rule-repo, rules, read-access-request, debug = true) ->
+  new RulesApplier rule-repo, rules, read-access-request, debug
+
+create-repo = (name = 'dynamic repo', debug = false) ->
+  new RuleRepo name, debug .clear!
+
+create-exec-ctx = ->
+  new ExecutionContext create-repo!
+
 describe 'Rule Applier (RuleApplier)' ->
   var book
 
@@ -17,12 +26,6 @@ describe 'Rule Applier (RuleApplier)' ->
     console.log txt, repo
     console.log repo.can-rules
     console.log repo.cannot-rules
-
-  create-rules-applier = (rule-repo, rules, read-access-request, debug = true) ->
-    new RulesApplier rule-repo, rules, read-access-request, debug
-
-  create-repo = (name = 'dynamic repo', debug = false) ->
-    new RuleRepo name, debug .clear!
 
   before ->
     book  := new Book 'Far and away'
@@ -44,8 +47,7 @@ describe 'Rule Applier (RuleApplier)' ->
         subject: book
 
       # adds only the 'read' rules (see access-request.action)
-      rule-repo     := create-repo! .clear!
-      rule-applier  := create-rules-applier rule-repo, rules, read-access-request, true
+      rule-applier  := create-rules-applier create-exec-ctx!, rules, read-access-request, true
 
       rule-applier.apply-rules!
 
