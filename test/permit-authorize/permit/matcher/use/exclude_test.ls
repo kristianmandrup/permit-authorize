@@ -1,4 +1,4 @@
-requires        = require '../../../requires'
+requires        = require '../../../../../requires'
 
 requires.test 'test_setup'
 
@@ -6,11 +6,11 @@ Book            = requires.fix 'book'
 User            = requires.fix 'user'
 
 Permit          = requires.lib 'permit'
-permit-for      = requires.permit 'permit-for'
-PermitMatcher   = requires.permit 'permit_matcher'
-PermitRegistry  = requires.permit 'permit-registry'
+permit-for      = requires.permit 'factory' .permitFor
+PermitMatcher   = requires.permit 'matcher' .UsePermitMatcher
+PermitRegistry  = requires.permit 'registry' .PermitRegistry
 
-setup           = require('./permits').setup
+setup           = requires.fix 'permits' .setup
 
 create-user     = requires.fac 'create-user'
 create-request  = requires.fac 'create-request'

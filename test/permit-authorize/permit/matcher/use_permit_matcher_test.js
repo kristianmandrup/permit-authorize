@@ -5,14 +5,14 @@
   requires.test('test_setup');
   Book = requires.fix('book');
   User = requires.fix('user');
-  permitFor = requires.permit('permit_for');
-  PermitMatcher = requires.permit('permit_matcher');
+  permitFor = requires.permit('factory').permitFor;
+  PermitMatcher = requires.permit('matcher').UsePermitMatcher;
   Permit = requires.lib('permit');
-  setup = require('./permit/permit_matcher/permits').setup;
+  setup = requires.fix('permits').setup;
   createUser = requires.fac('create-user');
   createRequest = requires.fac('create-request');
   createPermit = requires.fac('create-permit');
-  describe('PermitMatcher', function(){
+  describe('UsePermitMatcher', function(){
     var permitMatcher, book, users, permits, requests, matching, noneMatching;
     users = {};
     permits = {};

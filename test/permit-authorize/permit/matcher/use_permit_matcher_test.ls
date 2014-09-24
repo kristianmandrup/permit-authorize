@@ -1,21 +1,21 @@
-requires  = require '../../requires'
+requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
 Book          = requires.fix 'book'
 User          = requires.fix 'user'
 
-permit-for    = requires.permit 'permit_for'
-PermitMatcher = requires.permit 'permit_matcher'
+permit-for    = requires.permit 'factory' .permitFor
+PermitMatcher = requires.permit 'matcher' .UsePermitMatcher
 Permit        = requires.lib 'permit'
 
-setup         = require('./permit_matcher/permits').setup
+setup         = requires.fix 'permits' .setup
 
 create-user     = requires.fac 'create-user'
 create-request  = requires.fac 'create-request'
 create-permit   = requires.fac 'create-permit'
 
-describe 'PermitMatcher' ->
+describe 'UsePermitMatcher' ->
   var permit-matcher, book
 
   users     = {}
