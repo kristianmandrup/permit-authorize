@@ -12,7 +12,7 @@ module.exports =
     permit-for GuestPermit, 'guest books', (->
       rules:
         ctx:
-          area:
+          area: 
             visitor: ->
               @ucan 'publish', 'Paper'
         read: ->

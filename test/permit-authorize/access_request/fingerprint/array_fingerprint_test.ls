@@ -20,7 +20,6 @@ describe 'ArrayFingerPrint' ->
   describe 'fingerprint' ->
     specify 'makes a fingerprint' ->
       res = finger-printer(access-request).fingerprint!
-      console.log res
       res.should.eql 'hello.goodbye'
 
 

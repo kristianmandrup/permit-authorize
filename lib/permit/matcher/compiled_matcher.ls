@@ -32,7 +32,5 @@ module.exports = class CompiledMatcher implements Debugger
   iterate-compiled: ->
     res = false
     for match-fun in @compiled-list
-      # console.log match-fun(@access-request)
       break if match-fun @access-request
-      # @debug 'compile fun res', res
     res

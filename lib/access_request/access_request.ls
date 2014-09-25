@@ -33,15 +33,12 @@ module.exports = class AccessRequest implements Debugger
 
   validate: ->
     unless @valid-action!
-      console.log "ar", @ar-obj
       throw new Error "Missing action name. Must authorize an action to be performed on a subject, was: #{@action}, #{typeof! @action}"
 
     unless @valid-subject!
-      console.log "ar", @ar-obj
       throw new Error "Missing subject. Must authorize a subject: #{@subject} to perform an action: #{@action}"
 
     unless @valid-user!
-      console.log "ar", @ar-obj
       throw new Error "Missing or invalid user. Must authorize a user: #{@user} to perform an action: #{@action}"
 
   valid-subject: ->

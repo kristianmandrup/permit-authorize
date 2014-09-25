@@ -20,7 +20,6 @@
       return specify('makes a fingerprint', function(){
         var res;
         res = fingerPrinter(accessRequest).fingerprint();
-        console.log(res);
         return res.should.eql('hello.goodbye');
       });
     });
