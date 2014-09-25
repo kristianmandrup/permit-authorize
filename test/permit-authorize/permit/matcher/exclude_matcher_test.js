@@ -7,8 +7,9 @@
   Permit = requires.lib('permit').Permit;
   setup = requires.fix('permits').setup;
   createUser = requires.fac('create-user');
-  createMatcher = function(ctx){
-    return new Matcher(ctx);
+  createMatcher = function(ctx, ar, debug){
+    debug == null && (debug = true);
+    return new Matcher(ctx, ar, debug);
   };
   describe('PermitMatcher', function(){
     var matcher, book, users, permits, requests, matching, noneMatching;
@@ -23,40 +24,42 @@
       requests.user = {
         user: users.kris
       };
-      permits.user = setup.userPermit();
-      return matcher = createMatcher(permits.user, requests.user);
+      return permits.user = setup.userPermit();
     });
     describe('exclude', function(){
       describe('excludes user.name: kris', function(){
-        before(function(){
-          return permits.user.excludes = {
+        beforeEach(function(){
+          permits.user.excludes = {
             user: users.kris
           };
+          return matcher = createMatcher(permits.user, requests.user);
         });
         return specify('matches access-request on excludes intersect', function(){
           return matcher.exclude().should.be['true'];
         });
       });
       describe('excludes empty {}', function(){
-        before(function(){
-          return permits.user.excludes = {};
+        beforeEach(function(){
+          permits.user.excludes = {};
+          return matcher = createMatcher(permits.user, requests.user);
         });
         return specify('matches access-request since empty excludes always intersect', function(){
           return matcher.exclude().should.be['true'];
         });
       });
       return describe('excludes other user', function(){
-        before(function(){
-          return permits.user.excludes = {
+        beforeEach(function(){
+          permits.user.excludes = {
             user: users.emily
           };
+          return matcher = createMatcher(permits.user, requests.user);
         });
         return specify('does NOT match access-request since NO excludes intersect', function(){
           return matcher.exclude().should.be['false'];
         });
       });
     });
-    return describe('custom-ex-match', function(){
+    return xdescribe('custom-ex-match', function(){
       var subject, matcher, book, users, permits, requests, matching, noneMatching;
       users = {};
       permits = {};

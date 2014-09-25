@@ -2,7 +2,7 @@ requires        = require '../../../../requires'
 
 requires.test 'test_setup'
 
-Matcher         = requires.permit 'matcher'   .ExcludeMatcher
+Matcher         = requires.permit 'matcher'   .IncludeMatcher
 PermitRegistry  = requires.permit 'registry'  .PermitRegistry
 
 setup           = requires.fix 'permits' .setup
@@ -10,6 +10,9 @@ Book            = requires.fix 'book'
 User            = requires.fix 'user'
 
 create-user     = requires.fac 'create-user'
+
+create-matcher = (ctx, ar, debug = false) ->
+  new Matcher ctx, ar, debug
 
 describe 'IncludeMatcher' ->
   var matcher, book
@@ -22,37 +25,41 @@ describe 'IncludeMatcher' ->
   none-matching = {}
 
   before ->
-    users.kris        := create-user.kris
+    users.kris        := create-user.kris!
     requests.user     :=
       user: users.kris
 
     permits.user      := setup.user-permit!
-    matcher    := new PermitMatcher permits.user, requests.user
 
-  describe 'include' ->
+
+  describe.only 'include' ->
     describe 'includes user.name: kris' ->
-      before ->
+      before-each ->
         permits.user.includes =
           user: users.kris
+
+        matcher := create-matcher permits.user, requests.user
 
       specify 'matches access-request on includes intersect' ->
         matcher.include!.should.be.true
 
     describe 'includes empty {}' ->
-      before ->
+      before-each ->
         permits.user.includes = {}
+        matcher := create-matcher permits.user, requests.user
 
       specify 'matches access-request since empty includes always intersect' ->
         matcher.include!.should.be.true
 
     describe 'includes is nil' ->
-      before ->
+      before-each ->
         permits.user.includes = void
+        matcher := create-matcher permits.user, requests.user
 
       specify 'does NOT match access-request since NO includes intersect' ->
         matcher.include!.should.be.false
 
-  describe 'custom-match' ->
+  xdescribe 'custom-match' ->
     var subject
     var matcher, book
 

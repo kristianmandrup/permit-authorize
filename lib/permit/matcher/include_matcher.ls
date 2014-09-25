@@ -2,26 +2,33 @@ AccessMatcher   = require '../../access_request' .matcher.AccessMatcher
 ContextMatcher  = require './context_matcher'
 
 module.exports = class IncludeMatcher extends ContextMatcher
+  (context, @access-request, @debugging) ->
+    super context, @@default-key, @debugging
+
+  @default-key = 'includes'
+
   match: ->
-    @include! or @custom-match!
+    console.log @
+    @debug 'match', @match-context
+    @include! or @in-match!
 
   include: ->
-    @intersect-on @context.includes
+    return false unless typeof! @match-context is 'Object'
+    @debug 'intersect', @match-context, @access-request
+    @intersect-on @access-request
 
-  custom-match: ->
-    if typeof! @context.match is 'Function'
-      res = @context.match @access-request
-      @debug 'custom-match', @permit.match, res
+  in-match: ->
+    return false unless typeof! @match-context is 'Function'
 
-      if res.constructor is AccessMatcher
-        return res.result!
+    res = @match-context @access-request
+    @debug 'custom-match', @permit.match, res
 
-      return true if res is undefined
+    if res.constructor is AccessMatcher
+      return res.result!
 
-      unless typeof! res is 'Boolean'
-        throw Error ".match method of permit #{@context.name} must return a Boolean value, was: #{typeof! res}"
+    return false if res is undefined
 
-      return res
-    else
-      @debug "permit.match function not found for permit: #{@context.name}"
-      false
+    unless typeof! res is 'Boolean'
+      throw Error "#{@key} method of context #{@context.name} must return a Boolean value, was: #{typeof! res}"
+
+    return res

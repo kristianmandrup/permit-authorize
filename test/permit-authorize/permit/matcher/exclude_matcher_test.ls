@@ -2,15 +2,15 @@ requires        = require '../../../../requires'
 
 requires.test 'test_setup'
 
-Matcher         = requires.permit 'matcher'   .ExcludeMatcher
-Permit          = requires.lib 'permit' .Permit
+Matcher         = requires.permit 'matcher' .ExcludeMatcher
+Permit          = requires.lib 'permit'     .Permit
 
-setup           = requires.fix 'permits' .setup
+setup           = requires.fix 'permits'    .setup
 
 create-user     = requires.fac 'create-user'
 
-create-matcher = (ctx) ->
-  new Matcher ctx
+create-matcher = (ctx, ar, debug = true) ->
+  new Matcher ctx, ar, debug
 
 
 describe 'PermitMatcher' ->
@@ -30,33 +30,36 @@ describe 'PermitMatcher' ->
       user: users.kris
 
     permits.user   := setup.user-permit!
-    matcher        := create-matcher permits.user, requests.user
 
   describe 'exclude' ->
     describe 'excludes user.name: kris' ->
-      before ->
+      before-each ->
         permits.user.excludes =
           user: users.kris
+
+        matcher := create-matcher permits.user, requests.user
 
       specify 'matches access-request on excludes intersect' ->
         matcher.exclude!.should.be.true
 
     describe 'excludes empty {}' ->
-      before ->
+      before-each ->
         permits.user.excludes = {}
+        matcher := create-matcher permits.user, requests.user
 
       specify 'matches access-request since empty excludes always intersect' ->
         matcher.exclude!.should.be.true
 
     describe 'excludes other user' ->
-      before ->
+      before-each ->
         permits.user.excludes =
           user: users.emily
+        matcher := create-matcher permits.user, requests.user
 
       specify 'does NOT match access-request since NO excludes intersect' ->
         matcher.exclude!.should.be.false
 
-  describe 'custom-ex-match' ->
+  xdescribe 'custom-ex-match' ->
     var subject
     var matcher, book
 
