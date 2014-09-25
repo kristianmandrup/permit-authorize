@@ -1,6 +1,3 @@
-Intersect     = require '../../util' .Intersect
-AccessMatcher = require '../../access_request' .matcher.AccessMatcher
-
 # The matcher is used to determine if the Permit should apply at all in the given access context
 # Given an access-request, it should check the permit via:
 #   permit.match
@@ -14,7 +11,9 @@ AccessMatcher = require '../../access_request' .matcher.AccessMatcher
 # To enable debugging, simply do:
 #   PermitMatcher.debug-on!
 
-Debugger = require '../../util' .Debugger
+Debugger        = require '../../util' .Debugger
+ContextMatcher  = require('./context_matcher')
+CompiledMatcher = require('./compiled_matcher')
 
 # Tries to match access request on available permit matchers
 # to determine if permit should be used for this access check or not
@@ -31,13 +30,13 @@ module.exports = class PermitMatcher implements Debugger
     @include! or @match-compiled! and not @exclude!
 
   match-compiled: ->
-    @_mc ||= new CompiledMatcher @context, @access-request, @debugging .match!
+    @_mc ||= new CompiledMatcher(@context, @access-request, @debugging).match!
 
   include: ->
-    @_include ||= @matcher 'include' .match!
+    @_include ||= @matcher('include').match!
 
   exclude: ->
-    @_exclude ||= @matcher 'exclude' .match!
+    @_exclude ||= @matcher('exclude').match!
 
   matcher: (key) ->
     @matchers[key] ||= new ContextMatcher @context, key, @access-request, @debugging
@@ -48,4 +47,3 @@ module.exports = class PermitMatcher implements Debugger
     if @access-request? and @access-request is undefined
       throw Error "access-request is undefined"
 
-PermitMatcher <<< Debugger

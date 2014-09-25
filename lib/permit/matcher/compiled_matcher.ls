@@ -10,9 +10,8 @@ compile:
 */
 
 module.exports = class CompiledMatcher implements Debugger
-  (context, @access-request, @debugging) ->
-    super context
-    @compiled-list = @context.compiled-list
+  (@context, @access-request, @debugging) ->
+    @compiled-list = @context.compiled-list or {}
     @compile!
     @
 

@@ -8,14 +8,19 @@ mh = class MatchingContext
   # returns AccessMatcher
   matching: (ar) ->
     ar ||= @access-request
+    return false unless typeof! ar is 'Object'
     return @_cached-matching ar if typeof! ar.fingerprint is 'Function'
     @_access-matcher ar
 
+  _cached-matchers: {}
+
   _cached-matching: (ar) ->
     fingerprint = ar.fingerprint!
-    unless @cached_matchers[fingerprint]
-      @cached_matchers[fingerprint] = @_access-matcher ar
-    @cached_matchers[fingerprint]
+    return @_access-matcher ar unless typeof! fingerprint is 'String'
+
+    unless @_cached-matchers[fingerprint]
+      @_cached-matchers[fingerprint] = @_access-matcher ar
+    @_cached-matchers[fingerprint]
 
   _access-matcher: (ar) ->
     @_am ||= new AccessMatcher ar

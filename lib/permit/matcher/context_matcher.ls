@@ -2,6 +2,7 @@ Debugger          = require '../../util' .Debugger
 
 module.exports = class ContextMatcher implements Debugger
   (@context, @key, @access-request, @debugging) ->
+    console.log 'ContextMatcher', @
     @validate!
     @context = @context.matches if @context.matches
     @
@@ -11,10 +12,10 @@ module.exports = class ContextMatcher implements Debugger
       throw new Error "context must be an Object, was: #{@context}"
     unless typeof! @key is 'String'
       throw new Error "Key must be a String, was: #{@key}"
+
     # TODO: in module
     unless typeof! @access-request is 'Object'
       throw new Error "access-request must be an Object, was: #{@access-request}"
-
 
   matching-context: ->
     new (require './matching_context') @context, @access-request

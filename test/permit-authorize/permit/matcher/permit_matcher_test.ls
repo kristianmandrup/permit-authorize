@@ -1,20 +1,23 @@
-requires        = require '../../../../../requires'
+requires        = require '../../../../requires'
 
 requires.test 'test_setup'
 
 Book            = requires.fix 'book'
 User            = requires.fix 'user'
 
-Permit          = requires.lib 'permit'
-permit-for      = requires.permit 'factory' .permitFor
-PermitMatcher   = requires.permit 'matcher' .UsePermitMatcher
-PermitRegistry  = requires.permit 'registry' .PermitRegistry
+Permit          = requires.lib 'permit'       .Permit
+permit-for      = requires.permit 'factory'   .permitFor
+PermitMatcher   = requires.permit 'matcher'   .PermitMatcher
+PermitRegistry  = requires.permit 'registry'  .PermitRegistry
 
 setup           = requires.fix 'permits' .setup
 
 create-user     = requires.fac 'create-user'
 create-request  = requires.fac 'create-request'
 create-permit   = requires.fac 'create-permit'
+
+create-matcher = (ctx, ar, debug = true) ->
+  new PermitMatcher ctx, ar, debug
 
 describe 'PermitMatcher' ->
   var permit-matcher, book
@@ -34,7 +37,7 @@ describe 'PermitMatcher' ->
 
     permits.user  := setup.user-permit!
 
-    permit-matcher := new PermitMatcher permits.user, requests.user
+    permit-matcher := create-matcher permits.user, requests.user
 
   describe 'match access' ->
     matching = {}
@@ -46,8 +49,8 @@ describe 'PermitMatcher' ->
       requests.ctx :=
         ctx: ''
 
-      matching.permit-matcher       := new PermitMatcher permits.user, requests.user
-      none-matching.permit-matcher  := new PermitMatcher permits.user, requests.ctx
+      matching.permit-matcher       := create-matcher permits.user, requests.user
+      none-matching.permit-matcher  := create-matcher permits.user, requests.ctx
 
     specify 'does not match access without user' ->
       none-matching.permit-matcher.match!.should.be.false
@@ -68,12 +71,12 @@ describe 'PermitMatcher' ->
 
       requests.alt := {}
 
-      PermitRegistry.clean-all!
+      Permit.registry.clean-all!
 
       permits.user := setup.complex-user!
 
-      matching.permit-matcher       := new PermitMatcher permits.user, requests.valid
-      none-matching.permit-matcher  := new PermitMatcher permits.user, requests.invalid
+      matching.permit-matcher       := create-matcher permits.user, requests.valid
+      none-matching.permit-matcher  := create-matcher permits.user, requests.invalid
 
     specify 'does not match access without user' ->
       none-matching.permit-matcher.match!.should.be.false
@@ -88,7 +91,7 @@ describe 'PermitMatcher' ->
         subject : book
 
       permits.user      := setup.complex-user-returns-matcher!
-      permit-matcher    := new PermitMatcher permits.user, requests.valid
+      permit-matcher    := create-matcher permits.user, requests.valid
 
       specify 'AccessMatcher chaining in .match which returns AccessMatcher should call result!' ->
         permit-matcher.match!.should.be.true
