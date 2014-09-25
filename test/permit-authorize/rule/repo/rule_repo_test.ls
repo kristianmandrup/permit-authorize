@@ -7,6 +7,8 @@ Book        = requires.fix 'book'
 
 RuleRepo    = requires.rule 'repo/rule_repo'
 
+expect = require 'chai' .expect
+
 describe 'Rule Repository (RuleRepo)' ->
   var access-request, rule, rule-repo
   var book

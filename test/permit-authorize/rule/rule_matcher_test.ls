@@ -1,7 +1,16 @@
+requires  = require '../../../requires'
+
+requires.test 'test_setup'
+
+User        = requires.fix 'user'
+Book        = requires.fix 'book'
+
 RuleMatcher = require '../../../../rule' .RuleMatcher
 
 create-matcher = (act, ar) ->
   new RuleMatcher act, ar
+
+expect = require 'chai' .expect
 
 describe 'RuleMatcher' ->
   subjects = {}

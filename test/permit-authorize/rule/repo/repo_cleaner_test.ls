@@ -8,6 +8,8 @@ Book        = requires.fix 'book'
 RuleRepo    = requires.rule 'repo/rule_repo'
 RepoCleaner = requires.rule 'repo' .RepoCleaner
 
+expect = require 'chai' .expect
+
 describe 'RepoCleaner' ->
   var access-request, rule, repo
   var book

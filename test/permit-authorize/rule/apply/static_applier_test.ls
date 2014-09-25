@@ -12,6 +12,8 @@ ExecutionContext  = requires.rule 'apply' .ExecutionContext
 
 RuleRepo          = requires.rule 'repo' .RuleRepo
 
+expect = require 'chai' .expect
+
 # Note: Use rule-repo.display! for debugging internals of RuleRepo instances after rule application
 
 describe 'StaicApplier' ->

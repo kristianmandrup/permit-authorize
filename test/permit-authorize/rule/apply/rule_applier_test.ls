@@ -8,6 +8,8 @@ Book          = requires.fix 'book'
 RuleApplier   = requires.rule 'rule_applier'
 RuleRepo      = requires.rule 'rule_repo'
 
+expect = require 'chai' .expect
+
 # Note: Use rule-repo.display! for debugging internals of RuleRepo instances after rule application
 
 describe 'Rule Applier (RuleApplier)' ->

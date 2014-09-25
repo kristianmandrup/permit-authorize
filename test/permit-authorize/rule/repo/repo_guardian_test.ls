@@ -1,10 +1,15 @@
+requires  = require '../../../../requires'
+
+requires.test 'test_setup'
+
 expect = require 'chai' .expect
-lib = '../../../../lib/'
 
-PermitAllower = require lib + 'allower' .PermitAllower
+PermitAllower = requires.lib 'allower' .PermitAllower
 
-RepoGuardian  = require lib + 'rule/repo/' .RepoGuardian
-RuleRepo      = require lib + 'rule/repo/' .RuleRepo
+RepoGuardian  = requires.lib + 'rule/repo/' .RepoGuardian
+RuleRepo      = requires.lib + 'rule/repo/' .RuleRepo
+
+expect = require 'chai' .expect
 
 rule-repo = (name) ->
   new RuleRepo name
