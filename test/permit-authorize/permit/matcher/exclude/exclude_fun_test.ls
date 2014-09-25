@@ -1,4 +1,4 @@
-requires        = require '../../../../requires'
+requires        = require '../../../../../requires'
 
 requires.test 'test_setup'
 
@@ -12,13 +12,13 @@ User            = requires.fix 'user'
 create-user     = requires.fac 'create-user'
 
 create-matcher = (ctx, ar, debug = false) ->
-  new Matcher ctx, 'includes', ar, debug
+  new Matcher ctx, 'excludes', ar, debug
 
 intersect = (obj = {}) ->
   {intersect: obj}
 
-includes = (obj = {}) ->
-  intersect {includes: obj}
+excludes = (obj = {}) ->
+  intersect {excludes: obj}
 
 users     = {}
 permits   = {}
@@ -34,8 +34,8 @@ requests.user     :=
 
 users.emily  := create-user.emily
 
-describe 'ContextMatcher - Include' ->
-  describe.only 'includes - Function ' ->
+describe 'ContextMatcher - Exclude' ->
+  describe.only 'excludes - Function ' ->
     var subject
     var matcher, book, abook
 
@@ -47,13 +47,13 @@ describe 'ContextMatcher - Include' ->
     ctx.is-book =
       matches:
         fun:
-          includes: (ar) ->
+          excludes: (ar) ->
             @matching(ar).subject-clazz 'Book'
 
     ctx.article =
       matches:
         fun:
-          includes: (ar) ->
+          excludes: (ar) ->
             @matching(ar).subject-clazz 'Article'
 
     before ->

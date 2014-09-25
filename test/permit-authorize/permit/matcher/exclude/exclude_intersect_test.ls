@@ -2,66 +2,84 @@ requires        = require '../../../../../requires'
 
 requires.test 'test_setup'
 
-Matcher         = requires.permit 'matcher' .ContextMatcher
-Permit          = requires.lib 'permit'     .Permit
+Matcher         = requires.permit 'matcher'   .ContextMatcher
+PermitRegistry  = requires.permit 'registry'  .PermitRegistry
 
-setup           = requires.fix 'permits'    .setup
+setup           = requires.fix 'permits' .setup
+Book            = requires.fix 'book'
+User            = requires.fix 'user'
 
 create-user     = requires.fac 'create-user'
 
-create-matcher = (ctx, ar, debug = true) ->
-  new Matcher ctx, ar, debug
+create-matcher = (ctx, ar, debug = false) ->
+  new Matcher ctx, 'excludes', ar, debug
 
-intersect = (obj) ->
+intersect = (obj = {}) ->
   {intersect: obj}
 
-excludes = (obj) ->
-  intersect {includes: obj}
+excludes = (obj = {}) ->
+  intersect {excludes: obj}
 
+users     = {}
+permits   = {}
+requests  = {}
+ctx       = {}
+context   = {}
 
-describe 'PermitMatcher' ->
-  var matcher, book
+matching = {}
+none-matching = {}
 
-  users     = {}
-  permits   = {}
-  requests  = {}
+users.kris        := create-user.kris!
+requests.user     :=
+  user: users.kris
 
-  matching = {}
-  none-matching = {}
+users.emily  := create-user.emily
+
+ctx.base :=
+  ctx:
+    area: 'guest'
+    secret: '123'
+
+ctx.and-more :=
+  ctx:
+    area: 'guest'
+    secret: '123'
+    more: 'So much more...'
+
+ctx.and-less :=
+  ctx:
+    area: 'guest'
+
+permits.user      := setup.user-permit!
+
+books = {}
+
+describe 'ContextMatcher (exclude)' ->
+  var matcher
 
   before ->
-    users.kris    := create-user.kris!
-    users.emily   := create-user.emily!
-    requests.user :=
-      user: users.kris
 
-    permits.user   := setup.user-permit!
-
-  describe 'exclude' ->
+  describe 'exclude - intersect' ->
     describe 'excludes user.name: kris' ->
       before-each ->
-        permits.user.excludes =
-          user: users.kris
-
-        matcher := create-matcher permits.user, requests.user
+        matcher := create-matcher excludes(ctx.base), ctx.base
 
       specify 'matches access-request on excludes intersect' ->
-        matcher.exclude!.should.be.true
+        matcher.match!.should.be.true
 
     describe 'excludes empty {}' ->
       before-each ->
-        permits.user.excludes = {}
-        matcher := create-matcher permits.user, requests.user
+        matcher := create-matcher excludes!, requests.user
 
       specify 'matches access-request since empty excludes always intersect' ->
-        matcher.exclude!.should.be.true
+        matcher.match!.should.be.true
 
-    describe 'excludes other user' ->
+    describe 'excludes is nil' ->
       before-each ->
-        permits.user.excludes =
-          user: users.emily
+        permits.user.includes = void
         matcher := create-matcher permits.user, requests.user
 
       specify 'does NOT match access-request since NO excludes intersect' ->
-        matcher.exclude!.should.be.false
+        matcher.match!.should.be.false
+
 
