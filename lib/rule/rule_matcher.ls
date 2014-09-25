@@ -28,6 +28,12 @@ module.exports = class RuleMatcher
 
     @match-subject-clazz action-subjects, subj-clazz
 
+  container-for: (act) ->
+    act = act.to-lower-case!
+    c = @["#{act}Rules"]
+    throw Error "No valid rule container for: #{act}" unless typeof! c is 'Object'
+    c
+
   rule-container: ->
     @_container ||= @container-for @act
 
@@ -35,6 +41,28 @@ module.exports = class RuleMatcher
     @debug 'match-subject-clazz', action-subjects, subj-clazz
     return false unless typeof! action-subjects is 'Array'
     @find-matching-subject action-subjects, subj-clazz
+
+  wildcards: ['*', 'any']
+
+  subject-clazz: (subject)->
+    if typeof! subject is 'Object'
+      subject-clazz = subject.constructor.display-name
+    else
+      subject-clazz = subject
+
+  find-matching-subject: (subjects, subject) ->
+    # first try wild-card 'any' or '*'
+    return true if contains @wildcards, subject
+
+    if typeof! subject is 'Array'
+      self = @
+      return contains subjects, subject
+
+    unless typeof! subject is 'String'
+      throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
+
+    camelized = camel-case subject
+    subjects.index-of(camelized) != -1
 
   match-manage-rule: (rule-container, subj-clazz) ->
     manage-subjects = rule-container['manage']

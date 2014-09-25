@@ -1,4 +1,4 @@
-
+RuleMatcher = require '../../../../rule' .RuleMatcher
 
 create-matcher = (act, ar) ->
   new RuleMatcher act, ar
@@ -42,6 +42,8 @@ describe 'RuleMatcher' ->
     describe 'manage-actions' ->
       specify 'has CED actions' ->
         matcher.manage-actions.should.eql ['create', 'edit', 'delete']
+
+    describe 'container-for' ->
 
     describe 'rule-container' ->
 
