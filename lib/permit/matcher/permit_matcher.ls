@@ -41,9 +41,10 @@ module.exports = class PermitMatcher implements Debugger
   matcher: (key) ->
     @matchers[key] ||= new ContextMatcher @context, key, @access-request, @debugging
 
+  # TODO: refactor everywhere to more elegant system!
   validate: ->
-    # use object intersection test if permit has includes or excludes
-    throw Error "PermitMatcher missing permit" unless @context
-    if @access-request? and @access-request is undefined
-      throw Error "access-request is undefined"
+    unless typeof! @context is 'Object'
+      throw Error "context must be an Object, was: #{@context}"
+    unless typeof! @access-request is 'Object'
+      throw Error "access request must be an Object, was: #{@access-request}"
 

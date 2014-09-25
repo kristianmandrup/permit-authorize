@@ -1,14 +1,14 @@
 module.exports = class ActRuleProcessor
   (@act, @rule) ->
-    rules = []
+    @rules = []
 
   process: ->
     for action, subject of @rule
       fun = @resolve(@act, action, subject)
-      rules.push fun
+      @rules.push fun
     ->
-      for rule in rules
-        @rule!
+      for rule in @rules
+        rule!
 
   resolve: (act, action, subject) ->
     ->

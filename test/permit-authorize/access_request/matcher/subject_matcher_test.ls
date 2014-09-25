@@ -4,8 +4,13 @@ requires.test 'test_setup'
 
 Matcher   = requires.lib 'access_request' .matcher.SubjectMatcher
 
+Book      = requires.fix 'book'
+
 matcher = (req) ->
   new Matcher req
+
+create-book = (title) ->
+  new Book title: title
 
 describe 'SubjectMatcher' ->
   var subject-matcher  
@@ -13,7 +18,7 @@ describe 'SubjectMatcher' ->
   requests = {}
 
   before ->
-    book := new Book title: 'the return of the jedi'
+    book := create-book 'the return of the jedi'
     requests.book :=
       subject: book
 
