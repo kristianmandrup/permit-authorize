@@ -16,7 +16,7 @@ Ability         = requires.lib 'ability'
 
 describe 'Authorizer' ->
   var ctx
-
+ 
   users         = {}
   requests      = {}
   permits       = {}

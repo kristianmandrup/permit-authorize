@@ -56,6 +56,12 @@ describe 'PermitMatcher' ->
     specify 'matchers are empty' ->
       pmatcher.matchers.should.eql {}
 
+    specify 'match is by default true since matchers are by default disabled' ->
+      pmatcher.match!.should.eql true
+
+    specify 'Permit matchers are by default disabled' ->
+      Permit.matchers-enabled.should.eql false
+
     describe 'matcher' ->
       var inc-matcher, key
 

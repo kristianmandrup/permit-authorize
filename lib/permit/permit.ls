@@ -23,12 +23,20 @@ module.exports = class Permit implements Debugger
     @permit-allower     = new PermitAllower @rule-repo
     @
 
+  @enable-match = ->
+    @match-enabled = true
+
+  @disable-match = ->
+    @match-enabled = false
+
   permit-matcher: ->
     new PermitMatcher @, @access-request, @debugging
 
   # See if this permit should apply (be used) for the given access request
+  # By default @match-enabled is undefined which means false ie. disabled
   match: ->
-    @permit-matcher.match!
+    return true unless @permit-matcher
+    @permit-matcher.match! if @match-enabled
 
   registry: ->
     @@registry

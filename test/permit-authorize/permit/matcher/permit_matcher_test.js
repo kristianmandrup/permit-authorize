@@ -67,6 +67,12 @@
       specify('matchers are empty', function(){
         return pmatcher.matchers.should.eql({});
       });
+      specify('match is by default true since matchers are by default disabled', function(){
+        return pmatcher.match().should.eql(true);
+      });
+      specify('Permit matchers are by default disabled', function(){
+        return Permit.matchersEnabled.should.eql(false);
+      });
       describe('matcher', function(){
         var incMatcher, key;
         before(function(){

@@ -70,54 +70,11 @@ module.exports = class RuleRepo implements Debugger
     camelized = camel-case subject
     subjects.index-of(camelized) != -1
 
-  # TODO: simplify, extract methods and one or more classes!!!
   match-rule: (act, access-request) ->
-    @debug 'match-rule', act, access-request
+    @rule-matcher(act, access-request).match!
 
-    act = camel-case act
-    @debug 'act', act
-    action = access-request.action
-    subject = access-request.subject
-    @debug 'action', action
-    @debug 'subject', subject
-
-    subj-clazz = @subject-clazz subject
-    rule-container = @container-for act
-    @debug 'rule-container', rule-container
-
-    @match-manage-rule(rule-container, subj-clazz) if action is 'manage'
-
-    @debug 'subj-clazz', subj-clazz
-    return false unless subj-clazz
-
-    action-subjects = rule-container[action]
-    @debug 'action-subjects', action-subjects
-    return false unless action-subjects
-
-    @match-subject-clazz action-subjects, subj-clazz
-
-  match-subject-clazz: (action-subjects, subj-clazz) ->
-    @debug 'match-subject-clazz', action-subjects, subj-clazz
-    return false unless typeof! action-subjects is 'Array'
-    @find-matching-subject action-subjects, subj-clazz
-
-  match-manage-rule: (rule-container, subj-clazz) ->
-    manage-subjects = rule-container['manage']
-
-    found = match-subject-clazz manage-subjects, subj-clazz
-
-    return found if found
-
-    # see if we are allowed to create, edit and delete for this subject class!
-    manage-action-subjects(rule-container).all (action-subjects) ->
-      match-subject-clazz action-subjects, subj-clazz
-
-  manage-action-subjects: (rule-container) ->
-    arr.map @manage-actions!, (action) ->
-      rule-container[action]
-
-  manage-actions: ->
-    ['create', 'edit', 'delete']
+  rule-matcher: (act, access-request) ->
+    new RuleMatcher act, access-request
 
   # for now, lets forget about ctx
   add-rule: (rule-container, action, subjects) ->
