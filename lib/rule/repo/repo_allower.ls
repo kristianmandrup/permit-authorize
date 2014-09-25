@@ -1,6 +1,6 @@
 Debugger  = require '../util' .Debugger
 
-module.exports = class PermitAllower implements Debugger
+module.exports = class RepoAllower implements Debugger
   (@rule-repo, @debugging) ->
     unless typeof! @rule-repo is 'Object'
       throw Error "PermitAllower must take a RuleRepo in constructor, was: #{@rule-repo}"

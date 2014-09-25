@@ -1,5 +1,7 @@
 # Permit Matcher Design
 
+Optional package. If not included, all permits will by default match.
+
 A Permit matcher has the *Single Responsibiity* to match a given `AccessRequest` on a `Permit` (context) in order to determine
 if the context is valid for that `AccessRequest` and should be taken into account.
 

@@ -1,0 +1,3 @@
+# Authorizer
+
+Wraps an `Ability` 

@@ -2,7 +2,6 @@ values = require '../util/obj_util' .values
 
 Debugger        = require '../util/debugger'
 Permit          = require '../permit' .Permit
-PermitRegistry  = require '../permit' .registry.PermitRegistry
 
 module.exports = class PermitFilter implements Debugger
   # go through all permits
@@ -31,8 +30,14 @@ module.exports = class PermitFilter implements Debugger
 
   @permit-source = ->
     if PermitContainer.hasAny
-      PermitContainer.active-containers-permits
+      @active-permits!
     else
-      PermitRegistry.permits
+      @all-permits!
+
+  @active-permits = ->
+    PermitContainer.active-containers-permits
+
+  @all-permits = ->
+    Permit.registry.permits
 
 PermitFilter <<< Debugger
