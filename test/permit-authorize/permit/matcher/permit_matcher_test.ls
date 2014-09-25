@@ -1,97 +1,115 @@
-requires        = require '../../../../requires'
+requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
-Book            = requires.fix 'book'
-User            = requires.fix 'user'
+expect = require 'chai' .expect
 
-Permit          = requires.lib 'permit'       .Permit
-permit-for      = requires.permit 'factory'   .permitFor
-PermitMatcher   = requires.permit 'matcher'   .PermitMatcher
-PermitRegistry  = requires.permit 'registry'  .PermitRegistry
+Matcher = requires.permit 'matcher' .PermitMatcher
 
-setup           = requires.fix 'permits' .setup
+pm = (ctx, ar, debug = true) ->
+  new Matcher ctx, ar
 
-create-user     = requires.fac 'create-user'
-create-request  = requires.fac 'create-request'
-create-permit   = requires.fac 'create-permit'
-
-create-matcher = (ctx, ar, debug = true) ->
-  new PermitMatcher ctx, ar, debug
+ctx = {}
+ar  = {}
 
 describe 'PermitMatcher' ->
-  var permit-matcher, book
-
-  users     = {}
-  permits   = {}
-  requests  = {}
-
-  matching = {}
-  none-matching = {}
-
   before ->
-    users.kris    := create-user.kris
-    users.emily   := create-user.name 'emily'
 
-    requests.user  := create-request
+  describe 'create' ->
+    describe 'invalid ar' ->
+      specify 'throws' ->
+        expect(-> pm {}, void).to.throw
 
-    permits.user  := setup.user-permit!
+    describe 'valid' ->
+      specify 'is ok' ->
+        expect(-> pm {}, {x: 2}).to.not.throw
 
-    permit-matcher := create-matcher permits.user, requests.user
-
-  describe 'match access' ->
-    matching = {}
-    none-matching = {}
+  context 'valid MC' ->
+    var pmatcher
 
     before ->
-      requests.user :=
-        user: {}
-      requests.ctx :=
-        ctx: ''
+      ctx.base  :=
+        subject:
+          title: 'Hey ho!'
+          _clazz: 'Article'
 
-      matching.permit-matcher       := create-matcher permits.user, requests.user
-      none-matching.permit-matcher  := create-matcher permits.user, requests.ctx
+      ctx.compile  :=
+        matches:
+          match-on:
+            includes:
+              subject: ['Article']
 
-    specify 'does not match access without user' ->
-      none-matching.permit-matcher.match!.should.be.false
+        subject:
+          title: 'Hey ho!'
+          _clazz: 'Article'
 
-    specify 'matches access with user' ->
-      matching.permit-matcher.match!.should.be.true
+      ar.article   :=
+        subject: 'Article'
 
-  describe 'match access - complex' ->
-    before ->
-      book := new Book title: 'hello'
-      requests.valid :=
-        user: {type: 'person', role: 'admin'}
-        subject: book
+      ar.finger  :=
+        subject: 'Article'
+        fingerprint: ->
+          'my ass xx'
 
-      requests.invalid :=
-        user    : {type: 'person', role: 'admin'}
-        subject : 'blip'
+      pmatcher := pm ctx.article, ar.article
 
-      requests.alt := {}
+    specify 'matchers are empty' ->
+      pmatcher.matchers.should.eql {}
 
-      Permit.registry.clean-all!
+    describe 'matcher' ->
+      var inc-matcher, key
 
-      permits.user := setup.complex-user!
+      before ->
+        key := 'includes'
+        inc-matcher := pmatcher.matcher key
 
-      matching.permit-matcher       := create-matcher permits.user, requests.valid
-      none-matching.permit-matcher  := create-matcher permits.user, requests.invalid
+      specify 'is a ContextMatcher' ->
+        inc-matcher.constructor.display-name.should.eql 'ContextMatcher'
 
-    specify 'does not match access without user' ->
-      none-matching.permit-matcher.match!.should.be.false
+      specify 'has context' ->
+        inc-matcher.context.should.eql ctx.article
 
-    specify 'matches access with user' ->
-      matching.permit-matcher.match!.should.be.true
+      specify 'has ar' ->
+        inc-matcher.access-request.should.eql ar.article
 
-  describe 'match access - complex invalid' ->
-    before ->
-      requests.valid :=
-        user    : {type: 'person', role: 'admin'}
-        subject : book
+      specify 'has key' ->
+        inc-matcher.key.should.eql key
 
-      permits.user      := setup.complex-user-returns-matcher!
-      permit-matcher    := create-matcher permits.user, requests.valid
+    context "they're not matching" ->
+      var res
+      describe.only 'match' ->
+        before ->
+          res := pmatcher.match!
+          console.log res
 
-      specify 'AccessMatcher chaining in .match which returns AccessMatcher should call result!' ->
-        permit-matcher.match!.should.be.true
+        specify 'should match' ->
+          res.should.eql false
+
+      describe 'match-compiled' ->
+        var mc
+        before-each ->
+          pmatcher := pm ctx.compile, ar
+          mc       := pmatcher.match-compiled!
+
+        specify 'matches compiled' ->
+          expect mc .to.eql true
+
+      describe 'include' ->
+        var inc
+
+        before-each ->
+          pmatcher := pm ctx, ar
+          inc      := pmatcher.include!
+
+        specify 'matches include' ->
+          expect inc .to.eql true
+
+      describe 'exclude' ->
+        var excl
+
+        before-each ->
+          pmatcher := pm ctx, ar
+          excl     := pmatcher.exclude!
+
+        specify 'matches exclude' ->
+          expect excl .to.eql true
