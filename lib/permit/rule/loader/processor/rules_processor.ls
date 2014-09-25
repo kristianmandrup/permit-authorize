@@ -1,5 +1,12 @@
 RuleProcessor = require './rule_processor'
 
+#  user:
+#    editor:
+#      can:
+#        listen-to: 'music'
+#    admin:
+#      cannot:
+#        read: 'poetry'
 module.exports = class RulesProcessor
   (@obj) ->
     unless @obj['rules']
@@ -12,6 +19,8 @@ module.exports = class RulesProcessor
     for key of @rules
       @validate key
       @processed-rules[key] = process-rule @rules[key]
+
+    @processed-rules
 
   validate: (key) ->
     unless valid(key)
