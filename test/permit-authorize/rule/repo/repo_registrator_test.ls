@@ -11,13 +11,31 @@ RepoRegistrator = requires.rule 'repo' .RepoRegistrator
 expect = require 'chai' .expect
 
 describe 'RepoRegistrator' ->
-  var access-request, rule, repo
+  var action, subjects, registrator
   var book
-  var can, cannot
 
-  create-repo = (name, debug) ->
+  create-repo = (name = 'my repo', debug = false) ->
     new RuleRepo name, debug
+
+  create-regis = (repo, debug = true) ->
+    repo ||= create-repo!
+    new RepoRegistrator repo, debug
 
   context 'basic repo' ->
     before ->
-      repo := create-repo 'my repo'
+      registrator := create-regis 'my repo'
+
+      action    := 'edit'
+      subjects  := ['book', 'article']
+
+    describe 'add-rule (container, action, subjects)' ->
+      specify 'adds the rule to container' ->
+        registrator.add-rule container, action, subjects .should.eql true
+
+    describe 'rule-extractor (rule-container, action, subjects)' ->
+      # new RuleExtractor rule-container, action, subjects
+      specify 'returns rule-extractor' ->
+        registrator.rule-extractor(container, action, subjects).should.not.eql void
+
+    # rule-container
+    describe 'register-rule (act, actions, subjects)' ->

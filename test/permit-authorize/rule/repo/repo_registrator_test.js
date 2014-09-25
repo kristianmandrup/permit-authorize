@@ -9,14 +9,34 @@
   RepoRegistrator = requires.rule('repo').RepoRegistrator;
   expect = require('chai').expect;
   describe('RepoRegistrator', function(){
-    var accessRequest, rule, repo, book, can, cannot, createRepo;
+    var action, subjects, registrator, book, createRepo, createRegis;
     createRepo = function(name, debug){
+      name == null && (name = 'my repo');
+      debug == null && (debug = false);
       return new RuleRepo(name, debug);
     };
+    createRegis = function(repo, debug){
+      debug == null && (debug = true);
+      repo || (repo = createRepo());
+      return new RepoRegistrator(repo, debug);
+    };
     return context('basic repo', function(){
-      return before(function(){
-        return repo = createRepo('my repo');
+      before(function(){
+        registrator = createRegis('my repo');
+        action = 'edit';
+        return subjects = ['book', 'article'];
       });
+      describe('add-rule (container, action, subjects)', function(){
+        return specify('adds the rule to container', function(){
+          return registrator.addRule(container, action, subjects).should.eql(true);
+        });
+      });
+      describe('rule-extractor (rule-container, action, subjects)', function(){
+        return specify('returns rule-extractor', function(){
+          return registrator.ruleExtractor(container, action, subjects).should.not.eql(void 8);
+        });
+      });
+      return describe('register-rule (act, actions, subjects)', function(){});
     });
   });
 }).call(this);

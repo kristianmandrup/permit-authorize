@@ -57,12 +57,40 @@
           return matcher.manageActions.should.eql(['create', 'edit', 'delete']);
         });
       });
-      describe('container-for', function(){});
-      describe('rule-container', function(){});
-      describe('match-subject-clazz (action-subjects, subj-clazz)', function(){});
-      describe('match-manage-rule (rule-container, subj-clazz)', function(){});
-      describe('manage-action-subjects (rule-container)', function(){});
-      return describe('match', function(){});
+      describe('container-for', function(){
+        return specify('creates container', function(){
+          return matcher.containerFor('edit').should;
+        });
+      });
+      describe('rule-container', function(){
+        return specify('creates container', function(){
+          return matcher.ruleContainer('edit').should;
+        });
+      });
+      describe('match-subject-clazz (action-subjects, subj-clazz)', function(){
+        return specify('creates container', function(){
+          return matcher.matchSubjectClazz(['article', 'book', 'movie'], 'book').should.eql('book');
+        });
+      });
+      describe('match-manage-rule (container, subj-clazz)', function(){
+        return specify('matches', function(){
+          return matcher.matchSubjectClazz({
+            manage: ['book']
+          }, 'book').should.eql('edit');
+        });
+      });
+      describe('manage-action-subjects (rule-container)', function(){
+        return specify('manages', function(){
+          return matcher.manageActionSubjects({
+            manage: ['book']
+          }).should.eql(true);
+        });
+      });
+      return describe('match', function(){
+        return specify('matches', function(){
+          return matcher.match().should.eql(true);
+        });
+      });
     });
   });
 }).call(this);

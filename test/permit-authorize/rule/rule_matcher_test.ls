@@ -53,15 +53,27 @@ describe 'RuleMatcher' ->
         matcher.manage-actions.should.eql ['create', 'edit', 'delete']
 
     describe 'container-for' ->
+      specify 'creates container' ->
+        matcher.container-for 'edit' .should
 
     describe 'rule-container' ->
+      specify 'creates container' ->
+        matcher.rule-container 'edit' .should
 
     describe 'match-subject-clazz (action-subjects, subj-clazz)' ->
+      specify 'creates container' ->
+        matcher.match-subject-clazz(['article', 'book', 'movie'], 'book').should.eql 'book'
 
-    describe 'match-manage-rule (rule-container, subj-clazz)' ->
+    describe 'match-manage-rule (container, subj-clazz)' ->
+      specify 'matches' ->
+        matcher.match-subject-clazz({manage: ['book']}, 'book').should.eql 'edit'
 
     describe 'manage-action-subjects (rule-container)' ->
+      specify 'manages' ->
+        matcher.manage-action-subjects({manage: ['book']}).should.eql true
 
     describe 'match' ->
+      specify 'matches' ->
+        matcher.match!.should.eql true
 
 

@@ -5,14 +5,12 @@ requires.test 'test_setup'
 User        = requires.fix 'user'
 Book        = requires.fix 'book'
 
-RepoExtractor   = requires.lib 'rule' .RepoExtractor
+RuleExtractor   = requires.lib 'rule' .RuleExtractor
 
 expect = require 'chai' .expect
 
 describe 'RepoRegistrator' ->
-  var access-request, rule, repo
-  var book
-  var can, cannot
+  var extractor
 
   create-extr = (container, action, subjects) ->
     new RepoExtractor container, action, subjects
@@ -26,4 +24,23 @@ describe 'RepoRegistrator' ->
 
   context 'valid extractor' ->
     before ->
-      repo := create-repo 'my repo'
+      extractor := create-extr {}, 'edit', 'Article'
+
+  describe 'extract' ->
+    # @register-action-subjects @action-subjects!, @unique-subjects!
+
+  describe 'register-action-subjects (action-container, subjects)' ->
+    # unique action-container.concat(subjects)
+
+  describe 'unique-subjects' ->
+    # unique @rule-subjects
+
+  describe 'action-subjects' ->
+#    as = @rule-container[action]
+#    if typeof! as is 'Array' then as else []
+
+  describe 'rule-subjects' ->
+    # @_rule-subjects ||= @__rule-subjects!
+
+  # TODO: refactor
+  describe '__rule-subjects' ->
