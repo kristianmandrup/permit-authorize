@@ -20,9 +20,15 @@ module.exports = class Permit implements Debugger
 
     @rule-repo          = new RuleRepo @name
     @rule-applier       = new PermitRuleApplier @, @debugging
-    @permit-matcher     = new PermitMatcher @, @access-request, @debugging
     @permit-allower     = new PermitAllower @rule-repo
     @
+
+  permit-matcher: ->
+    new PermitMatcher @, @access-request, @debugging
+
+  # See if this permit should apply (be used) for the given access request
+  match: ->
+    @permit-matcher.match!
 
   registry: ->
     @@registry

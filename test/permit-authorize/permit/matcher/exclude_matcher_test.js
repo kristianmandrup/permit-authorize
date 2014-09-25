@@ -3,7 +3,7 @@
   var requires, Matcher, Permit, setup, createUser, createMatcher;
   requires = require('../../../../requires');
   requires.test('test_setup');
-  Matcher = requires.permit('matcher').ExcludeMatcher;
+  Matcher = requires.permit('matcher').ContextMatcher;
   Permit = requires.lib('permit').Permit;
   setup = requires.fix('permits').setup;
   createUser = requires.fac('create-user');

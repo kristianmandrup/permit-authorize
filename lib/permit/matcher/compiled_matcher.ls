@@ -1,6 +1,14 @@
 Debugger            = require '../../util' .Debugger
 MatchesOnCompiler   = require './compile' .MatchesOnCompiler
 
+/*
+compile:
+    includes:
+        roles: ['publisher', 'editor']
+    excludes:
+        subject: 'Article'
+*/
+
 module.exports = class CompiledMatcher implements Debugger
   (context, @access-request, @debugging) ->
     super context

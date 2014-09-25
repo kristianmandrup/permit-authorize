@@ -21,29 +21,26 @@ Debugger = require '../../util' .Debugger
 module.exports = class PermitMatcher implements Debugger
   (@context, @access-request, @debugging) ->
     @validate!
-    @intersect = Intersect()
+    @
+
+  matchers: {}
 
   match: (options = {})->
-    @debug 'permit-matcher match'
+    @debug 'match', options
     # includes and excludes can contain a partial (object) used to do intersection test on access-request
-    res = @include! and not @exclude!
-    return res if options.compiled is false
-    @debug 'compiled result:', @match-compiled!
-    mc = @match-compiled!
-    @debug 'match compiled', mc
-    res or mc
+    @include! or @match-compiled! and not @exclude!
+
+  match-compiled: ->
+    @_mc ||= new CompiledMatcher @context, @access-request, @debugging .match!
 
   include: ->
-    @include-matcher!.match!
+    @_include ||= @matcher 'include' .match!
 
   exclude: ->
-    @include-matcher!.match!
+    @_exclude ||= @matcher 'exclude' .match!
 
-  include-matcher: ->
-    @_include-matcher ||= new IncludeMatcher @context, @access-request, @debugging
-
-  exclude-matcher: ->
-    @_exclude-matcher ||= new ExcludeMatcher @context, @access-request, @debugging
+  matcher: (key) ->
+    @matchers[key] ||= new ContextMatcher @context, key, @access-request, @debugging
 
   validate: ->
     # use object intersection test if permit has includes or excludes

@@ -16,9 +16,11 @@ module.exports = class AccessRequest implements Debugger
     @normalize!
     @
 
+  fingerprinter:
+    new FingerPrinter @ar-obj
+
   fingerprint: ->
-    _fingerprinter ||= new FingerPrinter @ar-obj
-    _fingerprinter.fingerprint!
+    @_finger_print ||= fingerprinter!.fingerprint!
 
   # normalize action and subject if they are not each a String
   normalize: ->

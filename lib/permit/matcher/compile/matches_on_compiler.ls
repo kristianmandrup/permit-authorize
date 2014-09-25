@@ -11,24 +11,34 @@ MatchCompiler   = require './match_compiler'
 
 module.exports = class MatchesOnCompiler implements Debugger
   (@context, @debugging) ->
-    @debug 'context', @context
-    @matches-on = @context.matches-on
+    @debug 'compiler', @context, @key
+    @compiled = {includes: [], excludes: []}
 
-  compile: ->
-    @debug "compile-matchers", @matches-on
-    return unless typeof! @matches-on is 'Object'
+  compile-all: ->
+    compile 'includes'
+    compile 'excludes'
+    @compiled
 
-    @compiled-list = []
+  compile: (key) ->
+    return false unless @context.compile
+
+    @compile-context = @context.compile[@key]
+    @compiled-entry  = @compiled[@key]
+
+    @debug "compile-matchers", @compile-context
+    return unless typeof! @compile-context is 'Object'
+
     @debug "compile..."
     # Compiles the matches object of a permit
     for key of @matches-on
       @add-compiled @compile-for(key)
 
     @debug 'compiled matchers:', @compiled-list
-    @compiled-list
+    @compiled-entry
 
+  # add to includes or excludes
   add-compiled: (compiled) ->
-    @compiled-list.push compiled
+    @compiled-entry.push compiled
 
   compile-for: (key) ->
     @match-compiler!.compile key, @matches-on[key]

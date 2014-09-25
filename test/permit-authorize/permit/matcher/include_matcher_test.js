@@ -3,7 +3,7 @@
   var requires, Matcher, PermitRegistry, setup, Book, User, createUser, createMatcher;
   requires = require('../../../../requires');
   requires.test('test_setup');
-  Matcher = requires.permit('matcher').IncludeMatcher;
+  Matcher = requires.permit('matcher').ContextMatcher;
   PermitRegistry = requires.permit('registry').PermitRegistry;
   setup = requires.fix('permits').setup;
   Book = requires.fix('book');

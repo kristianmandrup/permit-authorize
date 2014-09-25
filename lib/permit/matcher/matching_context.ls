@@ -1,15 +1,15 @@
 PermitMatcher   = require './permit_matcher'
 AccessMatcher   = require '../../access_request' .matcher.AccessMatcher
 
-mh = class MatchHelper
+mh = class MatchingContext
   (@context, @access-request) ->
 
   # uses cache via fingerprinting of accessRequest
   # returns AccessMatcher
   matching: ->
-    fingerprint = accessRequest.fingerprint!
+    fingerprint = @access-request.fingerprint!
     unless @cached_matchers[fingerprint]
-      @cached_matchers[fingerprint] = new AccessMatcher accessRequest
+      @cached_matchers[fingerprint] = new AccessMatcher @access-request
 
     @cached_matchers[fingerprint]
 
