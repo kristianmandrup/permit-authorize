@@ -14,3 +14,18 @@ The `RuleRepo` is a container for rules. It can register a rule, clear the repo 
  to see if there is a match (and the permit thus allows access).
 Each of these can be customized as you see fit.
 
+### Flexibility
+
+You can add anything which has a `match` function on an Ability, such as a `RuleRepo`  a `Permit` or a `PermitFilter`.
+You can even add a custom `match function that just tests if user.role is admin or not, *CanCan* style :P.
+ 
+ or even
+
+```
+class Ability 
+    match (ar) ->
+        return new MatchContext(@repo, @rules).match!
+    
+    rules: ->
+        @ucan 'edit', 'Book'
+```        

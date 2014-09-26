@@ -1,0 +1,1 @@
+# Test when Ability wraps a single permit

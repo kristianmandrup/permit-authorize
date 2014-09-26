@@ -1,6 +1,8 @@
 module.exports =
-  repo:           require './repo'
-  apply:          require './apply'
-  RulesAccessor:  require './rules_accessor'
-  RuleMatcher:   require './rule_matcher'
-  Util:           require './util'
+  repo:             require './repo'
+  apply:            require './apply'
+  util:             require './util'
+
+  RuleRegistrator:  require './rule_registrator'
+  RuleMatcher:      require './rule_matcher'
+  RuleExtractor:    require './rule_extractor'
