@@ -9,8 +9,9 @@
   expect = require('chai').expect;
   describe('RepoRegistrator', function(){
     var extractor, createExtr;
-    createExtr = function(container, action, subjects){
-      return new RepoExtractor(container, action, subjects);
+    createExtr = function(container, action, subjects, debug){
+      debug == null && (debug = false);
+      return new RuleExtractor(container, action, subjects, debug);
     };
     describe('create', function(){
       describe('invalid', function(){
@@ -22,16 +23,60 @@
       });
       return describe('valid', function(){});
     });
-    context('valid extractor', function(){
-      return before(function(){
-        return extractor = createExtr({}, 'edit', 'Article');
+    return context('valid extractor', function(){
+      var actions, subjects;
+      beforeEach(function(){
+        extractor = createExtr({}, 'edit', 'Article');
+        actions = ['user', 'book'];
+        return subjects = ['user', 'article'];
+      });
+      describe('extract', function(){
+        return xspecify('extracts rule?', function(){
+          return expect(extractor.extract).to.eql({});
+        });
+      });
+      describe('register-action-subjects (action-container, subjects)', function(){
+        before(function(){});
+        return specify('adds unique subjects to action container', function(){
+          return expect(extractor.registerActionSubjects(actions, subjects)).to.eql(['book', 'user', 'article']);
+        });
+      });
+      describe('unique-subjects', function(){
+        return xspecify('adds unique subjects to action container', function(){
+          return expect(extractor.uniqueSubjects(subjects.concat(['user']))).to.eql(subjects);
+        });
+      });
+      describe('action-subjects', function(){
+        context('no rules for action', function(){
+          beforeEach(function(){
+            return extractor = createExtr({}, 'edit', 'Article');
+          });
+          return specify('finds no subjects for action', function(){
+            return expect(extractor.actionSubjects()).to.eql([]);
+          });
+        });
+        return context('has subjects for action', function(){
+          var ext;
+          beforeEach(function(){
+            return ext = createExtr({
+              edit: ['Book']
+            }, 'edit', 'Article');
+          });
+          return specify('gets subjects for action', function(){
+            return expect(ext.actionSubjects()).to.eql(['Book']);
+          });
+        });
+      });
+      describe('rule-subjects', function(){
+        return specify('extracts rule subject', function(){
+          return expect(extractor.ruleSubjects()).to.eql(['Article']);
+        });
+      });
+      return describe('__rule-subjects', function(){
+        return specify('extracts rule subject', function(){
+          return expect(extractor.__ruleSubjects()).to.eql(['Article']);
+        });
       });
     });
-    describe('extract', function(){});
-    describe('register-action-subjects (action-container, subjects)', function(){});
-    describe('unique-subjects', function(){});
-    describe('action-subjects', function(){});
-    describe('rule-subjects', function(){});
-    return describe('__rule-subjects', function(){});
   });
 }).call(this);

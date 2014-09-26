@@ -1,6 +1,14 @@
-every = require '../util' .array.every
+util      = require '../util'
 
-module.exports = class RuleMatcher
+#array     = util.array
+#contains  = array.contains
+#unique    = array.unique
+#object    = util.object
+every     = util.array.every
+
+Debugger  = util.Debugger
+
+module.exports = class RuleMatcher implements Debugger
   (@act, @access-request) ->
     @act = camel-case @act
 

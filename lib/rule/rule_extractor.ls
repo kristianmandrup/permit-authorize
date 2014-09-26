@@ -1,5 +1,15 @@
-module.exports = class RuleExtractor
-  (@rule-container, @action, @subjects) ->
+util        = require '../util'
+array       = util.array
+#contains  = array.contains
+#object    = util.object
+unique      = array.unique
+normalize   = util.normalize
+camelize    = util.string.camel-case
+
+Debugger  = util.Debugger
+
+module.exports = class RuleExtractor implements Debugger
+  (@rule-container, @action, @subjects, @debugging) ->
 
   extract: ->
     @register-action-subjects @action-subjects!, @unique-subjects!
@@ -9,10 +19,11 @@ module.exports = class RuleExtractor
     unique action-container.concat(subjects)
 
   unique-subjects: ->
-    unique @rule-subjects
+    unique @rule-subjects!
 
   action-subjects: ->
-    as = @rule-container[action]
+    as = @rule-container[@action]
+    @debug 'as', as
     if typeof! as is 'Array' then as else []
 
   rule-subjects: ->
@@ -22,9 +33,15 @@ module.exports = class RuleExtractor
   __rule-subjects: ->
     rule-subjects = @rule-container[@action] || []
 
-    subjects = normalize @subjects
-    rule-subjects = rule-subjects.concat subjects
+    @debug 'rule-subjects', rule-subjects
+
+    rule-subjects = rule-subjects.concat @normalized-subjects!
+
+    @debug 'rule-subjects', rule-subjects
 
     rule-subjects.map (subject) ->
-      val = camel-case subject
+      val = camelize subject
       if val is 'Any' then '*' else val
+
+  normalized-subjects: ->
+    @_normalized-subjects ||= normalize @subjects
