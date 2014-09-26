@@ -1,17 +1,26 @@
-util        = require '../../util'
+utily       = require 'util'
+util        = require '../../../util'
 
 #array      = util.array
 #contains   = array.contains
 #unique     = array.unique
 #object     = util.object
 every       = util.array.every
+camelize    = util.string.camel-case
+clazz-for   = util.string.clazz-for
 
 Debugger    = util.Debugger
 RuleMixin   = './rule_mixin'
 
 module.exports = class RuleMatcher implements Debugger, RuleMixin
   (@rule-container, @act, @access-request) ->
-    @act = camel-case @act
+    @_validate!
+    @act = camelize @act
+    @
+
+  _validate: ->
+    unless typeof! @act is 'String'
+      throw Error "#{@act} must be a String, was: #{utily.inspect @act}"
 
   # TODO: refactor into smaller functions, avoid local vars!
   # TODO: extract-method ;)
@@ -22,7 +31,7 @@ module.exports = class RuleMatcher implements Debugger, RuleMixin
 
     @debug 'action, subject', action, subject
 
-    subj-clazz = @subject-clazz subject
+    subj-clazz = clazz-for subject
 
     @debug 'rule-container', @rule-container!
 
