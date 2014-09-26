@@ -20,7 +20,7 @@ module.exports = class Permit implements Debugger
     @_repo ||= new RuleRepo @name
 
   applier: ->
-    @_applier ||= new PermitApplier @repo
+    @_applier ||= new PermitApplier @, @debugging
 
   permit-matcher: (access-request) ->
     new PermitMatcher @, access-request, @debugging
@@ -31,11 +31,11 @@ module.exports = class Permit implements Debugger
   auto-activate: true
 
   activate: ->
-    @activate = true
+    @active = true
     @_register!
 
   deactivate: ->
-    @activate = false
+    @active = false
     @_unregister!
 
   _register: ->

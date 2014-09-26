@@ -11,35 +11,34 @@ module.exports = class PermitFilter implements Debugger
   # if the permit matches, then we will later check to see
   # if the permit allows the action on the subject in the given context
   filter: ->
-    permits = @permits!
-    unless typeof! permits is 'Array'
-      throw Error "permits which contain all registered permits, must be an Array, was: #{typeof permits}"
+    @_validate-permits!
+    @debug 'filter', @permits!, @access-request
+    @filter-permits!
 
-    @debug 'filter permits', permits, @access-request
-    res = permits.filter @create-matcher
-    @debug 'filtered', res
-    res
+  _validate-permits: ->
+    unless typeof! @permits! is 'Array'
+      throw Error "permits which contain all registered permits, must be an Array, was: #{typeof @permits!}"
 
-  create-matcher: ->
-    self = @
+  filter-permits: ->
+    @permits!.filter @match-fun
+
+  match-fun: ->
     (permit) ->
-      self.debug 'matching', permit, @access-request
-      unless permit.matches
-        throw Error "Permit must have a .matches(access-request) method: #{permit}"
-      permit.matches @access-request
-
+      return false if not permit.active
+      return permit.matches @access-request if permit.matches
+      permit
 
   permits: ->
-    values @permit-source
+    @_permits ||= values @permit-source
 
   permit-source: ->
-    if PermitContainer.hasAny
+    if PermitContainer.has-any
       @active-permits!
     else
       @all-permits!
 
   active-permits: ->
-    PermitContainer.active-containers-permits
+    PermitContainer.active-container-permits
 
   all-permits: ->
     Permit.registry.permits

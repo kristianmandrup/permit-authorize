@@ -1,4 +1,5 @@
-# TODO: used by permitFor method to create a permit!
+Debugger = require '../../util' .Debugger
+
 module.exports = class PermitFactory implements Debugger
   (@base-clazz, @name, @base-obj, @debugging) ->
     @configure!
@@ -17,12 +18,13 @@ module.exports = class PermitFactory implements Debugger
     new @base-clazz @name, @debugging
 
   create: ->
-    @base-obj = @base-obj! if typeof! @base-obj is 'Function'
-    # extend permit with custom functionality
-    if typeof! base-obj is 'Object'
-      permit = @use @create-permit!, @base-obj
-    permit.init!
+    @permit!.init!
 
+  permit: ->
+    switch typeof! @base-obj
+    # extend permit with custom functionality
+    case 'Object' then @use @create-permit!, @base-obj
+    default @create-permit!
 
   # used by permit-for to extend specific permit from base class (prototype)
   use: (permit, obj) ->

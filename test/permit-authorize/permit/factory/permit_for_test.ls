@@ -1,13 +1,14 @@
-requires  = require '../../requires'
+requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
 User      = requires.fix 'user'
 Book      = requires.fix 'book'
 
-Permit          = requires.lib 'permit'
-PermitRegistry  = requires.permit 'permit_registry'
-permit-for      = requires.permit 'permit_for'
+Permit          = requires.lib    'permit'    .Permit
+PermitRegistry  = requires.permit 'registry'  .PermitRegistry
+PermitFactory   = requires.permit 'factory'   .PermitFactory
+permit-for      = requires.permit 'factory'   .permitFor
 
 class AdminPermit extends Permit
   type: 'admin'
@@ -36,7 +37,7 @@ describe 'permit-for' ->
     var admin-permit
     
     before ->
-      PermitRegistry.clear-all!
+      Permit.registry?.clean!
       admin-permit := permit-for AdminPermit, 'Admin',
         rules:
           admin: ->
