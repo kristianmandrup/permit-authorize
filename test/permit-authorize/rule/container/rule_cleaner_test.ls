@@ -5,8 +5,7 @@ requires.test 'test_setup'
 User        = requires.fix 'user'
 Book        = requires.fix 'book'
 
-RuleRepo    = requires.rule 'repo/rule_repo'
-RepoCleaner = requires.rule 'repo' .RepoCleaner
+RuleCleaner = requires.rule 'repo' .RuleCleaner
 
 expect = require 'chai' .expect
 

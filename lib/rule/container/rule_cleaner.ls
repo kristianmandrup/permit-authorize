@@ -1,5 +1,5 @@
 module.exports = class RepoCleaner
-  (@repo) ->
+  (@container) ->
 
   clean-all: ->
     @clean 'can'

@@ -1,4 +1,4 @@
-util        = require '../util'
+util        = require '../../util'
 array       = util.array
 #contains  = array.contains
 #object    = util.object

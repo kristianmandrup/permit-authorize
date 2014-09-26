@@ -1,6 +1,8 @@
 Debugger      = require '../../util' .Debugger
 BaseMatcher   = require './base_matcher'
-camelize      =  require '../../util' .string.camel-case
+util          = require '../../util'
+camelize      = util.string.camel-case
+clazz-for     = util.string.clazz-for
 
 module.exports = class SubjectMatcher extends BaseMatcher
   (@access-request) ->
@@ -24,21 +26,6 @@ module.exports = class SubjectMatcher extends BaseMatcher
 
   match-clazz: (subject) ->
     @debug 'match-clazz', subject, @subject-class
-    @clazz-for(subject) is @subject-class
-
-  clazz-for: (subject) ->
-    res = switch typeof! subject
-    when 'Object'
-      @obj-class subject
-    when 'String'
-      subject
-    default
-      void
-    camelize res || ''
-
-  obj-class: (subject) ->
-    return subject.constructor.display-name if subject.constructor.display-name
-    subject.clazz or subject._clazz or subject.$clazz or subject._class or subject.$class
-
+    clazz-for(subject) is @subject-class
 
 SubjectMatcher <<< Debugger

@@ -1,16 +1,18 @@
 util      = require '../util'
-
-#array     = util.array
+array       = util.array
 #contains  = array.contains
-#unique    = array.unique
 #object    = util.object
+# unique      = array.unique
+normalize   = util.normalize
+# camelize    = util.string.camel-case
 
 Debugger        = util.Debugger
 RuleExtractor   = require './rule_extractor'
 
 module.exports = class RuleRegistrator implements Debugger
   (@container) ->
-    throw Error("Container must be an object") unless typeof! @rule-container is 'Object'
+    unless typeof! @container is 'Object'
+      throw Error "Container must be an object, was: #{@container}"
 
   add-rule: (action, subjects) ->
     @debug 'add rule', action, subjects
@@ -24,6 +26,7 @@ module.exports = class RuleRegistrator implements Debugger
       for action in @manage-actions
         @container[action] = registered-action-subjects
     # console.log 'action subjects', rule-container[action]
+    @
 
   rule-extractor: (@container, action, subjects) ->
     new RuleExtractor @container, action, subjects
@@ -41,6 +44,7 @@ module.exports = class RuleRegistrator implements Debugger
     # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
     for action in actions
       @add-rule @container, action, subjects
+    @
 
   # TODO: duplicate!
   manage-actions: ['create', 'edit', 'delete']

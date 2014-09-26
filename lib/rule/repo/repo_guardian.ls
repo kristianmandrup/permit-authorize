@@ -19,14 +19,14 @@ module.exports = class RepoGuardian implements Debugger
     @debug 'test-access', act, @access-request
     # try to find matching action/subject combination for canRule in repo
     @repo.debug-on! if @debugging
-    subj = @repo.match-rule act, @access-request
+    subj = @repo.match act, @access-request
     @debug 'subj', subj
     subj is true
 
   # if permit disallows, then it doesn't matter if there is also a rule that allows
   # A cannot rule always wins!
   allows: (ignore-inverse) ->
-    @debug 'allows', access-request, ignore-inverse
+    @debug 'allows', @access-request, ignore-inverse
     unless ignore-inverse
       return false if @disallows true
     return false if @test-access 'can' is false

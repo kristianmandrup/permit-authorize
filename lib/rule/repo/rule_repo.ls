@@ -3,36 +3,28 @@
 # You can register rules of the type: action, list of subjects
 # Then you can match an access-request (action, subject)
 # Simple!
-util      = require '../../util'
 
 Debugger  = util.Debugger
 
-camel-case  = util.string.camel-case
-normalize   = util.normalize
+RuleContainer   = require '../container' .RuleContainer
 
+# TODO: Do we really need this wrapper?
 module.exports = class RuleRepo implements Debugger
   (@name, @debugging) ->
 
-  can-rules: {}
-  cannot-rules: {}
+  container: ->
+    new RuleContainer @debugging
 
   display: ->
     console.log "name:", @name
-    console.log "can-rules:", @can-rules
-    console.log "cannot-rules:", @cannot-rules
+    @container.display
 
-  register-rule: (act, actions, subjects) ->
-    @registrator.register-rule act, actions, subjects
+  register: (act, actions, subjects) ->
+    @container.register act, actions, subjects
 
-  cleaner: ->
-    @_cleaner ||= new RepoCleaner @
+  match: (act, access-request) ->
+    @container.match act, access-request .match!
 
-  registrator: ->
-    @_registrator ||= new RepoRegistrator @
-
-  match-rule: (act, access-request) ->
-    @rule-matcher(act, access-request).match!
-
-  rule-matcher: (act, access-request) ->
-    new RuleMatcher act, access-request
+  clean: ->
+    @container.clean!
 
