@@ -26,11 +26,11 @@ A *subject* (fx a user) can perform an *action* on a given *object* if the subje
 ## Main features
 
 - Simple DSL based permit configuration (via `permit-for`)
-- Ability Caching for enhanced performance (2ms lookup!)
+- Ability Caching for enhanced performance (2ms consecutive lookup!)
 - Turn debugging on/off on classes or instances
 - Load permit rules from JSON (f.ex from file or data store) 
 - Huge test suite included
-- Only 53kb minified :) 
+- Less than ~50 kb minified :) 
 
 ## Code
 
@@ -56,17 +56,13 @@ Using `bower install` will install all these files in the *bower components* fol
 The main file is `index.js` which exposes the following keys:
 
 ```coffeescript
-  Authorizer
-  Ability
-  Allower
-  Permit
-  AccessRequest
-  RuleApplier
-  RuleRepo
-  RulesLoader
-  DbRulesLoader
-  permitFor
-  fingerprint
+  ability
+  accessRequest
+  allower
+  authorizer
+  permit
+  rule
+  util
 ```
 
 This should allow you great flexibility to override/customize any functionality you need by "monkey patching", ie. change whatever functions or classes to your liking (if need be).
@@ -86,12 +82,12 @@ Loads global variable `permitAuthorize` object with all the exposed keys outline
 Simply use `require`
 
 ```javascript
-var authorize   = require('permit-authorize');
+var pa   = require('permit-authorize');
 
 // define local "shorthand" vars
-var Ability       = authorize.Ability;
-var RulesLoader   = authorize.RulesLoader;
-var permitFor     = authorize.permitFor;
+var Ability       = pa.ability.Ability;
+var RulesLoader   = pa.permit.rule.loader.RulesFileLoader;
+var permitFor     = pa.permit.factory.permitFor;
 ```
 
 ### ES6 modules 
@@ -103,10 +99,9 @@ AMD module imported into app as `'permit-authorize'`.
 ```Brocile
 app.import('/bower_components/permit-authorize/dist/permit-authorize.js', {
   'permit-authorize': [
-    'permit-for',
-    'Ability',
-    'RulesLoader',
-    'Authorizer'
+    'ability',
+    'permit',
+    'rule'
   ]
 })
 ```
@@ -120,7 +115,7 @@ app.import('/bower_components/permit-authorize/dist/es6/permit-authorize.js')
 Now import the modules you need in each of your local app module ;)
 
 ```javascript
-import { Ability, permitFor } from 'permit-authorize';
+import { ability, permit } from 'permit-authorize';
 ```
 
 `Ability` is a useful wrapper for a `User` object, such as `currentUser` which is sent along with the `AccessRequest`object to the `Allower` to be resolved. `permitFor` is a factory method to create permits that hold permission rules. 
@@ -143,8 +138,8 @@ class Book extends Base
 book = (title) ->
   new Book title
 
-# create scifiBook
-scifi-book = book 'A journey to Mars'
+# create sciFiBook
+sci-fi-book = book 'A journey to Mars'
 ```
 
 Load Ability class and define convenience helper method
@@ -257,8 +252,6 @@ containers.dev.activate!
 containers.test.activate!
 containers.admin.activate!
 ```
- 
-
 
 ### Debugging
 
