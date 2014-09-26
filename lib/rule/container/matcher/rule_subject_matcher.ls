@@ -3,25 +3,33 @@ Debugger  = util.Debugger
 
 clazz-for   = util.string.clazz-for
 camelize    = util.string.camel-case
+union       = util.array.union
+normalize   = util.normalize
+
+RuleMixin   = require '../rule_mixin'
 
 module.exports = class RuleSubjectMatcher implements Debugger
-  (@subjects) ->
+  (@subjects, @debugging) ->
+    @subjects = @_class-normalize @subjects
+    @_validate!
+    @
+
+  match: (ar-subjects) ->
+    ar-subjects = @_class-normalize ar-subjects
+
+    @debug 'match', @subjects, 'with', ar-subjects
+
+    @intersects(@wild-cards) or @intersects ar-subjects
+
+  intersects: (ar-subjects) ->
+    intersect(@subjects, ar-subjects).length > 0
+
+  wild-cards: ['Any', '*']
+
+  _validate: ->
     unless typeof! @subjects is 'Array'
       throw new Error "subject must be an Array, was: #{@subjects}"
 
-  match: (subject) ->
-    @debug 'match', subject
-
-    # first try wild-card 'any' or '*'
-    return true if contains @wildcards, subject
-
-    if typeof! subject is 'Array'
-      return contains @subjects, subject
-
-    unless typeof! subject is 'String'
-      throw Error "find-matching-subject: Subject must be a String to be matched, was #{subject}"
-
-    camelized = camelize subject
-    subjects.index-of(camelized) != -1
-
-  wildcards: ['*', 'any']
+  _class-normalize: (subjects) ->
+    normalize(subjects).map (subject) ->
+      return camelize subject

@@ -6,11 +6,13 @@ Matcher = requires.rule 'container' .matcher.RuleSubjectMatcher
 
 expect = require 'chai' .expect
 
+subjects = {}
+
 describe 'RuleSubjectMatcher' ->
   var matcher
 
-  create-matcher = (subjects, debug = true) ->
-    new Matcher subjects
+  create-matcher = (subjects, debug = false) ->
+    new Matcher subjects, debug
 
   describe 'create' ->
     describe 'invalid' ->
@@ -22,9 +24,38 @@ describe 'RuleSubjectMatcher' ->
         expect -> create-matcher [] .to.not.throw
 
   context 'created' ->
-    before ->
-      matcher := create-matcher 'my matcher'
+    before-each ->
+      matcher := create-matcher 'book'
 
+    describe 'intersect-match' ->
+      before-each ->
+        matcher := create-matcher 'blip'
+
+      specify 'should not match' ->
+        expect(matcher.intersects 'blap').to.eql false
+
+    describe 'match (subject)' ->
+      context 'bad subject' ->
+        before-each ->
+          subjects.bad = 'bad book'
+
+        specify 'should not match' ->
+          expect(matcher.match subjects.bad).to.eql false
+
+      context 'good subject' ->
+        before-each ->
+          subjects.good = 'book'
+
+        specify 'should match' ->
+          expect(matcher.match subjects.good).to.eql true
+
+      context 'wildcard match' ->
+        before-each ->
+          matcher := create-matcher ['any']
+          subjects.good = 'book'
+
+        specify 'should match' ->
+          expect(matcher.match subjects.good).to.eql true
 
 #  (@subjects) ->
 #    unless typeof! @subjects is 'Array'

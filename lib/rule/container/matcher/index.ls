@@ -1,5 +1,3 @@
-/**
- * User: kristianmandrup
- * Date: 26/09/14
- * Time: 12:05
- */
+module.exports =
+  ManagedSubjectMatcher:  require './managed_subject_matcher'
+  RuleSubjectMatcher:     require './rule_subject_matcher'

@@ -1,23 +1,39 @@
-permit-filter = require '../allower' .PermitFilter
+PermitFilter = require '../allower' .PermitFilter
 Allower       = require '../allower' .Allower
 AccessRequest = require '../access_request' .AccessRequest
 Debugger      = require '../util' .Debugger
 Normalizer    = require '../access_request' .util.Normalizer
 
-# Always one Ability per User
+/*
+# Ability of a user to perform an action on a subject
+*/
 module.exports = class Ability implements Debugger
+
+  /*
+  # @constructor
+  # @param {string} user   - The user who requests access to perform
+  # @param {string} author - The author of the book.
+  */
   (@user, debug) ->
     @debug-on! if debug
-    @validate-user!
+    @_validate-user!
 
-  validate-user: ->
-    if @user is void
-      throw new Error "Ability must be for a User, was void"
+  /*
+  # validates the user
+  */
+  _validate-user: ->
     unless typeof! @user is 'Object'
       throw new Error "User must be an Object, was #{@user}"
 
+  # TODO: allow for more strategies!
   permits: ->
-    permit-filter.filter @access-request!
+    @filter!
+
+  filter: ->
+    @permit-filter.filter!
+
+  permit-filter: ->
+    new PermitFilter @access-request
 
   allower: ->
     new Allower @access-request!
