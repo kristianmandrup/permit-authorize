@@ -10,6 +10,7 @@ RuleMixin   = require '../rule_mixin'
 
 module.exports = class RuleSubjectMatcher implements Debugger
   (@subjects, @debugging) ->
+    @debug 'subjects', @subjects
     @subjects = @_class-normalize @subjects
     @_validate!
     @

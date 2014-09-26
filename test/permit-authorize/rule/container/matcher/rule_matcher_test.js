@@ -6,8 +6,9 @@
   User = requires.fix('user');
   Book = requires.fix('book');
   Matcher = requires.rule('container').matcher.RuleMatcher;
-  createMatcher = function(container, act, ar){
-    return new Matcher(container, act, ar);
+  createMatcher = function(container, act, ar, debug){
+    debug == null && (debug = true);
+    return new Matcher(container, act, ar, debug);
   };
   expect = require('chai').expect;
   describe('RuleMatcher', function(){
@@ -36,10 +37,11 @@
         edit: ['movie']
       }
     };
-    containers.noneManaged = {
+    containers.unmanagedBook = {
       can: {
-        edit: ['book'],
-        create: ['article']
+        edit: ['book', 'blog'],
+        create: ['article'],
+        write: ['journal', 'article']
       }
     };
     describe('create', function(){
@@ -71,18 +73,18 @@
         });
       });
       describe('match-subject', function(){
-        return specify('matches', function(){
-          return matcher.matchSubject().should.eql(true);
+        return specify('edit does not match', function(){
+          return matcher.matchSubject().should.eql(false);
         });
       });
       describe('subject-matcher', function(){
-        return specify('has subjects', function(){
-          return matcher.subjectMatcher().subject.should.eql(['book']);
+        return specify('is void', function(){
+          return expect(matcher.subjectMatcher()).to.not.eql(void 8);
         });
       });
       describe('action-subjects', function(){
-        return specify('has subjects', function(){
-          return matcher.actionSubjects().should.eql(['book']);
+        return specify('is void', function(){
+          return expect(matcher.actionSubjects()).to.not.eql(void 8);
         });
       });
       return describe('act-container', function(){
@@ -100,13 +102,33 @@
         return matcher = createMatcher(containers.unmanagedBook, 'can', ar.book);
       });
       describe('managed-subject-matcher', function(){
-        return specify('matches', function(){
-          return matcher.managedSubjectMatcher().subject.should.eql('book');
+        return specify('is void', function(){
+          return expect(matcher.managedSubjectMatcher()).to.not.eql(void 8);
         });
       });
-      return describe('managed-subject-match', function(){
+      describe('managed-subject-match', function(){
         return specify('matches', function(){
           return matcher.managedSubjectMatch().should.eql(false);
+        });
+      });
+      describe('action-subjects', function(){
+        return specify('matches', function(){
+          return expect(matcher.actionSubjects()).to.eql(['book', 'blog']);
+        });
+      });
+      describe('match-subject', function(){
+        return specify('matches', function(){
+          return matcher.matchSubject().should.eql(true);
+        });
+      });
+      describe('subject-matcher', function(){
+        return specify('matches', function(){
+          return expect(matcher.subjectMatcher()).to.not.eql(void 8);
+        });
+      });
+      return describe('match', function(){
+        return specify('matches', function(){
+          return matcher.match().should.eql(true);
         });
       });
     });
@@ -114,9 +136,24 @@
       beforeEach(function(){
         return matcher = createMatcher(containers.managedBook, 'can', ar.book);
       });
-      return describe('managed-subject-match', function(){
+      describe('managed-subject-matcher', function(){
+        return specify('is void', function(){
+          return expect(matcher.managedSubjectMatcher()).to.not.eql(void 8);
+        });
+      });
+      describe('action', function(){
+        return specify('is edit, not manage', function(){
+          return matcher.action.should.eql('edit');
+        });
+      });
+      describe('managed-subject-match', function(){
         return specify('matches', function(){
           return matcher.managedSubjectMatch().should.eql(true);
+        });
+      });
+      return describe('match', function(){
+        return specify('matches', function(){
+          return matcher.match().should.eql(false);
         });
       });
     });

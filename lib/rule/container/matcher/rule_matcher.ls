@@ -17,7 +17,7 @@ RuleSubjectMatcher    =  require './rule_subject_matcher'
 
 
 module.exports = class RuleMatcher implements Debugger, RuleMixin
-  (@container, @act, @access-request) ->
+  (@container, @act, @access-request, @debugging) ->
     @_validate!
     @_configure!
     @
@@ -52,19 +52,21 @@ module.exports = class RuleMatcher implements Debugger, RuleMixin
     @match-subject!
 
   managed-subject-match: ->
-    @managed-subject-matcher!.match @subject
+    @managed-subject-matcher!.match @clazz
 
   managed-subject-matcher: ->
-    new ManagedSubjectMatcher @act-container!
+    new ManagedSubjectMatcher @act-container!, @debugging
 
   match-subject: ->
-    @subject-matcher!.match @subject
+    return false unless @action-subjects!
+    @subject-matcher!.match @clazz
 
   subject-matcher: ->
-    new RuleSubjectMatcher @action-subjects!
+    return void unless @action-subjects!
+    new RuleSubjectMatcher @action-subjects!, @debugging
 
   action-subjects: ->
-    @_action-subjects ||= @container[@action]
+    @_action-subjects ||= @act-container![@action]
 
   act-container: ->
     @_container ||= @container-for @act

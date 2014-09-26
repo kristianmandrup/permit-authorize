@@ -7,8 +7,8 @@ Book        = requires.fix 'book'
 
 Matcher = requires.rule 'container' .matcher.RuleMatcher
 
-create-matcher = (container, act, ar) ->
-  new Matcher container, act, ar
+create-matcher = (container, act, ar, debug = true) ->
+  new Matcher container, act, ar, debug
 
 expect = require 'chai' .expect
 
@@ -33,17 +33,17 @@ describe 'RuleMatcher' ->
     action: 'edit'
     subject: subjects.book
 
-
   containers.managed-book =
     can:
       manage: ['book', 'blog']
       write:  ['journal', 'article']
       edit:   ['movie']
 
-  containers.none-managed =
+  containers.unmanaged-book =
     can:
-      edit: ['book']
+      edit:   ['book', 'blog']
       create: ['article']
+      write:  ['journal', 'article']
 
   describe 'create' ->
     context 'invalid' ->
@@ -66,16 +66,16 @@ describe 'RuleMatcher' ->
         matcher.manage-actions.should.eql ['create', 'edit', 'delete']
 
     describe 'match-subject' ->
-      specify 'matches' ->
-        matcher.match-subject!.should.eql true
+      specify 'edit does not match' ->
+        matcher.match-subject!.should.eql false
 
     describe 'subject-matcher' ->
-      specify 'has subjects' ->
-        matcher.subject-matcher!.subject.should.eql ['book']
+      specify 'is void' ->
+        expect matcher.subject-matcher! .to.not.eql void
 
     describe 'action-subjects' ->
-      specify 'has subjects' ->
-        matcher.action-subjects!.should.eql ['book']
+      specify 'is void' ->
+        expect matcher.action-subjects! .to.not.eql void
 
     describe 'act-container' ->
       specify 'has subjects' ->
@@ -85,31 +85,51 @@ describe 'RuleMatcher' ->
           edit:   ['movie']
         }
 
-
   context 'unmanaged book' ->
     before-each ->
       matcher := create-matcher containers.unmanaged-book, 'can', ar.book
 
     describe 'managed-subject-matcher' ->
-      specify 'matches' ->
-        matcher.managed-subject-matcher!.subject.should.eql 'book'
+      specify 'is void' ->
+        expect matcher.managed-subject-matcher! .to.not.eql void
 
     describe 'managed-subject-match' ->
       specify 'matches' ->
         matcher.managed-subject-match!.should.eql false
+
+    describe 'action-subjects' ->
+      specify 'matches' ->
+        expect matcher.action-subjects! .to.eql ['book', 'blog']
+
+    describe 'match-subject' ->
+      specify 'matches' ->
+        matcher.match-subject!.should.eql true
+
+    describe 'subject-matcher' ->
+      specify 'matches' ->
+        expect matcher.subject-matcher! .to.not.eql void
+
+    describe 'match' ->
+      specify 'matches' ->
+        matcher.match!.should.eql true
 
 
   context 'managed book' ->
     before-each ->
       matcher := create-matcher containers.managed-book, 'can', ar.book
 
+    describe 'managed-subject-matcher' ->
+      specify 'is void' ->
+        expect matcher.managed-subject-matcher! .to.not.eql void
+
+    describe 'action' ->
+      specify 'is edit, not manage' ->
+        matcher.action.should.eql 'edit'
+
     describe 'managed-subject-match' ->
       specify 'matches' ->
         matcher.managed-subject-match!.should.eql true
 
-
-#      describe 'match' ->
-#        specify 'matches' ->
-#          matcher.match!.should.eql true
-#
-#
+    describe 'match' ->
+      specify 'matches' ->
+        matcher.match!.should.eql false

@@ -12,6 +12,7 @@ module.exports = class RuleActionMatcher implements Debugger, RuleMixin
     @debug '@container', @container
 
   match: (subject) ->
+    @debug 'match', subject
     return false unless subject
     @is-managed subject
 
