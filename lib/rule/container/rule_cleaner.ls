@@ -1,4 +1,7 @@
-module.exports = class RepoCleaner
+util      = require '../../util'
+Debugger  = util.Debugger
+
+module.exports = class RepoCleaner implements Debugger
   (@container) ->
 
   clean-all: ->

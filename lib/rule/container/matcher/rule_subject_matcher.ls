@@ -1,7 +1,10 @@
+util      = require '../../../util'
+Debugger  = util.Debugger
+
 clazz-for   = util.string.clazz-for
 camelize    = util.string.camel-case
 
-module.exports = class RuleSubjectMatcher
+module.exports = class RuleSubjectMatcher implements Debugger
   (@subjects) ->
     unless typeof! @subjects is 'Array'
       throw new Error "subject must be an Array, was: #{@subjects}"

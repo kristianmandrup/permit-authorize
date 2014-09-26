@@ -1,6 +1,17 @@
+requires  = require '../../../../requires'
 
-/**
- * User: kristianmandrup
- * Date: 26/09/14
- * Time: 11:49
- */
+requires.test 'test_setup'
+
+Matcher = requires.rule.container 'matcher' .RuleSubjectMatcher
+
+expect = require 'chai' .expect
+
+describe 'RepoCleaner' ->
+  var matcher
+
+  create-matcher = (subjects, debug = true) ->
+    new Matcher subjects
+
+  context 'basic repo' ->
+    before ->
+      matcher := create-matcher 'my repo'

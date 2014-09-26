@@ -8,7 +8,9 @@ Debugger  = util.Debugger
 
 RuleContainer   = require '../container' .RuleContainer
 
-# TODO: Do we really need this wrapper?
+# Why a repo?
+# A repo could have multiple containers and control access to containers
+
 module.exports = class RuleRepo implements Debugger
   (@name, @debugging) ->
 

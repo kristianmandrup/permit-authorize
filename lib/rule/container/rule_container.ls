@@ -1,5 +1,4 @@
 util      = require '../../util'
-
 Debugger  = util.Debugger
 
 module.exports = class RuleContainer implements Debugger

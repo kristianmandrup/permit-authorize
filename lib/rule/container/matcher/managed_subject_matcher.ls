@@ -1,3 +1,6 @@
+util      = require '../../../util'
+Debugger  = util.Debugger
+
 ManagedSubjectMatcher = require './managed_subject_matcher'
 
 module.exports = class RuleActionMatcher implements Debugger
