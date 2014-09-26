@@ -1,6 +1,9 @@
 Debugger        = require '../util' .Debugger
 
-var RuleRepo, PermitRuleApplier, PermitRegistry, PermitMatcher, PermitAllower
+PermitRegistry  = require './registry'   .PermitRegistry
+PermitMatcher   = require './matcher'    .PermitMatchController
+RuleRepo        = require '../rule'      .repo.RuleRepo
+PermitApplier   = require './rule'       .PermitRuleApplier
 
 module.exports = class Permit implements Debugger
   # Registers a permit in the PermitRegistry by name
@@ -8,20 +11,45 @@ module.exports = class Permit implements Debugger
   # @description -String
 
   (@name, @description = '', @debugging) ->
-    RuleRepo          := require '../rule'      .repo.RuleRepo
-    PermitRuleApplier := require './rule'       .PermitRuleApplier
-    PermitRegistry    := require './registry'   .PermitRegistry
-    PermitMatcher     := require './matcher'    .PermitMatchController
-    PermitAllower     := require '../allower'   .PermitAllower
-
-    Permit.registry ||= new PermitRegistry
-
-    @registry!.register-permit @
-
-    @rule-repo          = new RuleRepo @name
-    @rule-applier       = new PermitRuleApplier @, @debugging
-    @permit-allower     = new PermitAllower @rule-repo
+    Permit.registry   ||= new PermitRegistry
+    @match-enabled      = false
+    @_register! if @auto-activate
     @
+
+  repo: ->
+    @_repo ||= new RuleRepo @name
+
+  applier: ->
+    @_applier ||= new PermitApplier @repo
+
+  permit-matcher: (access-request) ->
+    new PermitMatcher @, access-request, @debugging
+
+  # default empty rules
+  rules: ->
+
+  auto-activate: true
+
+  activate: ->
+    @activate = true
+    @_register!
+
+  deactivate: ->
+    @activate = false
+    @_unregister!
+
+  _register: ->
+    @registry!.register @
+
+  _unregister: ->
+    @registry!.unregister @
+
+  # get a named permit
+  @get = (name) ->
+    @@registry.get name
+
+  registry: ->
+    @@registry
 
   @enable-match = ->
     @match-enabled = true
@@ -29,47 +57,25 @@ module.exports = class Permit implements Debugger
   @disable-match = ->
     @match-enabled = false
 
-  permit-matcher: ->
-    new PermitMatcher @, @access-request, @debugging
-
   # See if this permit should apply (be used) for the given access request
   # By default @match-enabled is undefined which means false ie. disabled
-  match: ->
-    return true unless @permit-matcher
-    @permit-matcher.match! if @match-enabled
-
-  registry: ->
-    @@registry
-
-  # get a named permit
-  @get = (name) ->
-    PermitRegistry.get name
+  match: (access-request)->
+    @permit-matcher(access-request).match! if @match-enabled
 
   # applies static rules
   # pre-compiles static rules that match
   init: ->
     @debug 'permit init'
-    @rule-applier.apply-rules 'static'
+    @applier.apply 'static'
     @
 
   clean: ->
-    @rule-repo.clean!
-    @rule-applier.clean!
-
-  # used by permit-for to extend specific permit from base class (prototype)
-  use: (obj) ->
-    obj = obj! if typeof! obj is 'Function'
-    if typeof! obj is 'Object'
-      @ <<< obj
-    else throw Error "Can only extend permit with an Object, was: #{typeof! obj}"
-
-  # default empty rules
-  rules: ->
+    @repo.clean!
+    @applier.clean!
 
   can-rules: ->
-    @rule-repo.can-rules
+    @repo.can-rules
 
   cannot-rules: ->
-    @rule-repo.cannot-rules
+    @repo.cannot-rules
 
-Permit <<< Debugger

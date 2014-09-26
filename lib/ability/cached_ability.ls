@@ -8,6 +8,7 @@ class CachedAbility extends Ability
     super ...
     @user-key!
 
+  # should be cleared whenever a new permit is added and activated.
   @clear-cache = ->
     @@can-cache = {}
     @@cannot-cache = {}

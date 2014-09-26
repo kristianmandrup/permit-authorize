@@ -19,7 +19,7 @@ describe 'PermitRegistry' ->
   registry = ->
     new PermitRegistry
 
-  context 'singleton' ->
+  context 'an instance' ->
     var reg
     before ->
       reg := registry!
@@ -29,14 +29,9 @@ describe 'PermitRegistry' ->
         specify 'should be empty' ->
           reg.permits.should.eql {}
 
-      describe 'permit-counter' ->
+      describe 'permit-count' ->
         specify 'should be 0' ->
-          reg.permit-counter.should.eql 0
-
-      describe 'calc-name' ->
-        context 'no argument' ->
-          specify 'should generate name Permit-0' ->
-            reg.calc-name!.should.eql 'Permit-0'
+          reg.permit-count!.should.eql 0
 
     describe 'create a permit' ->
       before ->
@@ -47,30 +42,17 @@ describe 'PermitRegistry' ->
         specify 'should have guest permit' ->
           reg.permits['guest books'].should.eql permits.guest
 
-      describe 'permit-counter' ->
+      describe 'permit-count' ->
         specify 'should be 1' ->
-          reg.permit-counter.should.eql 1
+          reg.permit-count!.should.eql 1
 
 
     context 'guest permit' ->
       before ->
         reg := Permit.registry
-        reg.clear-all!
+        reg.clean!
         permits.guest = create-permit.guest!
 
-
-      describe 'clear-all' ->
-        context 'cleared permits' ->
-          before ->
-            reg.clear-all!
-
-          describe 'permit-counter' ->
-            specify 'should reset to 0' ->
-              reg.calc-name!.should.eql 'Permit-0'
-
-          describe 'permits' ->
-            specify 'should be empty' ->
-              reg.permits.should.eql {}
 
       describe 'clean-all' ->
         context 'cleaned permits' ->
@@ -78,23 +60,23 @@ describe 'PermitRegistry' ->
           repos = {}
 
           before ->
-            reg.clear-all!
+            reg.clean!
             permits.guest = create-permit.guest!
 
-            counters.old  := reg.permit-counter
+            counters.old  := reg.permit-count!
             permits.old   := reg.permits
             repos.old     := permits.guest.rule-repo
 
             permits.guest.debug-on!
 
-            reg.clean-all!
+            reg.clean!
 
           specify 'old repo is a RuleRepo' ->
             repos.old.constructor.should.eql RuleRepo
 
           describe 'permit-counter' ->
             specify 'should not change' ->
-              reg.permit-counter.should.eql counters.old
+              reg.permit-count!.should.eql counters.old
 
           describe 'permits' ->
             specify 'should not change' ->

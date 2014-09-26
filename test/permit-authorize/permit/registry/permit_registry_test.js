@@ -20,7 +20,7 @@
     registry = function(){
       return new PermitRegistry;
     };
-    return context('singleton', function(){
+    return context('an instance', function(){
       var reg;
       before(function(){
         return reg = registry();
@@ -31,16 +31,9 @@
             return reg.permits.should.eql({});
           });
         });
-        describe('permit-counter', function(){
+        return describe('permit-count', function(){
           return specify('should be 0', function(){
-            return reg.permitCounter.should.eql(0);
-          });
-        });
-        return describe('calc-name', function(){
-          return context('no argument', function(){
-            return specify('should generate name Permit-0', function(){
-              return reg.calcName().should.eql('Permit-0');
-            });
+            return reg.permitCount().should.eql(0);
           });
         });
       });
@@ -54,34 +47,17 @@
             return reg.permits['guest books'].should.eql(permits.guest);
           });
         });
-        return describe('permit-counter', function(){
+        return describe('permit-count', function(){
           return specify('should be 1', function(){
-            return reg.permitCounter.should.eql(1);
+            return reg.permitCount().should.eql(1);
           });
         });
       });
       return context('guest permit', function(){
         before(function(){
           reg = Permit.registry;
-          reg.clearAll();
+          reg.clean();
           return permits.guest = createPermit.guest();
-        });
-        describe('clear-all', function(){
-          return context('cleared permits', function(){
-            before(function(){
-              return reg.clearAll();
-            });
-            describe('permit-counter', function(){
-              return specify('should reset to 0', function(){
-                return reg.calcName().should.eql('Permit-0');
-              });
-            });
-            return describe('permits', function(){
-              return specify('should be empty', function(){
-                return reg.permits.should.eql({});
-              });
-            });
-          });
         });
         return describe('clean-all', function(){
           return context('cleaned permits', function(){
@@ -89,20 +65,20 @@
             counters = {};
             repos = {};
             before(function(){
-              reg.clearAll();
+              reg.clean();
               permits.guest = createPermit.guest();
-              counters.old = reg.permitCounter;
+              counters.old = reg.permitCount();
               permits.old = reg.permits;
               repos.old = permits.guest.ruleRepo;
               permits.guest.debugOn();
-              return reg.cleanAll();
+              return reg.clean();
             });
             specify('old repo is a RuleRepo', function(){
               return repos.old.constructor.should.eql(RuleRepo);
             });
             describe('permit-counter', function(){
               return specify('should not change', function(){
-                return reg.permitCounter.should.eql(counters.old);
+                return reg.permitCount().should.eql(counters.old);
               });
             });
             describe('permits', function(){

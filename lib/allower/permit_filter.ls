@@ -1,4 +1,4 @@
-values = require '../util/obj_util' .values
+values = require '../util' .object.values
 
 Debugger        = require '../util/debugger'
 Permit          = require '../permit' .Permit

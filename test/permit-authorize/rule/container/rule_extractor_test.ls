@@ -1,19 +1,24 @@
-requires  = require '../../../requires'
+requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
 User        = requires.fix 'user'
 Book        = requires.fix 'book'
 
-RuleExtractor   = requires.lib 'rule' .RuleExtractor
+Extractor   = requires.rule 'container' .RuleExtractor
 
 expect = require 'chai' .expect
 
-describe 'RepoRegistrator' ->
+describe 'RuleExtractor' ->
   var extractor
+  var actions, subjects
 
   create-extr = (container, action, subjects, debug = false) ->
-    new RuleExtractor container, action, subjects, debug
+    new Extractor container, action, subjects, debug
+
+  actions   := ['user', 'book']
+  subjects  := ['user', 'article']
+
 
   describe 'create' ->
     describe 'invalid' ->
@@ -23,35 +28,22 @@ describe 'RepoRegistrator' ->
     describe 'valid' ->
 
   context 'valid extractor' ->
-    var actions, subjects
     before-each ->
-      extractor := create-extr {}, 'edit', 'Article'
-      actions   := ['user', 'book']
-      subjects  := ['user', 'article']
-
+      extractor := create-extr {}, 'edit', ['Article', 'book']
 
     describe 'extract' ->
-      # @register-action-subjects @action-subjects!, @unique-subjects!
-      xspecify 'extracts rule?' ->
-        expect extractor.extract .to.eql {}
+      specify 'extracts rule?' ->
+        expect extractor.extract! .to.eql ['Article', 'Book']
 
-    describe 'register-action-subjects (action-container, subjects)' ->
-      before ->
+    describe.only 'unique-subjects' ->
+      before-each ->
+        duplicates = subjects.concat(['user'])
+        extractor := create-extr {}, 'edit', duplicates
 
-      # unique action-container.concat(subjects)
-      specify 'adds unique subjects to action container' ->
-        expect extractor.register-action-subjects(actions, subjects) .to.eql [ 'book', 'user', 'article' ]
-
-    describe 'unique-subjects' ->
-      # unique @rule-subjects
-      xspecify 'adds unique subjects to action container' ->
-        expect extractor.unique-subjects(subjects.concat(['user'])) .to.eql subjects
-
+      specify 'returns unique normalized subjects' ->
+        expect extractor.unique-subjects! .to.eql ['Article', 'User']
 
     describe 'action-subjects' ->
-  #    as = @rule-container[action]
-  #    if typeof! as is 'Array' then as else []
-
       context 'no rules for action' ->
         before-each ->
           extractor := create-extr {}, 'edit', 'Article'
@@ -67,11 +59,3 @@ describe 'RepoRegistrator' ->
         specify 'gets subjects for action' ->
           expect ext.action-subjects! .to.eql ['Book']
 
-    describe 'rule-subjects' ->
-      # @_rule-subjects ||= @__rule-subjects!
-      specify 'extracts rule subject' ->
-        expect extractor.rule-subjects! .to.eql ['Article']
-
-    describe '__rule-subjects' ->
-      specify 'extracts rule subject' ->
-        expect extractor.__rule-subjects! .to.eql ['Article']

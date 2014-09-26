@@ -29,4 +29,7 @@ module.exports = class RuleRepo implements Debugger
 
   clean: ->
     @container.clean!
+    @rule-applier.clean!
+
+
 
