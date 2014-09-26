@@ -1,14 +1,13 @@
-requires  = require '../../requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
-Permit          = requires.lib 'permit'
-RuleRepo        = requires.rule 'rule_repo'
-RuleApplier     = requires.rule 'rule_applier'
+Permit          = requires.lib    'permit'  .Permit
+RuleRepo        = requires.rule   'repo'    .RuleRepo
+RuleApplier     = requires.permit 'rule'    .PermitRuleApplier
 
-PermitMatcher   = requires.permit 'permit_matcher'
-PermitAllower   = requires.permit 'permit_allower'
-permit-for      = requires.permit 'permit_for'
+PermitMatcher   = requires.permit 'matcher' .PermitMatcher
+permit-for      = requires.permit 'factory' .permitFor
 
 Book            = requires.fix  'book'
 
