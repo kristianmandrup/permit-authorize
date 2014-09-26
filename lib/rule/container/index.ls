@@ -5,6 +5,7 @@ module.exports =
   RuleMatcher:      require './rule_matcher'
   RuleMixin:        require './rule_mixin'
   RuleRegistrator:  require './rule_registrator'
+  matcher:          require './matcher'
 
 
 
