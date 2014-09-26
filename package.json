@@ -29,9 +29,10 @@
   "devDependencies": {
     "LiveScript":               "x",
     "browserify":               "x",
-    "es6ify":                    "x",
+    "es6ify":                   "x",
     "mocha":                    "x",
     "chai":                     "x",
+    "util":                     "x",
     "expect.js":                "x",
     "should":                   "x",
     "istanbul":                 "x",
