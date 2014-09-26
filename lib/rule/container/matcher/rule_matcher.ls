@@ -10,42 +10,62 @@ camelize    = util.string.camel-case
 clazz-for   = util.string.clazz-for
 
 Debugger    = util.Debugger
-RuleMixin   = './rule_mixin'
+RuleMixin   = require '../rule_mixin'
+
+ManagedSubjectMatcher =  require './managed_subject_matcher'
+RuleSubjectMatcher    =  require './rule_subject_matcher'
+
 
 module.exports = class RuleMatcher implements Debugger, RuleMixin
-  (@rule-container, @act, @access-request) ->
+  (@container, @act, @access-request) ->
     @_validate!
-    @act = camelize @act
+    @_configure!
     @
 
+  _configure: ->
+    @act      = @act.to-lower-case!
+    @action   = @access-request.action
+    @subject  = @access-request.subject
+    @clazz    = clazz-for @subject
+    @debug 'container', @container
+    @debug 'action, subject, clazz', @action, @subject, @clazz
+
+
   _validate: ->
-    unless typeof! @act is 'String'
-      throw Error "#{@act} must be a String, was: #{utily.inspect @act}"
+    @_validate-act! and @_validate-container!
 
-  # TODO: refactor into smaller functions, avoid local vars!
-  # TODO: extract-method ;)
+  _validate-container: ->
+    unless typeof! @act-container! is 'Object'
+      throw Error "No container for #{@act} in container: #{utily.inspect @container}"
+
+  _validate-act: ->
+    unless @act is 'can' or @act is 'cannot'
+      throw Error "act must be a String: 'can' or 'cannot', was: #{utily.inspect @act}"
+
   match: ->
-    @debug 'match-rule', @act, @access-request
-    action = @access-request.action
-    subject = @access-request.subject
+    @debug 'match'
+    return false unless @clazz
+    return @managed-subject-match! if @action is 'manage'
 
-    @debug 'action, subject', action, subject
+    @debug 'action-subjects', @action-subjects!
+    return false unless @action-subjects!
+    @match-subject!
 
-    subj-clazz = clazz-for subject
+  managed-subject-match: ->
+    @managed-subject-matcher!.match @subject
 
-    @debug 'rule-container', @rule-container!
+  managed-subject-matcher: ->
+    new ManagedSubjectMatcher @act-container!
 
-    @match-manage-rule(@rule-container!, subj-clazz) if action is 'manage'
+  match-subject: ->
+    @subject-matcher!.match @subject
 
-    @debug 'subj-clazz', subj-clazz
-    return false unless subj-clazz
+  subject-matcher: ->
+    new RuleSubjectMatcher @action-subjects!
 
-    action-subjects = @rule-container![action]
-    @debug 'action-subjects', action-subjects
-    return false unless action-subjects
+  action-subjects: ->
+    @_action-subjects ||= @container[@action]
 
-    @match-subject-clazz action-subjects, subj-clazz
-
-  rule-container: ->
+  act-container: ->
     @_container ||= @container-for @act
 

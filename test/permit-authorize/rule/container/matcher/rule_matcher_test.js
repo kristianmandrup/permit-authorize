@@ -11,90 +11,112 @@
   };
   expect = require('chai').expect;
   describe('RuleMatcher', function(){
-    var subjects, ar, containers;
+    var subjects, ar, containers, matcher;
     subjects = {};
     ar = {};
     containers = {};
-    return describe('create', function(){
+    subjects.book = {
+      name: 'a nice journey',
+      _class: 'Book'
+    };
+    subjects.movie = {
+      name: 'The Apollo moonlanding scam!',
+      _class: 'Movie',
+      type: 'documentary'
+    };
+    ar.book = {
+      user: 'kris',
+      action: 'edit',
+      subject: subjects.book
+    };
+    containers.managedBook = {
+      can: {
+        manage: ['book', 'blog'],
+        write: ['journal', 'article'],
+        edit: ['movie']
+      }
+    };
+    containers.noneManaged = {
+      can: {
+        edit: ['book'],
+        create: ['article']
+      }
+    };
+    describe('create', function(){
       context('invalid', function(){
         return specify('throws', function(){
           return expect(function(){
-            return createMatcher('can', {});
+            return createMatcher({}, 'can', void 8);
           }).to['throw'];
         });
       });
-      context('valid', function(){
+      return context('valid', function(){
         specify('ok', function(){
           return expect(function(){
-            return createMatcher('can', {});
+            return createMatcher(containers.managedBook, 'can', {});
           }).to.not['throw'];
         });
-        return specify('act is camel cased', function(){
-          return createMatcher('can', {}).act.should.eql('Act');
+        return specify('act is set', function(){
+          return createMatcher(containers.managedBook, 'can', {}).act.should.eql('can');
         });
       });
-      return context('valid matcher', function(){
-        var matcher;
-        before(function(){
-          subjects.book = {
-            name: 'a nice journey',
-            _class: 'Book'
-          };
-          subjects.movie = {
-            name: 'The Apollo moonlanding scam!',
-            _class: 'Movie',
-            type: 'documentary'
-          };
-          ar.book = {
-            user: 'kris',
-            action: 'read',
-            subject: subjects.book
-          };
-          containers.manageBook = {
-            can: {
-              manage: ['book']
-            }
-          };
-          return matcher = createMatcher(containers.manageBook, 'can', ar.book);
+    });
+    context('valid matcher', function(){
+      beforeEach(function(){
+        return matcher = createMatcher(containers.managedBook, 'can', ar.book);
+      });
+      describe('manage-actions', function(){
+        return specify('has CED actions', function(){
+          return matcher.manageActions.should.eql(['create', 'edit', 'delete']);
         });
-        describe('manage-actions', function(){
-          return specify('has CED actions', function(){
-            return matcher.manageActions.should.eql(['create', 'edit', 'delete']);
+      });
+      describe('match-subject', function(){
+        return specify('matches', function(){
+          return matcher.matchSubject().should.eql(true);
+        });
+      });
+      describe('subject-matcher', function(){
+        return specify('has subjects', function(){
+          return matcher.subjectMatcher().subject.should.eql(['book']);
+        });
+      });
+      describe('action-subjects', function(){
+        return specify('has subjects', function(){
+          return matcher.actionSubjects().should.eql(['book']);
+        });
+      });
+      return describe('act-container', function(){
+        return specify('has subjects', function(){
+          return matcher.actContainer().should.eql({
+            manage: ['book', 'blog'],
+            write: ['journal', 'article'],
+            edit: ['movie']
           });
         });
-        describe('container-for', function(){
-          return specify('creates container', function(){
-            return matcher.containerFor('edit').should;
-          });
+      });
+    });
+    context('unmanaged book', function(){
+      beforeEach(function(){
+        return matcher = createMatcher(containers.unmanagedBook, 'can', ar.book);
+      });
+      describe('managed-subject-matcher', function(){
+        return specify('matches', function(){
+          return matcher.managedSubjectMatcher().subject.should.eql('book');
         });
-        describe('rule-container', function(){
-          return specify('creates container', function(){
-            return matcher.ruleContainer('edit').should;
-          });
+      });
+      return describe('managed-subject-match', function(){
+        return specify('matches', function(){
+          return matcher.managedSubjectMatch().should.eql(false);
         });
-        describe('match-subject-clazz (action-subjects, subj-clazz)', function(){
-          return specify('creates container', function(){
-            return matcher.matchSubjectClazz(['article', 'book', 'movie'], 'book').should.eql('book');
-          });
-        });
-        describe('match-manage-rule (container, subj-clazz)', function(){
-          return specify('matches', function(){
-            return matcher.matchSubjectClazz({
-              manage: ['book']
-            }, 'book').should.eql('edit');
-          });
-        });
-        describe('manage-action-subjects (rule-container)', function(){
-          return specify('manages', function(){
-            return matcher.manageActionSubjects({
-              manage: ['book']
-            }).should.eql(true);
-          });
-        });
-        return describe('match', function(){
-          return specify('matches', function(){
-            return matcher.match().should.eql(true);
-          });
+      });
+    });
+    return context('managed book', function(){
+      beforeEach(function(){
+        return matcher = createMatcher(containers.managedBook, 'can', ar.book);
+      });
+      return describe('managed-subject-match', function(){
+        return specify('matches', function(){
+          return matcher.managedSubjectMatch().should.eql(true);
         });
       });
     });

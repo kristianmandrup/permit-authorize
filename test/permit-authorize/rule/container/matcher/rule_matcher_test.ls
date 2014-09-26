@@ -17,68 +17,99 @@ describe 'RuleMatcher' ->
   ar          = {}
   containers  = {}
 
+  var matcher
+
+  subjects.book :=
+    name: 'a nice journey'
+    _class: 'Book'
+
+  subjects.movie :=
+    name: 'The Apollo moonlanding scam!'
+    _class: 'Movie'
+    type: 'documentary'
+
+  ar.book :=
+    user: 'kris'
+    action: 'edit'
+    subject: subjects.book
+
+
+  containers.managed-book =
+    can:
+      manage: ['book', 'blog']
+      write:  ['journal', 'article']
+      edit:   ['movie']
+
+  containers.none-managed =
+    can:
+      edit: ['book']
+      create: ['article']
+
   describe 'create' ->
     context 'invalid' ->
       specify 'throws' ->
-        expect( -> create-matcher 'can', {}).to.throw
+        expect( -> create-matcher {}, 'can', void).to.throw
 
     context 'valid' ->
       specify 'ok' ->
-        expect( -> create-matcher 'can', {}).to.not.throw
+        expect( -> create-matcher containers.managed-book, 'can', {}).to.not.throw
 
-      specify 'act is camel cased' ->
-        create-matcher('can', {}).act.should.eql 'Act'
+      specify 'act is set' ->
+        create-matcher(containers.managed-book, 'can', {}).act.should.eql 'can'
 
-    context 'valid matcher' ->
-      var matcher
+  context 'valid matcher' ->
+    before-each ->
+      matcher := create-matcher containers.managed-book, 'can', ar.book
 
-      before ->
-        subjects.book :=
-          name: 'a nice journey'
-          _class: 'Book'
+    describe 'manage-actions' ->
+      specify 'has CED actions' ->
+        matcher.manage-actions.should.eql ['create', 'edit', 'delete']
 
-        subjects.movie :=
-          name: 'The Apollo moonlanding scam!'
-          _class: 'Movie'
-          type: 'documentary'
+    describe 'match-subject' ->
+      specify 'matches' ->
+        matcher.match-subject!.should.eql true
 
-        ar.book :=
-          user: 'kris'
-          action: 'read'
-          subject: subjects.book
+    describe 'subject-matcher' ->
+      specify 'has subjects' ->
+        matcher.subject-matcher!.subject.should.eql ['book']
 
-        containers.manage-book =
-          can:
-            manage: ['book']
+    describe 'action-subjects' ->
+      specify 'has subjects' ->
+        matcher.action-subjects!.should.eql ['book']
 
-        matcher := create-matcher containers.manage-book, 'can', ar.book
-
-      describe 'manage-actions' ->
-        specify 'has CED actions' ->
-          matcher.manage-actions.should.eql ['create', 'edit', 'delete']
-
-      describe 'container-for' ->
-        specify 'creates container' ->
-          matcher.container-for 'edit' .should
-
-      describe 'rule-container' ->
-        specify 'creates container' ->
-          matcher.rule-container 'edit' .should
-
-      describe 'match-subject-clazz (action-subjects, subj-clazz)' ->
-        specify 'creates container' ->
-          matcher.match-subject-clazz(['article', 'book', 'movie'], 'book').should.eql 'book'
-
-      describe 'match-manage-rule (container, subj-clazz)' ->
-        specify 'matches' ->
-          matcher.match-subject-clazz({manage: ['book']}, 'book').should.eql 'edit'
-
-      describe 'manage-action-subjects (rule-container)' ->
-        specify 'manages' ->
-          matcher.manage-action-subjects({manage: ['book']}).should.eql true
-
-      describe 'match' ->
-        specify 'matches' ->
-          matcher.match!.should.eql true
+    describe 'act-container' ->
+      specify 'has subjects' ->
+        matcher.act-container!.should.eql {
+          manage: ['book', 'blog']
+          write:  ['journal', 'article']
+          edit:   ['movie']
+        }
 
 
+  context 'unmanaged book' ->
+    before-each ->
+      matcher := create-matcher containers.unmanaged-book, 'can', ar.book
+
+    describe 'managed-subject-matcher' ->
+      specify 'matches' ->
+        matcher.managed-subject-matcher!.subject.should.eql 'book'
+
+    describe 'managed-subject-match' ->
+      specify 'matches' ->
+        matcher.managed-subject-match!.should.eql false
+
+
+  context 'managed book' ->
+    before-each ->
+      matcher := create-matcher containers.managed-book, 'can', ar.book
+
+    describe 'managed-subject-match' ->
+      specify 'matches' ->
+        matcher.managed-subject-match!.should.eql true
+
+
+#      describe 'match' ->
+#        specify 'matches' ->
+#          matcher.match!.should.eql true
+#
+#
