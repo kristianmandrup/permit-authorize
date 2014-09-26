@@ -3,15 +3,17 @@ Debugger  = util.Debugger
 
 module.exports = class RepoCleaner implements Debugger
   (@container) ->
+    @_validate!
+    @
+
+  _validate: ->
+    unless typeof! @container is 'Object'
+      throw Error "Container must be an Objects, was: #{@container}"
 
   clean-all: ->
     @clean 'can'
     @clean 'cannot'
     @
-
-  # alias
-  clear-all: ->
-    @clean-all!
 
   # allow clean only can or cannot rules
   # if no argument, clean both
@@ -21,9 +23,5 @@ module.exports = class RepoCleaner implements Debugger
       throw Error "Repo can only clear 'can' or 'cannot' rules, was: #{act}"
 
     @debug 'clean', act
-    @repo["#{act}Rules"] = {}
+    @container[act] = {}
     @
-
-  # alias
-  clear: (act)->
-    @clean act
