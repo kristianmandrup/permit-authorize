@@ -17,6 +17,12 @@ module.exports = class RuleRepo implements Debugger
   container: ->
     new RuleContainer @debugging
 
+  can-rules: ->
+    @container!.can
+
+  cannot-rules: ->
+    @container!.cannot
+
   display: ->
     console.log "name:", @name
     @container!.display

@@ -3,7 +3,11 @@ module.exports =
 
   debug: (msg) ->
     if @debugging
-      console.log @.constructor.display-name + ':'
+      id  = @.constructor.display-name
+      console.time-end id if @_last_time_id is id
+      @_last_time_id = id
+      console.time id
+      console.log id + ':'
       console.log ...
 
   debug-on: ->

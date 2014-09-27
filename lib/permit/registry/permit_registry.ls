@@ -24,7 +24,7 @@ Observable      = require '../../mixin' .Observable
 console.log 'Observable', Observable
 
 module.exports = class PermitRegistry implements Observable, Debugger
-  (@debugging = true) ->
+  (@debugging) ->
 
   permits: {}
 

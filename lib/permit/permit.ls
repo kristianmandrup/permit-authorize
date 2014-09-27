@@ -5,15 +5,16 @@ PermitMatcher   = require './matcher'    .PermitMatchController
 RuleRepo        = require '../rule'      .repo.RuleRepo
 PermitApplier   = require './rule'       .PermitRuleApplier
 Observable      = require '../mixin'     .Observable
+Activation      = require '../mixin'     .Activation
 
-module.exports = class Permit implements Observable, Debugger
+module.exports = class Permit implements Activation, Observable, Debugger
   # Registers a permit in the PermitRegistry by name
   # @name - String
   # @description -String
 
-  (@name, @description = '', @debugging = true) ->
+  (@name, @description = '', @debugging) ->
     @match-enabled      = false
-    @activate! if @auto-activate
+    @activate! if @activate and @auto-activate
     @_register!
     @init!
     @
@@ -31,16 +32,6 @@ module.exports = class Permit implements Observable, Debugger
 
   # default empty rules
   rules: ->
-
-  auto-activate: true
-
-  activate: ->
-    @active = true
-    @_register!
-
-  deactivate: ->
-    @active = false
-    @_unregister!
 
   _register: ->
     @debug 'register permit', @
@@ -79,8 +70,8 @@ module.exports = class Permit implements Observable, Debugger
     @applier!.clean!
 
   can-rules: ->
-    @repo!.can-rules
+    @repo!.can-rules!
 
   cannot-rules: ->
-    @repo!.cannot-rules
+    @repo!.cannot-rules!
 

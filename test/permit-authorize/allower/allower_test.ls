@@ -14,6 +14,8 @@ Permit          = requires.lib    'permit'    .Permit
 PermitRegistry  = requires.permit 'registry'  .PermitRegistry
 permit-for      = requires.permit 'factory'   .permitFor
 
+expect = require 'chai' .expect
+
 describe 'Allower', ->
   var book
 
@@ -87,22 +89,26 @@ describe 'Allower', ->
       # permits.user.debug-on!
       # permits.guest.debug-on!
       # permits.editor.debug-on!
+
+      allowers.read-book.debug-on!
       # allowers.write-book.debug-on!
+
+      # Permit.registry.debug-on!
 
     describe 'allows!' ->
       before-each ->
         Permit.registry.clean-permits!
 
       specify 'read a book access should be allowed' ->
-        allowers.read-book.allows!.should.be.true
+        expect allowers.read-book.allows! .to.be.true
 
-      specify 'Editor write a book should be allowed' ->
-        allowers.write-book.allows!.should.be.true
+      xspecify 'Editor write a book should be allowed' ->
+        expect allowers.write-book.allows! .to.be.true
 
-      specify 'Guest write a book should NOT be allowed' ->
-        allowers.not-write-book.allows!.should.be.false
+      xspecify 'Guest write a book should NOT be allowed' ->
+        expect allowers.not-write-book.allows! .to.be.false
 
-    describe 'disallows!' ->
+    xdescribe 'disallows!' ->
       before-each ->
         Permit.registry.clean-permits!
 
