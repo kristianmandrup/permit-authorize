@@ -5,4 +5,5 @@ module.exports =
   matcher:        require './matcher'
   registry:       require './registry'
   rule:           require './rule'
+  mixin:          require './mixin'
   Debugger:       require '../util' .Debugger

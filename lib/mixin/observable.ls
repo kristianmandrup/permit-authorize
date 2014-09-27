@@ -5,5 +5,5 @@ module.exports =
     observers.push observer
 
   notify: (event) ->
-    for observer in observers
-      observer.notify event, @ if typeof! observer?notify is 'Function'
+    for observer in @observers
+      observer.receive event, @ if typeof! observer?receive is 'Function'

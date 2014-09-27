@@ -4,8 +4,9 @@ PermitRegistry  = require './registry'   .PermitRegistry
 PermitMatcher   = require './matcher'    .PermitMatchController
 RuleRepo        = require '../rule'      .repo.RuleRepo
 PermitApplier   = require './rule'       .PermitRuleApplier
+Observable      = require '../mixin'     .Observable
 
-module.exports = class Permit implements Debugger
+module.exports = class Permit implements Observable, Debugger
   # Registers a permit in the PermitRegistry by name
   # @name - String
   # @description -String

@@ -19,7 +19,11 @@ calc-name = (ctx, name) ->
     throw Error "Name of permit must be a String, was: #{name}"
   name
 
-module.exports = class PermitRegistry implements Debugger
+Observable      = require '../../mixin' .Observable
+
+console.log 'Observable', Observable
+
+module.exports = class PermitRegistry implements Observable, Debugger
   (@debugging = true) ->
 
   permits: {}
@@ -30,6 +34,8 @@ module.exports = class PermitRegistry implements Debugger
   unregister: (permit) ->
     name = extract-name permit
     delete @permits[name]
+    @unregistered!
+    @
 
   register: (permit) ->
     @debug 'register', @permits, permit
@@ -38,12 +44,19 @@ module.exports = class PermitRegistry implements Debugger
     # register permit
     if @_may-register name
       @permits[name] = permit
+      @registered permit
     else
       @debug 'may not register permit:', name
 
     permit.name = name
     @debug 'registered', @permits, name
     @
+
+  registered: (permit)->
+    @notify @, 'registered': permit
+
+  unregistered: (permit) ->
+    @notify @, 'registered': permit
 
   permit-count: ->
     Object.keys(@permits).length
@@ -54,9 +67,11 @@ module.exports = class PermitRegistry implements Debugger
   clean-permits: ->
     for permit in @permit-list!
       permit.clean!
+    @
 
   clean: ->
     @permits = {}
+    @
 
   _may-register: (name) ->
     not @permits[name]
