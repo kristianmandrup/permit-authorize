@@ -27,6 +27,8 @@
     "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R test -t 5000"
   },
   "devDependencies": {
+    "callback-timer":           "x",
+    "sleep":                    "x",
     "LiveScript":               "x",
     "browserify":               "x",
     "es6ify":                   "x",

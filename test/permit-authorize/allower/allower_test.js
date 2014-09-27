@@ -84,7 +84,7 @@
         allowers.readBook = allower(requests.readBook);
         allowers.writeBook = allower(requests.writeBook);
         allowers.notWriteBook = allower(requests.notWriteBook);
-        return allowers.readBook.debugOn();
+        return allowers.readBook.debugOn().timerOn();
       });
       describe('allows!', function(){
         beforeEach(function(){

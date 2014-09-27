@@ -45,6 +45,7 @@ module.exports = class Allower implements Debugger
   # for each iteration, a permit applies its dynamic rules given the accessRequest
   # and then test using all rules that apply for the given accessRequest
   test-permits: (allow-type) ->
+    @debug 'test permit', allow-type, 'permits:', @permits
     for permit in @permits
       @debug 'test permit', allow-type, permit
       @debug 'with rules', permit.rules

@@ -90,7 +90,7 @@ describe 'Allower', ->
       # permits.guest.debug-on!
       # permits.editor.debug-on!
 
-      allowers.read-book.debug-on!
+      allowers.read-book.debug-on!.timer-on!
       # allowers.write-book.debug-on!
 
       # Permit.registry.debug-on!

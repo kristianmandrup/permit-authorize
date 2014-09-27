@@ -1,17 +1,22 @@
+time = require './time'
+
 module.exports =
   debugging: false
 
   debug: (msg) ->
     if @debugging
-      id  = @.constructor.display-name
-      console.time-end id if @_last_time_id is id
-      @_last_time_id = id
-      console.time id
-      console.log id + ':'
+      console.log @constructor.display-name + ':'
       console.log ...
 
   debug-on: ->
     @debugging = true
+    @
+
+  timer-on: (methods) ->
+    time.timer @, only: methods, except: [/debug.*/]
+    @
+
 
   debug-off: ->
     @debugging = false
+    @
