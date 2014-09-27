@@ -11,7 +11,7 @@ module.exports = class Normalizer
     if @user? then {user: @user} else {}
 
   normalized: ->
-    extend @user-obj!, @normalized-obj!
+    @user-obj! <<< @normalized-obj!
 
   normalized-obj: ->
     @object! or @create-object!
@@ -20,7 +20,7 @@ module.exports = class Normalizer
     @ctx-obj! or @base-obj!
 
   ctx-obj: ->
-    extend(@base-obj!, ctx: @args.2) if @args.2
+    (@base-obj! <<< ctx: @args.2) if @args.2
 
   base-obj: ->
    {action: @args.0, subject: @args.1}

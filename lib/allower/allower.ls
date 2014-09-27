@@ -22,7 +22,10 @@ module.exports = class Allower implements Debugger
   # { user: user, action: 'read', subject: book, ctx: {} }
   (@access-request, @debugging) ->
     # filter to only use permits that make sense for current access request
-    @permits = PermitFilter.filter(@access-request)
+    @permits = @permit-filter!.filter!
+
+  permit-filter: ->
+    new PermitFilter @access-request
 
   # test filtered permits for allowing the accessRequest
   # if any of them allows, then returns true (yes, sallow!), else false

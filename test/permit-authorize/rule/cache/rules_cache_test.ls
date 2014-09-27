@@ -98,3 +98,14 @@ describe 'RulesCache' ->
         specify 'observes when valid target' ->
           expect target.observer .to.equal cache
 
+        describe 'notify of event' ->
+          var permit
+
+          before ->
+            permit := {type: 'permit'}
+            cache.set 'x', 'Y' # ensure cache is not empty
+            cache.notify permit, 'created'
+
+          specify 'clears cache on notify' ->
+            expect cache.cache .to.eql {}
+

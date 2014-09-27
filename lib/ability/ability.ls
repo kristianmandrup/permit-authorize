@@ -3,7 +3,7 @@ Allower       = require '../allower' .Allower
 AccessRequest = require '../access_request' .AccessRequest
 Debugger      = require '../util' .Debugger
 Normalizer    = require '../access_request' .util.Normalizer
-
+flatten       = require '../util' .array.flatten
 /*
 # Ability of a user to perform an action on a subject
 */
@@ -14,8 +14,7 @@ module.exports = class Ability implements Debugger
   # @param {string} user   - The user who requests access to perform
   # @param {string} author - The author of the book.
   */
-  (@user, debug) ->
-    @debug-on! if debug
+  (@user, @debugging) ->
     @_validate-user!
 
   /*
@@ -70,10 +69,7 @@ module.exports = class Ability implements Debugger
 
   normalized: ->
     # https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce#Example:_Flatten_an_array_of_arrays
-    @args = @args.reduce (a, b) ->
-      a.concat b
-
+    @args = flatten @args
     @debug 'normalize args', @args
     new Normalizer(@args).set-user(@user).normalized!
 
-Ability <<< Debugger

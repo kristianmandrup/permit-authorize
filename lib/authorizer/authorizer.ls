@@ -11,6 +11,7 @@ module.exports = class Authorizer implements Debugger
   # or individual arguments:
   #   action, subject, ...
   # and normalize them before calling can
+  # TODO: I think we already normalize in the Ability
   authorize: (action, subject, ctx) ->
     @debug 'authorize', action, subject, ctx
     if typeof! action is 'Object'

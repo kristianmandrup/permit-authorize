@@ -97,8 +97,21 @@
             };
             return cache.observe(target);
           });
-          return specify('observes when valid target', function(){
+          specify('observes when valid target', function(){
             return expect(target.observer).to.equal(cache);
+          });
+          return describe('notify of event', function(){
+            var permit;
+            before(function(){
+              permit = {
+                type: 'permit'
+              };
+              cache.set('x', 'Y');
+              return cache.notify(permit, 'created');
+            });
+            return specify('clears cache on notify', function(){
+              return expect(cache.cache).to.eql({});
+            });
           });
         });
       });

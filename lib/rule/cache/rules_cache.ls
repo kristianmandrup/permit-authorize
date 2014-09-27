@@ -11,8 +11,12 @@ module.exports = class RulesCache implements Debugger
     @fingerprint!
 
   # should be cleared whenever a new permit is added and activated.
-  clear-cache: ->
-    @cache = {}
+  clear-cache: (act) ->
+    if act
+      @cache[act] = {}
+    else
+      @cache = {}
+    @
 
   get: (name) ->
     @cache[name]
@@ -36,3 +40,7 @@ module.exports = class RulesCache implements Debugger
   observe: (...targets) ->
     for target in targets
       target.add-observer @ if typeof! target?add-observer is 'Function'
+
+  # by default clears cache on any change
+  notify: (sender, event) ->
+    @clear-cache!

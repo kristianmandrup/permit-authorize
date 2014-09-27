@@ -1,9 +1,8 @@
-requires  = require '../../requires'
+requires        = require '../../../requires'
 
 requires.test 'test_setup'
 
-ability         = require './ability/abilities'
-lo              = requires.util 'lodash-lite'
+ability         = requires.test 'ability/abilities'
 
 User            = requires.fix 'user'
 Book            = requires.fix 'book'
@@ -12,12 +11,12 @@ create-request  = requires.fac 'create-request'
 create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 
-Allower         = requires.lib 'allower'
-Ability         = requires.lib 'ability'
+Allower         = requires.lib 'allower' .Allower
+Ability         = requires.lib 'ability' .Ability
 
-Permit          = requires.lib 'permit'
-permit-for      = requires.permit 'permit_for'
-PermitMatcher   = requires.permit 'permit_matcher'
+Permit          = requires.lib 'permit' .Permit
+permit-for      = requires.permit 'factory' .permitFor
+PermitMatcher   = requires.permit 'matcher' .PermitMatcher
 
 describe 'Ability' ->
   var book

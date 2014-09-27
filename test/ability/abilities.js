@@ -2,7 +2,7 @@
 (function(){
   var requires, Ability, createUser, ability;
   requires = require('../../requires');
-  Ability = requires.lib('ability');
+  Ability = requires.lib('ability').Ability;
   createUser = requires.fac('create-user');
   ability = function(user){
     return new Ability(user);

@@ -1,6 +1,6 @@
-requires = require '../../../requires'
+requires = require '../../requires'
 
-Ability       = requires.lib 'ability'
+Ability       = requires.lib 'ability' .Ability
 create-user   = requires.fac 'create-user'
 
 ability = (user) ->
