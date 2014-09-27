@@ -19,17 +19,16 @@ module.exports = class RuleRepo implements Debugger
 
   display: ->
     console.log "name:", @name
-    @container.display
+    @container!.display
 
   register: (act, actions, subjects) ->
-    @container.register act, actions, subjects
+    @container!.register act, actions, subjects
 
   match: (act, access-request) ->
-    @container.match act, access-request .match!
+    @container!.match act, access-request .match!
 
   clean: ->
-    @container.clean!
-    @rule-applier.clean!
+    @container!.clean!
 
 
 

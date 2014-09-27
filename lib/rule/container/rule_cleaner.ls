@@ -1,14 +1,14 @@
 util      = require '../../util'
 Debugger  = util.Debugger
 
-module.exports = class RepoCleaner implements Debugger
+module.exports = class RuleCleaner implements Debugger
   (@container) ->
     @_validate!
     @
 
   _validate: ->
     unless typeof! @container is 'Object'
-      throw Error "Container must be an Objects, was: #{@container}"
+      throw Error "Container must be an Object, was: #{@container}"
 
   clean-all: ->
     @clean 'can'

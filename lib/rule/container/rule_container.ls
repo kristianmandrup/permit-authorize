@@ -1,6 +1,9 @@
 util      = require '../../util'
 Debugger  = util.Debugger
 
+RuleCleaner       = require './rule_cleaner'
+RuleRegistrator   = require './rule_registrator'
+
 module.exports = class RuleContainer implements Debugger
   (@debugging) ->
 
@@ -14,16 +17,16 @@ module.exports = class RuleContainer implements Debugger
     @matcher act, access-request .match!
 
   clean: ->
-    @cleaner.clean!
+    @cleaner!.clean!
 
   matcher: (act, access-request) ->
-    new RuleMatcher @container, act, access-request
+    new RuleMatcher @, act, access-request
 
   cleaner: ->
-    @_cleaner ||= new RepoCleaner @container
+    @_cleaner ||= new RuleCleaner @
 
   registrator: ->
-    @_registrator ||= new RuleRegistrator @container
+    @_registrator ||= new RuleRegistrator @
 
   display: ->
     console.log "can-rules:", @can

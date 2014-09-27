@@ -74,12 +74,12 @@ module.exports = class Permit implements Debugger
     @
 
   clean: ->
-    @repo.clean!
-    @applier.clean!
+    @repo!.clean!
+    @applier!.clean!
 
   can-rules: ->
-    @repo.can-rules
+    @repo!.can-rules
 
   cannot-rules: ->
-    @repo.cannot-rules
+    @repo!.cannot-rules
 

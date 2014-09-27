@@ -1,4 +1,4 @@
-requires  = require '../../requires'
+requires  = require '../../../requires'
 
 requires.test 'test_setup'
 
@@ -9,10 +9,10 @@ create-user     = requires.fac 'create-user'
 create-permit   = requires.fac 'create-permit'
 create-request  = requires.fac 'create-request'
 
-Allower         = requires.lib 'allower'
-Permit          = requires.lib 'permit'
-PermitRegistry  = requires.permit 'permit_registry'
-permit-for      = requires.permit 'permit_for'
+Allower         = requires.lib    'allower'   .Allower
+Permit          = requires.lib    'permit'    .Permit
+PermitRegistry  = requires.permit 'registry'  .PermitRegistry
+permit-for      = requires.permit 'factory'   .permitFor
 
 describe 'Allower', ->
   var book
@@ -50,7 +50,7 @@ describe 'Allower', ->
   
   describe 'allows and disallows' ->
     before ->
-      PermitRegistry.clear-all!
+      Permit.registry.clean!
 
       # setup permits here !!
       permits.user := permit-for 'User',
@@ -91,7 +91,7 @@ describe 'Allower', ->
 
     describe 'allows!' ->
       before-each ->
-        PermitRegistry.clean-permits!
+        Permit.registry.clean-permits!
 
       specify 'read a book access should be allowed' ->
         allowers.read-book.allows!.should.be.true
@@ -104,7 +104,7 @@ describe 'Allower', ->
 
     describe 'disallows!' ->
       before-each ->
-        PermitRegistry.clean-permits!
+        Permit.registry.clean-permits!
 
       specify 'Guest read a book access should NOT be disallowed' ->
         allowers.read-book.disallows!.should.be.false
