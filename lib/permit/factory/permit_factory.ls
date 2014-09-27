@@ -18,9 +18,6 @@ module.exports = class PermitFactory implements Debugger
     new @base-clazz @name, @debugging
 
   create: ->
-    @permit!.init!
-
-  permit: ->
     switch typeof! @base-obj
     # extend permit with custom functionality
     case 'Object' then @use @create-permit!, @base-obj

@@ -9,20 +9,20 @@ Permit          = requires.permit 'permit'
 
 create-permit   = requires.fac  'create-permit'
 
+create-registry = (debug = false) ->
+  new PermitRegistry debug
+
 describe 'PermitRegistry' ->
   permits = {}
 
   describe 'create instance' ->
     specify 'should not throw error' ->
-      ( -> new PermitRegistry ).should.not.throw
-
-  registry = ->
-    new PermitRegistry
+      ( -> create-registry! ).should.not.throw
 
   context 'an instance' ->
     var reg
     before ->
-      reg := registry!
+      reg := create-registry!
 
     describe 'initial state' ->
       describe 'permits' ->
@@ -53,53 +53,31 @@ describe 'PermitRegistry' ->
         reg.clean!
         permits.guest = create-permit.guest!
 
-
       describe 'clean-all' ->
         context 'cleaned permits' ->
           counters = {}
           repos = {}
 
-          before ->
+          before-each ->
             reg.clean!
             permits.guest = create-permit.guest!
 
             counters.old  := reg.permit-count!
             permits.old   := reg.permits
-            repos.old     := permits.guest.rule-repo
+            repos.old     := permits.guest.repo!
 
             permits.guest.debug-on!
-
             reg.clean!
 
           specify 'old repo is a RuleRepo' ->
             repos.old.constructor.should.eql RuleRepo
 
           describe 'permit-counter' ->
-            specify 'should not change' ->
-              reg.permit-count!.should.eql counters.old
+            specify 'should be reset' ->
+              reg.permit-count!.should.not.eql counters.old
 
           describe 'permits' ->
-            specify 'should not change' ->
-              reg.permits.should.eql permits.old
+            specify 'should change' ->
+              reg.permits.should.not.eql permits.old
 
-          describe 'repo' ->
-            describe 'should be cleaned' ->
-              var cleaned-permit
 
-              before ->
-                cleaned-permit := reg.permits['guest books']
-
-              specify 'repo is same instance' ->
-                cleaned-permit.rule-repo.should.eql repos.old
-
-              specify 'repo can-rules are empty' ->
-                cleaned-permit.rule-repo.can-rules.should.eql {}
-
-              specify 'repo cannot-rules are empty' ->
-                cleaned-permit.rule-repo.cannot-rules.should.eql {}
-
-              specify 'can-rules are empty' ->
-                cleaned-permit.can-rules!.should.eql {}
-
-              specify 'cannot-rules are empty' ->
-                cleaned-permit.cannot-rules!.should.eql {}

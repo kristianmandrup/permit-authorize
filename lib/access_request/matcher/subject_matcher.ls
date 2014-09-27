@@ -3,7 +3,6 @@ BaseMatcher   = require './base_matcher'
 util          = require '../../util'
 camelize      = util.string.camel-case
 subject-for   = util.subject
-instance-for  = util.subject.instance
 
 module.exports = class SubjectMatcher extends BaseMatcher
   (@access-request) ->

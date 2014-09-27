@@ -6,10 +6,15 @@ RulesCache    = require '../rule' .cache.RulesCache
 module.exports =class CachedAbility extends Ability
   (@user) ->
     super ...
-    @cache = new RulesCache @user
+    @config-caches!
     @
 
-  # currently only caches last result!?
+  caches: {}
+
+  config-caches: ->
+    @caches['can']    = new RulesCache.init!
+    @caches['cannot'] = new RulesCache.init!
+
   authorize: (@act, ...args) ->
     @clear!
     return @cached-result! if @has-cached-result!
@@ -25,11 +30,14 @@ module.exports =class CachedAbility extends Ability
     super!
     @_last-result = void
 
+  # for convenience it caches last cache fetch here
+  # so we can check if it fetched from cache last time or not ;)
+  # improve this to maintain a FIFO history stack of last n items fetched?
   cached-result: ->
-    @_last-result ||= @cache![@fingerprint!]
+    @_last-result ||= @cache!.get @fingerprint!
 
   cache-result: ->
-    @cache![@fingerprint!] = @auth-result!
+    @cache!.set @fingerprint!, @auth-result!
 
   cache: ->
-    @cache[@act]
+    @caches[@act]

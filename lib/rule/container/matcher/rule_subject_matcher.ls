@@ -1,7 +1,7 @@
 util      = require '../../../util'
 Debugger  = util.Debugger
 
-subject-for = util.subject.clazz
+subject-for = util.subject
 camelize    = util.string.camel-case
 union       = util.array.union
 normalize   = util.normalize

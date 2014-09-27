@@ -11,6 +11,9 @@ module.exports = class FingerPrinter
   fingerprint: ->
     @_fingerprint ||= md5 @access-hash!
 
+  hash: ->
+    @fingerprint!
+
   access-hash: ->
     @_access-hash ||= [@action-hash!, @subject-hash!, @ctx-hash!].join ':'
 

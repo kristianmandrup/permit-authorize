@@ -20,7 +20,9 @@ calc-name = (ctx, name) ->
   name
 
 module.exports = class PermitRegistry implements Debugger
-  (@permits = {}) ->
+  (@debugging = true) ->
+
+  permits: {}
 
   get: (name) ->
     @permits[name] or throw Error("No permit '#{name}' is registered")
@@ -30,10 +32,17 @@ module.exports = class PermitRegistry implements Debugger
     delete @permits[name]
 
   register: (permit) ->
+    @debug 'register', @permits, permit
     name = calc-name @, permit.name
+    @debug 'permit name', name
     # register permit
-    @permits[name] = permit if @_may-register name
+    if @_may-register name
+      @permits[name] = permit
+    else
+      @debug 'may not register permit:', name
+
     permit.name = name
+    @debug 'registered', @permits, name
     @
 
   permit-count: ->
@@ -50,10 +59,5 @@ module.exports = class PermitRegistry implements Debugger
     @permits = {}
 
   _may-register: (name) ->
-    unless typeof! @permits is 'Object'
-      throw Error "permits registry container must be an Object in order to store permits by name, was: #{@permits}"
-
-    if @permits[name]
-      throw Error "A Permit named: #{name} is already registered, please use a different name!"
-
+    not @permits[name]
 

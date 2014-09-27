@@ -10,11 +10,14 @@ module.exports = class Permit implements Debugger
   # @name - String
   # @description -String
 
-  (@name, @description = '', @debugging) ->
-    Permit.registry   ||= new PermitRegistry
+  (@name, @description = '', @debugging = true) ->
     @match-enabled      = false
-    @_register! if @auto-activate
+    @activate! if @auto-activate
+    @_register!
+    @init!
     @
+
+  @registry ||= new PermitRegistry
 
   repo: ->
     @_repo ||= new RuleRepo @name
@@ -39,6 +42,7 @@ module.exports = class Permit implements Debugger
     @_unregister!
 
   _register: ->
+    @debug 'register permit', @
     @registry!.register @
 
   _unregister: ->

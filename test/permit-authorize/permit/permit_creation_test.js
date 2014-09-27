@@ -24,25 +24,25 @@
       return permits.empty = new Permit;
     });
     after(function(){
-      return PermitRegistry.clearAll();
+      return Permit.registry.clean();
     });
     describe('init creates a permit ', function(){
       specify('first unnamed permit is named Permit-0', function(){
         return permits.empty.name.should.eql('Permit-0');
       });
-      return specify('with no description', function(){
+      specify('with no description', function(){
         return permits.empty.description.should.eql('');
       });
-    });
-    context('extra Guest permit', function(){
-      before(function(){
-        return permits.guest = new GuestPermit;
+      return context('extra Guest permit', function(){
+        before(function(){
+          return permits.guest = new GuestPermit;
+        });
+        return specify('second unnamed is named Permit-1', function(){
+          return permits.guest.name.should.eql('Permit-1');
+        });
       });
-      return specify('second unnamed is named Permit-1', function(){
-        return permits.guest.name.should.eql('Permit-1');
-      });
     });
-    return context('a single permit named hello', function(){
+    return xcontext('a single permit named hello', function(){
       before(function(){
         return permits.hello = new Permit('hello');
       });

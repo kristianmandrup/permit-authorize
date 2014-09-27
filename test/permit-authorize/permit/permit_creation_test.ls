@@ -31,7 +31,7 @@ describe 'Permit' ->
     permits.empty   := new Permit
 
   after ->
-    PermitRegistry.clear-all!
+    Permit.registry.clean!
 
   describe 'init creates a permit ' ->
     specify 'first unnamed permit is named Permit-0' ->
@@ -40,15 +40,14 @@ describe 'Permit' ->
     specify 'with no description' ->
       permits.empty.description.should.eql ''
 
-  context 'extra Guest permit' ->
-    before ->
-      permits.guest    := new GuestPermit
+    context 'extra Guest permit' ->
+      before ->
+        permits.guest    := new GuestPermit
 
-    specify 'second unnamed is named Permit-1' ->
-      permits.guest.name.should.eql 'Permit-1'
+      specify 'second unnamed is named Permit-1' ->
+        permits.guest.name.should.eql 'Permit-1'
 
-
-  context 'a single permit named hello' ->
+  xcontext 'a single permit named hello' ->
     before ->
       permits.hello := new Permit 'hello'
 
