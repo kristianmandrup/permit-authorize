@@ -1,45 +1,26 @@
 ## TODO
 
-### Subject (impl. done - needs test) 
+### Tests to be completed
 
-clazz-for, instance-for
+Order to proceed...
 
-If subject has only one key and no `class` key, then assume that key is the class and value is the subject.
+* permit-filter
+* allower
+* ability
+* authorizer
 
-instance-for should clone <<< and normalize the class to this format:
-
-```
-{
-    title: 'My first post'
-    $clazz: 'Post' 
-}
-```
-
-### Cache and Permit Observers
-
-Every cache should observe Permit.registry and PermitContainer.
-
-```
-Permit.registry should be available on load not on first permit!
-
-cache.observe(Permit.registry, PermitContainer)
- 
-cache.observe = (...targets) ->
-    for target in targets 
-        target.addObserver @
-
-Permit.registry.addObserver = (observer) ->
-    observers.push observer
-
-Permit.registry.notify = (event) ->
-    for observer in observers
-        observer.notify event, @
-```    
+* rule matches (see below)
+* rules parser
+* rules loading
 
 ### Rule match
 
+Should avoid intersect, fun etc: Simply imply via type (Object or Function). 
+
+```
 matches:
 
+# OLD STYLE
 #  intersect:
 #    includes:
 #      user:
@@ -62,3 +43,5 @@ matches:
                 name: 'My evil twin'
         bad-cousin: -> # function
             @matching!.match-on subject-clazz: 'cousin', type: 'bad'
+            
+```            
