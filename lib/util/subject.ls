@@ -37,5 +37,16 @@ module.exports = (@subject) ->
     @first-key!
 
   inner-class: ->
-    return subject.constructor.display-name if subject.constructor.display-name
-    subject.clazz or subject._clazz or subject.$clazz or subject._class or subject.$class
+    @constructor-name! or @class-name!
+
+  class-name: ->
+    for key in class-keys
+      return true if @subject[key]
+    false
+
+  constructor-name: ->
+    return void unless @subject.constructor
+    @subject.constructor.display-name if @subject.constructor.display-name
+
+
+  class-keys: require './globals' .class-keys

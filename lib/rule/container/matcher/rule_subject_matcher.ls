@@ -5,6 +5,7 @@ subject-for = util.subject.clazz
 camelize    = util.string.camel-case
 union       = util.array.union
 normalize   = util.normalize
+wildcards   = util.globals.wildcards
 
 RuleMixin   = require '../rule_mixin'
 
@@ -23,7 +24,7 @@ module.exports = class RuleSubjectMatcher implements Debugger
   intersects: (ar-subjects) ->
     intersect(@subjects, ar-subjects).length > 0
 
-  wild-cards: ['Any', '*']
+  wild-cards: wildcards
 
   _validate: ->
     unless typeof! @subjects is 'Array'

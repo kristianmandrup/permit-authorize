@@ -3,6 +3,7 @@ module.exports =
   object:     require './object'
   string:     require './string'
   normalize:  require './normalize'
+  globals:    require './globals'
 
   Intersect:  require './intersect'
   Debugger:   require './debugger'
