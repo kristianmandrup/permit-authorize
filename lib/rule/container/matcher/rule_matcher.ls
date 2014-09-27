@@ -7,7 +7,7 @@ util        = require '../../../util'
 #object     = util.object
 every       = util.array.every
 camelize    = util.string.camel-case
-clazz-for   = util.string.clazz-for
+subject-for = util.subject
 
 Debugger    = util.Debugger
 RuleMixin   = require '../rule_mixin'
@@ -26,7 +26,7 @@ module.exports = class RuleMatcher implements Debugger, RuleMixin
     @act      = @act.to-lower-case!
     @action   = @access-request.action
     @subject  = @access-request.subject
-    @clazz    = clazz-for @subject
+    @clazz    = subject-for(@subject).clazz!
     @debug 'container', @container
     @debug 'action, subject, clazz', @action, @subject, @clazz
 
