@@ -25,7 +25,7 @@ describe 'permit-filter' ->
   requests  = {}
 
   describe 'user filter' ->
-    before ->
+    before-each ->
       users.javier  := create-user.javier!
       requests.user :=
         user: users.javier
@@ -33,29 +33,35 @@ describe 'permit-filter' ->
       Permit.registry.clean!
       permits.user  := create-permit.matching.user!
       pf            := create-filter requests.user
+      # pf.debug-on!
 
     specify 'return only permits that apply for a user' ->
       pf.filter!.should.eql [permits.user]
 
-  xdescribe 'guest user filter' ->
-    before ->
+  describe 'guest user filter' ->
+    before-each ->
       Permit.registry.clean!
       users.guest  := create-user.guest!
       requests.guest :=
         user: users.guest
+
+      pf := create-filter requests.guest
 
       permits.guest := create-permit.matching.role.guest!
 
     specify 'return only permits that apply for a guest user' ->
       pf.filter(requests.guest).should.eql [permits.guest]
       
-  xdescribe 'admin user filter' ->
-    before ->
+  describe 'admin user filter' ->
+    before-each ->
+      Permit.registry.clean!
       users.admin  := create-user.admin!
       requests.admin :=
         user: users.admin
 
       permits.admin := create-permit.matching.role.admin!
+
+      pf  := create-filter requests.admin
 
     specify 'return only permits that apply for an admin user' ->
       pf.filter(requests.admin).should.eql [permits.admin]

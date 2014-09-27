@@ -1,7 +1,8 @@
 values = require '../util' .object.values
 
-Debugger        = require '../util/debugger'
-Permit          = require '../permit' .Permit
+Debugger          = require '../util/debugger'
+Permit            = require '../permit' .Permit
+PermitContainer   = require '../permit' .container.PermitContainer
 
 module.exports = class PermitFilter implements Debugger
   (@access-request) ->
@@ -29,12 +30,15 @@ module.exports = class PermitFilter implements Debugger
       permit
 
   permits: ->
-    @_permits ||= values @permit-source
+    @_permits ||= values @permit-source!
 
   permit-source: ->
-    if PermitContainer.has-any
+    @debug 'permit-source'
+    if PermitContainer.has-any!
+      @debug 'active container permits', @active-permits!
       @active-permits!
     else
+      @debug 'all permits', @all-permits!
       @all-permits!
 
   active-permits: ->

@@ -22,7 +22,7 @@
     users = {};
     requests = {};
     describe('user filter', function(){
-      before(function(){
+      beforeEach(function(){
         users.javier = createUser.javier();
         requests.user = {
           user: users.javier
@@ -35,26 +35,29 @@
         return pf.filter().should.eql([permits.user]);
       });
     });
-    xdescribe('guest user filter', function(){
-      before(function(){
+    describe('guest user filter', function(){
+      beforeEach(function(){
         Permit.registry.clean();
         users.guest = createUser.guest();
         requests.guest = {
           user: users.guest
         };
+        pf = createFilter(requests.guest);
         return permits.guest = createPermit.matching.role.guest();
       });
       return specify('return only permits that apply for a guest user', function(){
         return pf.filter(requests.guest).should.eql([permits.guest]);
       });
     });
-    return xdescribe('admin user filter', function(){
-      before(function(){
+    return describe('admin user filter', function(){
+      beforeEach(function(){
+        Permit.registry.clean();
         users.admin = createUser.admin();
         requests.admin = {
           user: users.admin
         };
-        return permits.admin = createPermit.matching.role.admin();
+        permits.admin = createPermit.matching.role.admin();
+        return pf = createFilter(requests.admin);
       });
       return specify('return only permits that apply for an admin user', function(){
         return pf.filter(requests.admin).should.eql([permits.admin]);
