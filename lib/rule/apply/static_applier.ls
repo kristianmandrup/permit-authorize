@@ -7,6 +7,8 @@ module.exports = class StaticApplier extends RulesApplier
     @debug 'ctx:', @execution-context, 'rules:', rules
     @
 
+  _type: 'StaticApplier'
+
   # only the static rules
   apply-rules: ->
     unless util.valid-rules @rules

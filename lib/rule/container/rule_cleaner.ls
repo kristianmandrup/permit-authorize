@@ -6,6 +6,8 @@ module.exports = class RuleCleaner implements Debugger
     @_validate!
     @
 
+  _type: 'RuleCleaner'
+
   _validate: ->
     unless typeof! @container is 'Object'
       throw Error "Container must be an Object, was: #{@container}"

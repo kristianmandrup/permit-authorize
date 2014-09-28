@@ -2,10 +2,12 @@ Debugger = require '../../util' .Debugger
 
 # a context to execute a rule
 module.exports = class ExecutionContext implements Debugger
-  (@repo, @debugging) ->
-    @debug 'execute context', @repo
+  (@repo, @debugging = true) ->
+    @debug 'execute context: repo=', @repo, @repo.constructor
     @_validate!
     @
+
+  _type: 'ExecutionContext'
 
   _validate: ->
     unless typeof! @repo is 'Object'
@@ -17,9 +19,11 @@ module.exports = class ExecutionContext implements Debugger
     # for the @apply-action-rules, we could return a function, where the current action is also in the context,
     # and is the default action for all @ucan and @ucannot calls!!
   ucan: (actions, subjects, ctx) ->
-    @debug 'ucan', actions, subjects, ctx
+    @debug 'register ucan', actions, subjects, ctx
     @repo.register 'can', actions, subjects, ctx
+    @debug 'Registered :)'
 
   ucannot: (actions, subjects, ctx) ->
     @debug 'ucannot', actions, subjects, ctx
     @repo.register 'cannot', actions, subjects, ctx
+    @debug 'Registered :)'

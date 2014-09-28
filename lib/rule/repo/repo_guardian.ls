@@ -11,6 +11,8 @@ module.exports = class RepoGuardian implements Debugger
   (@repo, @access-request) ->
     @_validate!
 
+  _type: 'RepoGuardian'
+
   _validate: ->
     unless typeof! @repo is 'Object'
       throw Error "PermitAllower must take a RuleRepo in constructor, was: #{@repo}"

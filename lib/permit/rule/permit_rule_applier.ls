@@ -5,9 +5,6 @@ RulesAccessor     = rule.RulesAccessor
 camel-case        = util.string.camel-case
 Debugger          = util.Debugger
 
-console.log 'rule', rule
-console.log 'util', util
-
 StaticApplier     = rule.apply.StaticApplier
 DynamicApplier    = rule.apply.DynamicApplier
 ExecutionContext  = rule.apply.ExecutionContext

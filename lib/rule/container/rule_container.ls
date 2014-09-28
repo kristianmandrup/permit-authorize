@@ -5,12 +5,15 @@ RuleCleaner       = require './rule_cleaner'
 RuleRegistrator   = require './rule_registrator'
 
 module.exports = class RuleContainer implements Debugger
-  (@debugging) ->
+  (@debugging = true) ->
 
   can: {}
   cannot: {}
 
+  _type: 'RuleContainer'
+
   register: (act, actions, subjects) ->
+    @debug 'container register', act, actions, subjects
     @registrator!.register act, actions, subjects
 
   match: (act, access-request) ->
@@ -18,6 +21,7 @@ module.exports = class RuleContainer implements Debugger
 
   clean: ->
     @cleaner!.clean!
+    @
 
   matcher: (act, access-request) ->
     new RuleMatcher @, act, access-request

@@ -47,7 +47,7 @@ module.exports = class RulesApplier implements Debugger
     named-rules = rules[name]
     @debug 'named rules', named-rules
     if typeof! named-rules is 'Function'
-      @debug 'call rules in', @execution-context
+      @debug 'call rules in', @execution-context, @execution-context.constructor.display-name
       named-rules.call @execution-context, @access-request
     else
       @debug "rules key for #{name} should be a function that resolves one or more rules"

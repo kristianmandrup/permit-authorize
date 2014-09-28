@@ -7,9 +7,11 @@ RuleMixin       = require './rule_mixin'
 RuleAdder       = require './rule_adder'
 
 module.exports = class RuleRegistrator implements RuleMixin, Debugger
-  (@container, @debugging) ->
+  (@container, @debugging = true) ->
     @_validate!
     @
+
+  _type: 'RuleRegistrator'
 
   _validate: ->
     unless typeof! @container is 'Object'
@@ -17,12 +19,10 @@ module.exports = class RuleRegistrator implements RuleMixin, Debugger
 
   # rule-container
   register: (@act, @actions, @subjects) ->
-    console.log 'ACTIONS', actions
-    @debug 'actions', actions
+    @debug 'register', @act, @actions, @subjects
 
     @act-container = @container-for act # can-rules or cannot-rules
     @actions = normalize @actions
-    @debug 'rule container', @container
     @add-actions!
     @
 
@@ -34,4 +34,7 @@ module.exports = class RuleRegistrator implements RuleMixin, Debugger
       @add action
 
   add: (action) ->
-    new RuleAdder @act-container, action, @subjects, @debugging
+    @adder!.add action
+
+  adder: ->
+    @_adder ||= new RuleAdder @act-container, @subjects, @debugging

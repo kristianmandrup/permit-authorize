@@ -16,6 +16,8 @@ normalized = (subjects) ->
 module.exports = class RuleExtractor implements Debugger
   (@container, @action, @subjects, @debugging) ->
 
+  _type: 'RuleExtractor'
+
   extract: ->
     @debug "register action subjects", @action-subjects!, @unique-subjects!
     unique normalized(@action-subjects!).concat @unique-subjects!

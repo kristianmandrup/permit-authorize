@@ -26,7 +26,6 @@ describe 'RuleRegistrator' ->
       actions   := ['edit', 'publish']
       subjects  := ['book', 'article']
 
-
     # rule-container
     describe 'register-rule (act, actions, subjects)' ->
       specify 'registers a rule' ->

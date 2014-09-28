@@ -11,10 +11,12 @@ RuleContainer   = require '../container' .RuleContainer
 # A repo could have multiple containers and control access to containers
 
 module.exports = class RuleRepo implements Debugger
-  (@name, @debugging) ->
+  (@name, @debugging = true) ->
+
+  _type: 'RuleRepo'
 
   container: ->
-    new RuleContainer @debugging
+    @_container ||= new RuleContainer @debugging
 
   can-rules: ->
     @container!.can
@@ -34,6 +36,7 @@ module.exports = class RuleRepo implements Debugger
 
   clean: ->
     @container!.clean!
+    @
 
 
 

@@ -3,26 +3,28 @@ Debugger        = util.Debugger
 RuleExtractor   = require './rule_extractor'
 
 module.exports = class RuleAdder implements Debugger
-  (@container, @action, @subjects) ->
+  (@container, @subjects, @debugging) ->
 
-  add:  ->
-    @debug 'add rule', @action, @subjects
-    @action-subjects @action, @subjects
-    @container[@action] = @action-subjects!
-    @add-manage!
+  _type: 'RuleAdder'
+
+  add: (action) ->
+    @debug 'add rule', action, @subjects
+    @action-subjects action, @subjects
+    @container[action] = @action-subjects!
+    @add-manage action
     @
 
-  action-subjects: ->
-    @_action-subjects ||= @extractor(@container, @action, @subjects).extract!
+  action-subjects: (action) ->
+    @_action-subjects ||= @extractor(action).extract!
 
-  add-manage: ->
-    return unless @action is 'manage'
-    @debug 'add-manage', @action
+  add-manage: (action) ->
+    return unless action is 'manage'
+    @debug 'add-manage', action
     for action in @manage-actions
       @container[action] = @action-subjects!
     @
 
-  extractor:  ->
-    new RuleExtractor @container, @action, @subjects
+  extractor: (action) ->
+    new RuleExtractor @container, action, @subjects
 
   manage-actions: require('../../util').globals.manage-actions

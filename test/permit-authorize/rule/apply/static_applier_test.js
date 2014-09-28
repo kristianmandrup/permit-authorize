@@ -11,23 +11,23 @@
   RuleRepo = requires.rule('repo').RuleRepo;
   expect = require('chai').expect;
   describe('StaicApplier', function(){
-    var book, ruleRepo, ruleApplier, rules, applier, createRepo, createExecCtx, createRuleApplier, execRuleApplier;
+    var book, repo, applier, rules, createApplier, createRepo, createExecCtx, createRuleApplier, execRuleApplier;
     rules = {};
-    applier = function(ctx, rules, debug){
+    createApplier = function(ctx, rules, debug){
       debug == null && (debug = true);
       return new RulesApplier(ctx, rules, debug);
     };
     createRepo = function(name, debug){
       name == null && (name = 'dynamic repo');
       debug == null && (debug = false);
-      return new RuleRepo(name, debug).clear();
+      return new RuleRepo(name, debug).clean();
     };
     createExecCtx = function(debug){
       debug == null && (debug = true);
       return new ExecutionContext(createRepo(), debug);
     };
     createRuleApplier = function(rules){
-      return applier(createExecCtx(), rules, true);
+      return createApplier(createExecCtx(), rules, true);
     };
     execRuleApplier = function(rules, actionRequest){
       return createRuleApplier(rules).applyRules();
@@ -43,19 +43,20 @@
               return this.ucan('manage', 'Paper');
             }
           };
-          ruleApplier = execRuleApplier(rules.managePaper);
-          return ruleRepo = ruleApplier.repo();
+          applier = execRuleApplier(rules.managePaper);
+          return repo = applier.repo();
         });
         return specify('should add create, edit and delete can-rules', function(){
-          return ruleRepo.canRules.should.eql({
+          return repo.canRules().should.eql({
             manage: ['Paper'],
             create: ['Paper'],
-            edit: ['Paper'],
-            'delete': ['Paper']
+            'delete': ['Paper'],
+            update: ['Paper'],
+            edit: ['Paper']
           });
         });
       });
-      return describe('apply-rules', function(){
+      return xdescribe('apply-rules', function(){
         return describe('static', function(){
           var ruleRepo, ruleApplier, rules;
           before(function(){

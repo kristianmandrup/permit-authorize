@@ -18,25 +18,25 @@ expect = require 'chai' .expect
 
 describe 'StaicApplier' ->
   var book
-  var rule-repo
-  var rule-applier
+  var repo
+  var applier
 
   rules = {}
 
-  applier = (ctx, rules, debug = true) ->
+  create-applier = (ctx, rules, debug = true) ->
     new RulesApplier ctx, rules, debug
 
   create-repo = (name = 'dynamic repo', debug = false) ->
-    new RuleRepo(name, debug).clear!
+    new RuleRepo name, debug .clean!
 
   create-exec-ctx = (debug = true) ->
-    new ExecutionContext(create-repo!, debug)
+    new ExecutionContext create-repo!, debug
 
   create-rule-applier = (rules) ->
-    applier(create-exec-ctx!, rules, true)
+    create-applier create-exec-ctx!, rules, true
 
   exec-rule-applier = (rules, action-request) ->
-    create-rule-applier(rules).apply-rules!
+    create-rule-applier rules .apply-rules!
 
   before ->
     book          := new Book 'Far and away'
@@ -49,19 +49,20 @@ describe 'StaicApplier' ->
           default: ->
             @ucan    'manage',   'Paper'
 
-        rule-applier  := exec-rule-applier rules.manage-paper
-        rule-repo     := rule-applier.repo!
+        applier  := exec-rule-applier rules.manage-paper
+        repo     := applier.repo!
 
       specify 'should add create, edit and delete can-rules' ->
-        rule-repo.can-rules.should.eql {
+        repo.can-rules!.should.eql {
           manage: ['Paper']
           create: ['Paper']
-          edit:   ['Paper']
           delete: ['Paper']
+          update: [ 'Paper']
+          edit:   ['Paper']
         }
 
 
-    describe 'apply-rules' ->
+    xdescribe 'apply-rules' ->
       describe 'static' ->
         var rule-repo, rule-applier, rules
 

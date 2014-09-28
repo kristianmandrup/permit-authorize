@@ -5,6 +5,8 @@ module.exports = class DynamicApplier extends RulesApplier
   (@execution-context, @rules, @access-request, @debugging) ->
     super ...
 
+  _type: 'DynamicApplier'
+
   # TODO: extract into module
   valid-request: ->
     return false if not @access-request
