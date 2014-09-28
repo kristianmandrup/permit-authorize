@@ -27,7 +27,7 @@
     });
     return describe('apply-action-rules-for :read', function(){
       var readAccessRequest, ruleRepo, ruleApplier, rules;
-      return before(function(){
+      before(function(){
         rules = {
           edit: function(){
             this.ucan('edit', 'Book');
@@ -46,6 +46,7 @@
         ruleApplier = createRulesApplier(ruleRepo, rules, readAccessRequest);
         return ruleApplier.applyActionRules();
       });
+      return describe('apply', function(){});
     });
   });
 }).call(this);

@@ -2,8 +2,8 @@ Debugger = require '../../util' .Debugger
 
 # a context to execute a rule
 module.exports = class ExecutionContext implements Debugger
-  (@repo, @debugging = true) ->
-    @debug 'execute context: repo=', @repo, @repo.constructor
+  (@repo, @debugging) ->
+    @debug 'execute context', @repo
     @_validate!
     @
 

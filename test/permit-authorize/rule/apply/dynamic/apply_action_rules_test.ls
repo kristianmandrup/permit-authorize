@@ -48,3 +48,5 @@ describe 'Rule Applier (RuleApplier)' ->
       rule-applier  := create-rules-applier rule-repo, rules, read-access-request
 
       rule-applier.apply-action-rules!
+
+    describe 'apply' ->

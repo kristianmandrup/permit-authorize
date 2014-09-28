@@ -21,8 +21,13 @@ module.exports = class RuleRegistrator implements RuleMixin, Debugger
   register: (@act, @actions, @subjects) ->
     @debug 'register', @act, @actions, @subjects
 
+
     @act-container = @container-for act # can-rules or cannot-rules
-    @actions = normalize @actions
+    @actions  = normalize @actions
+    @subjects = normalize @subjects
+
+    console.log 'add em', @act, @actions, @subjects
+
     @add-actions!
     @
 
@@ -37,4 +42,4 @@ module.exports = class RuleRegistrator implements RuleMixin, Debugger
     @adder!.add action
 
   adder: ->
-    @_adder ||= new RuleAdder @act-container, @subjects, @debugging
+    new RuleAdder @act-container, @subjects, @debugging

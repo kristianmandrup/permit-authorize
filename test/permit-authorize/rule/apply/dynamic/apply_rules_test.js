@@ -12,7 +12,7 @@
   createRepo = function(name, debug){
     name == null && (name = 'dynamic repo');
     debug == null && (debug = false);
-    return new RuleRepo(name, debug).clear();
+    return new RuleRepo(name, debug).clean();
   };
   createExecCtx = function(debug){
     debug == null && (debug = true);
@@ -57,12 +57,12 @@
         return ruleApplier.applyRules();
       });
       specify('adds all dynamic can rules (only read)', function(){
-        return ruleRepo.canRules.should.be.eql({
+        return ruleRepo.canRules().should.be.eql({
           read: ['Project']
         });
       });
       return specify('adds all dynamic cannot rules (only read)', function(){
-        return ruleRepo.cannotRules.should.be.eql({
+        return ruleRepo.cannotRules().should.be.eql({
           'delete': ['Paper']
         });
       });

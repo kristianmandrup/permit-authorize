@@ -35,3 +35,4 @@ module.exports = class RuleContainer implements Debugger
   display: ->
     console.log "can-rules:", @can
     console.log "cannot-rules:", @cannot
+    @

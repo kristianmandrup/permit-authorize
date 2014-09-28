@@ -12,7 +12,7 @@ RuleRepo          = requires.rule 'repo' .RuleRepo
 fix-rules   = requires.fix-rules 'rules'
 
 create-repo = (name = 'dynamic repo', debug = false) ->
-  new RuleRepo name, debug .clear!
+  new RuleRepo name, debug .clean!
 
 create-exec-ctx = (debug = true) ->
   new ExecutionContext create-repo!, debug
@@ -55,13 +55,14 @@ describe 'Rule Applier (RuleApplier)' ->
       rule-repo     := rule-applier.repo!
 
       rule-applier.apply-rules!
+      # console.log 'REPO', rule-repo.container!
 
     specify 'adds all dynamic can rules (only read)' ->
-      rule-repo.can-rules.should.be.eql {
+      rule-repo.can-rules!.should.be.eql {
         read: ['Project']
       }
 
     specify 'adds all dynamic cannot rules (only read)' ->
-      rule-repo.cannot-rules.should.be.eql {
+      rule-repo.cannot-rules!.should.be.eql {
         delete: ['Paper']
       }
