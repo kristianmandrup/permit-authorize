@@ -1,8 +1,9 @@
-RulesAccessor = require '../../rule' .RulesAccessor
-camel-case    = require '../../util' .string.camel-case
-Debugger      = require '../../util' .Debugger
-StaticApplier = require '../../rule' .apply.StaticApplier
-DynamicApplier = require '../../rule' .apply.StaticApplier
+RulesAccessor     = require '../../rule' .RulesAccessor
+camel-case        = require '../../util' .string.camel-case
+Debugger          = require '../../util' .Debugger
+StaticApplier     = require '../../rule' .apply.StaticApplier
+DynamicApplier    = require '../../rule' .apply.DynamicApplier
+ExecutionContext  = require '../../rule' .apply.ExecutionContext
 
 module.exports = class PermitRuleApplier implements Debugger
   (@ctx, @access-request, @debugging = true) ->
@@ -30,7 +31,7 @@ module.exports = class PermitRuleApplier implements Debugger
     new DynamicApplier @execution-context!, @rules, @access-request, @debugging
 
   execution-context: ->
-    @_executer ||= @ctx.repo!
+    @_executer ||= new ExecutionContext @ctx.repo!, @debugging
 
   rule-applier: ->
     new @rules-applier.clazz @ctx, @access-request, @debugging

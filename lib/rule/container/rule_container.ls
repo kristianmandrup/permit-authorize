@@ -11,7 +11,7 @@ module.exports = class RuleContainer implements Debugger
   cannot: {}
 
   register: (act, actions, subjects) ->
-    @registrator.register-rule act, actions, subjects
+    @registrator!.register act, actions, subjects
 
   match: (act, access-request) ->
     @matcher act, access-request .match!

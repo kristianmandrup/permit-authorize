@@ -14,7 +14,7 @@ module.exports = class RuleRegistrator implements Debugger
     unless typeof! @container is 'Object'
       throw Error "Container must be an object, was: #{@container}"
 
-  add-rule: (action, subjects) ->
+  add: (action, subjects) ->
     @debug 'add rule', action, subjects
 
     # TODO: refactor - extract method
@@ -32,7 +32,7 @@ module.exports = class RuleRegistrator implements Debugger
     new RuleExtractor @container, action, subjects
 
   # rule-container
-  register-rule: (act, actions, subjects) ->
+  register: (act, actions, subjects) ->
     # TODO: perhaps use new AccessRequest(act, actions, subjects).normalize
     actions = normalize actions
 
@@ -43,7 +43,7 @@ module.exports = class RuleRegistrator implements Debugger
     # should add all subjects to rule in one go I think, then use array test on subject
     # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
     for action in actions
-      @add-rule @container, action, subjects
+      @add @container, action, subjects
     @
 
   # TODO: duplicate!

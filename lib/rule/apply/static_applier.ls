@@ -15,14 +15,14 @@ module.exports = class StaticApplier extends RulesApplier
       return
 
     @debug 'applying rules', @rules, typeof! @rules
-    @function-rules! or @object-rules! or @no-rules!
+    @function-rules! or @object-rules!
     @
 
   function-rules: ->
-    @apply-default-rules! if typeof! @rules is 'Function'
+    @rules! if typeof! @rules is 'Function'
 
   object-rules: ->
-    @rules! if typeof! @rules is 'Object'
+    @apply-default-rules! if typeof! @rules is 'Object'
 
   no-rules: ->
     throw Error "rules must be a Function or an Object, was: #{@rules}"
