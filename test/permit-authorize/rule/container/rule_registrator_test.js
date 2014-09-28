@@ -24,7 +24,7 @@
       });
       describe('add-rule (container, action, subjects)', function(){
         return specify('adds the rule to container', function(){
-          return expect(registrator.addRule(container, action, subjects)).to.equal(registrator);
+          return expect(registrator.add(container, action, subjects)).to.equal(registrator);
         });
       });
       describe('rule-extractor (rule-container, action, subjects)', function(){
@@ -35,7 +35,7 @@
       return describe('register-rule (act, actions, subjects)', function(){
         return specify('registers a rule', function(){
           var res;
-          res = registrator.registerRule(act, actions, subjects);
+          res = registrator.register(act, actions, subjects);
           return expect(res).to.equal(registrator);
         });
       });

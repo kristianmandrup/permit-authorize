@@ -28,7 +28,7 @@ describe 'RuleRegistrator' ->
 
     describe 'add-rule (container, action, subjects)' ->
       specify 'adds the rule to container' ->
-        expect registrator.add-rule container, action, subjects .to.equal registrator
+        expect registrator.add container, action, subjects .to.equal registrator
 
     describe 'rule-extractor (rule-container, action, subjects)' ->
       # new RuleExtractor rule-container, action, subjects
@@ -38,5 +38,5 @@ describe 'RuleRegistrator' ->
     # rule-container
     describe 'register-rule (act, actions, subjects)' ->
       specify 'registers a rule' ->
-        res = registrator.register-rule act, actions, subjects
+        res = registrator.register act, actions, subjects
         expect res .to.equal registrator
