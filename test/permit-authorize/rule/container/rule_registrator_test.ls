@@ -5,12 +5,12 @@ requires.test 'test_setup'
 User        = requires.fix 'user'
 Book        = requires.fix 'book'
 
-Registrator = requires.lib 'rule' .RuleRegistrator
+Registrator = requires.rule 'container' .RuleRegistrator
 
 expect = require 'chai' .expect
 
-create-regis = (debug = true) ->
-  new Registrator {}, debug
+create-regis = (container, debug = true) ->
+  new Registrator container, debug
 
 describe 'RuleRegistrator' ->
   var act, action, actions, subjects, registrator, container
@@ -18,8 +18,8 @@ describe 'RuleRegistrator' ->
 
   context 'basic repo' ->
     before ->
-      container   := {}
-      registrator := create-regis!
+      container   := {can: {}, cannot: {}}
+      registrator := create-regis container
 
       act       := 'can'
       action    := 'edit'

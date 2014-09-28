@@ -5,18 +5,21 @@
   requires.test('test_setup');
   User = requires.fix('user');
   Book = requires.fix('book');
-  Registrator = requires.lib('rule').RuleRegistrator;
+  Registrator = requires.rule('container').RuleRegistrator;
   expect = require('chai').expect;
-  createRegis = function(debug){
+  createRegis = function(container, debug){
     debug == null && (debug = true);
-    return new Registrator({}, debug);
+    return new Registrator(container, debug);
   };
   describe('RuleRegistrator', function(){
     var act, action, actions, subjects, registrator, container, book;
     return context('basic repo', function(){
       before(function(){
-        container = {};
-        registrator = createRegis();
+        container = {
+          can: {},
+          cannot: {}
+        };
+        registrator = createRegis(container);
         act = 'can';
         action = 'edit';
         actions = ['edit', 'publish'];
