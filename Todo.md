@@ -4,7 +4,9 @@
 
 Order to proceed...
 
-* permit-filter
+* dynamic applier
+* permit rule applier
+* permit-filter (ok)
 * allower
 * ability
 * authorizer

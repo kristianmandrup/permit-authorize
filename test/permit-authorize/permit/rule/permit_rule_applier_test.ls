@@ -1,9 +1,9 @@
-requires        = require '../../../requires'
+requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
-Permit          = requires.lib 'permit'
-PermitRegistry  = requires.permit 'permit-registry'
+Permit          = requires.lib    'permit'    .Permit
+PermitRegistry  = requires.permit 'registry'  .PermitRegistry
 
 Book            = requires.fix 'book'
 permit-clazz    = requires.fix 'permit-class'
@@ -15,7 +15,7 @@ AdminPermit     = permit-clazz.AdminPermit
 GuestPermit     = permit-clazz.GuestPermit
 
 describe 'Permit' ->
-  var book
+  var book, applier
   requests  =
     admin: {}
     kris:  {}
@@ -45,117 +45,96 @@ describe 'Permit' ->
   describe 'Rules application' ->
     # auto applies static rules by default (in init) as part of construction!
     describe 'static rules application' ->
-      before ->
-        PermitRegistry.clear-all!
+      before-each ->
+        Permit.registry.clean!
         permits.guest := create-permit.guest!
-
-      after ->
-        PermitRegistry.clear-all!
 
       specify 'registers a read-any rule (using default)' ->
         permits.guest.can-rules!['read'].should.eql ['*']
 
     describe 'dynamic rules application - user rules' ->
-      before ->
-        PermitRegistry.clear-all!
+      before-each ->
+        Permit.registry.clean!
         permits.guest := create-permit.admin!
 
         # dynamic application when access-request passed
-        rule-applier = permits.guest.rule-applier requests.kris.read-paper
+        -applier = permits.guest.applier requests.kris.read-paper
         # rule-applier.debug-on!
         # console.log 'Kris', users.kris
 
-        rule-applier.apply-user-rules users.kris
-
-      after ->
-        PermitRegistry.clear-all!
+        applier.apply-user-rules users.kris
 
       specify 'registers a manage User rule' ->
         permits.guest.can-rules!['manage'].should.include 'User'
 
     describe 'dynamic rules application - action rules' ->
-      before ->
-        PermitRegistry.clear-all!
+      before-each ->
+        Permit.registry.clean!
         permits.guest := create-permit.guest!
 
         # dynamic application when access-request passed
-        rule-applier = permits.guest.rule-applier requests.admin.read-book
+        applier := permits.guest.applier requests.admin.read-book
 
-        rule-applier.apply-action-rules 'read'
-
-      after ->
-        PermitRegistry.clear-all!
+        applier.apply-action-rules 'read'
 
       specify 'registers a read Book rule' ->
         permits.guest.can-rules!['read'].should.include 'Book'
 
     describe 'dynamic rules application - ctx rules' ->
-      before ->
-        PermitRegistry.clear-all!
+      before-each ->
+        Permit.registry.clean!
         permits.guest := create-permit.guest!
 
         # dynamic application when access-request passed
-        rule-applier = permits.guest.rule-applier requests.admin.read-book
+        applier := permits.guest.applier requests.admin.read-book
 
-        rule-applier.apply-context-rules area: 'visitor'
-
-      after ->
-        PermitRegistry.clear-all!
+        applier.apply-context-rules area: 'visitor'
 
       specify 'registers a publish Paper rule' ->
         permits.guest.can-rules!['publish'].should.include 'Paper'
 
     describe 'dynamic rules application - subject rules - class' ->
-      before ->
+      before-each ->
         permits := {}
-        PermitRegistry.clear-all!
+        Permit.registry.clean!
         permits.admin := create-permit.admin!
 
         # dynamic application when access-request passed
-        rule-applier = permits.admin.rule-applier requests.kris.read-paper
+        applier := permits.admin.applier requests.kris.read-paper
 
-        rule-applier.apply-subject-rules 'Paper'
-
-      after ->
-        PermitRegistry.clear-all!
+        applier.apply-subject-rules 'Paper'
 
       specify 'registers an approve Paper rule' ->
         permits.admin.can-rules!['approve'].should.include 'Paper'
 
     describe 'dynamic rules application - subject rules - instance to class' ->
-      before ->
+      before-each ->
         class Paper
           (@name) ->
 
         paper = new Paper title: 'a paper'
 
         permits := {}
-        PermitRegistry.clear-all!
+        Permit.registry.clean!
         permits.admin := create-permit.admin!
 
         # dynamic application when access-request passed
-        rule-applier = permits.admin.rule-applier requests.kris.read-paper
+        applier := permits.admin.applier requests.kris.read-paper
         # rule-applier.debug-on!
 
-        rule-applier.apply-subject-rules paper
-
-      after ->
-        PermitRegistry.clear-all!
+        applier.apply-subject-rules paper
 
       specify 'registers an approve Paper rule' ->
         permits.admin.can-rules!['approve'].should.include 'Paper'
 
 
     describe 'dynamic rules application' ->
-      before ->
-        PermitRegistry.clear-all!
+      before-each ->
+        Permit.registry.clean!
         permits.guest := create-permit.guest!
 
         # dynamic application when access-request passed
         permits.guest.apply-rules requests.admin.read-book, 'force'
-
-      after ->
-        PermitRegistry.clear-all!
 
       specify 'registers a read-book rule' ->
         permits.guest.can-rules!['read'].should.include 'Book'
@@ -164,14 +143,12 @@ describe 'Permit' ->
         ( -> permits.guest.can-rules!['write'].should).should.throw
 
       context 'dynamic rules applied twice' ->
-        before ->
+        before-each ->
+          Permit.registry.clean!
           permits.guest := create-permit.guest!
 
           # dynamic application when access-request passed
           permits.guest.apply-rules requests.admin.read-book
-
-        after ->
-          PermitRegistry.clear-all!
 
           # dynamic application when access-request passed
           permits.guest.apply-rules requests.admin.read-book

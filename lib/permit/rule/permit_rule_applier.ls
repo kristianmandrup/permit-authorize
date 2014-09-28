@@ -1,9 +1,11 @@
 RulesAccessor = require '../../rule' .RulesAccessor
 camel-case    = require '../../util' .string.camel-case
 Debugger      = require '../../util' .Debugger
+StaticApplier = require '../../rule' .apply.StaticApplier
+DynamicApplier = require '../../rule' .apply.StaticApplier
 
 module.exports = class PermitRuleApplier implements Debugger
-  (@permit, @debugging) ->
+  (@permit, @access-request, @debugging) ->
     @applied-rules = false
     @rules = @permit.rules
 
@@ -11,11 +13,10 @@ module.exports = class PermitRuleApplier implements Debugger
     @applied-rules = false
 
   static-applier: ->
-    StaticApplier = require '../../rule' .apply.StaticApplier
     new StaticApplier @execution-context!, @rules, @debugging
 
   dynamic-applier: ->
-    DynamicApplier = require '../../rule' .apply.StaticApplier
+
     new DynamicApplier @execution-context!, @rules, @access-request, @debugging
 
   execution-context: ->
@@ -33,14 +34,14 @@ module.exports = class PermitRuleApplier implements Debugger
     @["#{type}Applier"]!
 
   # always called (can be overridden for custom behavior)
-  apply-rules: (type = 'static', force) ->
-    @["apply#{camel-case type}Rules"] force
+  apply: (type = 'static', force) ->
+    @["apply#{camel-case type}"] force
 
-  apply-dynamic-rules: ->
+  apply-dynamic: ->
     @applier-for('dynamic').apply-rules!
 
   # @force - set to force re-application of static rules
-  apply-static-rules: (force) ->
+  apply-static: (force) ->
     unless @applied-rules and not force
       @debug 'permit apply static rules'
       # dynamic

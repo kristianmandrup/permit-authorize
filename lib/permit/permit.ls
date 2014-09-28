@@ -24,8 +24,11 @@ module.exports = class Permit implements Activation, Observable, Debugger
   repo: ->
     @_repo ||= new RuleRepo @name
 
-  applier: ->
-    @_applier ||= new PermitApplier @, @debugging
+  applier: (ar) ->
+    @_applier ||= new PermitApplier @, ar, @debugging
+
+  apply-rules: (access-request) ->
+    @applier(access-request).apply 'dynamic'
 
   permit-matcher: (access-request) ->
     new PermitMatcher @, access-request, @debugging
