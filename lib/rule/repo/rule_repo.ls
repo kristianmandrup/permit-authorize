@@ -4,8 +4,7 @@
 # Then you can match an access-request (action, subject)
 # Simple!
 
-Debugger  = require '../../util' .Debugger
-
+Debugger        = require '../../util' .Debugger
 RuleContainer   = require '../container' .RuleContainer
 
 # Why a repo?

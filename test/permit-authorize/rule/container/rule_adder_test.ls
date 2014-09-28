@@ -1,16 +1,16 @@
-requires  = require '../../../requires'
+requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
 User        = requires.fix 'user'
 Book        = requires.fix 'book'
 
-Adder       = requires.lib 'rule' .RuleAdder
+Adder       = requires.rule 'container' .RuleAdder
 
 expect = require 'chai' .expect
 
 create-adder = (container, action, subjects, debug = true) ->
-  new Adder debug
+  new Adder container, action, subjects, debug
 
 describe 'RuleAdder' ->
   var act, action, actions, subjects, adder, container, book

@@ -17,17 +17,6 @@ describe 'Permit' ->
   before ->
     permits.hello := new Permit 'hello'
 
-  describe 'use' ->
-    context 'single permit named hello' ->
-      specify 'using Object adds object to permit' ->
-        permits.hello.use {state: 'on'}
-        permits.hello.state.should.eql 'on'
-
-      specify 'using Function adds object received from calling function to permit' ->
-        permits.hello.use ->
-          {state: 'off'}
-        permits.hello.state.should.eql 'off'
-
   xdescribe 'clean' ->
     # TODO
 

@@ -1,19 +1,14 @@
 util        = require '../../util'
 array       = util.array
-#contains   = array.contains
-#object     = util.object
-#unique     = array.unique
 normalize   = util.normalize
-# camelize  = util.string.camel-case
 
 Debugger        = util.Debugger
 RuleMixin       = require './rule_mixin'
-RuleAdder
+RuleAdder       = require './rule_adder'
 
 module.exports = class RuleRegistrator implements RuleMixin, Debugger
-  (@container, @act, @actions, @subjects, @debugging) ->
+  (@container, @debugging) ->
     @_validate!
-    @actions = normalize @actions
     @
 
   _validate: ->
@@ -21,18 +16,22 @@ module.exports = class RuleRegistrator implements RuleMixin, Debugger
       throw Error "Container must be an object, was: #{@container}"
 
   # rule-container
-  register: ->
-    # TODO: perhaps use new AccessRequest(act, actions, subjects).normalize
-    @container = @container-for act # can-rules or cannot-rules
+  register: (@act, @actions, @subjects) ->
+    console.log 'ACTIONS', actions
+    @debug 'actions', actions
+
+    @act-container = @container-for act # can-rules or cannot-rules
+    @actions = normalize @actions
     @debug 'rule container', @container
     @add-actions!
     @
 
   add-actions: ->
+    @debug 'add actions', @actions
     # should add all subjects to rule in one go I think, then use array test on subject
     # http://preludels.com/#find to see if subject that we try to act on is in this rule subject array
     for action in @actions
       @add action
 
   add: (action) ->
-    new RuleAdder @container, action, @subjects, @debugging
+    new RuleAdder @act-container, action, @subjects, @debugging

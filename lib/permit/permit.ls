@@ -2,8 +2,10 @@ Debugger        = require '../util' .Debugger
 
 PermitRegistry  = require './registry'   .PermitRegistry
 PermitMatcher   = require './matcher'    .PermitMatchController
-RuleRepo        = require '../rule'      .repo.RuleRepo
+
 PermitApplier   = require './rule'       .PermitRuleApplier
+
+RuleRepo        = require '../rule'      .repo.RuleRepo
 Observable      = require '../mixin'     .Observable
 Activation      = require '../mixin'     .Activation
 

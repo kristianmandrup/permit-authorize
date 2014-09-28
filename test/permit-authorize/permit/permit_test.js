@@ -15,24 +15,6 @@
     before(function(){
       return permits.hello = new Permit('hello');
     });
-    describe('use', function(){
-      return context('single permit named hello', function(){
-        specify('using Object adds object to permit', function(){
-          permits.hello.use({
-            state: 'on'
-          });
-          return permits.hello.state.should.eql('on');
-        });
-        return specify('using Function adds object received from calling function to permit', function(){
-          permits.hello.use(function(){
-            return {
-              state: 'off'
-            };
-          });
-          return permits.hello.state.should.eql('off');
-        });
-      });
-    });
     xdescribe('clean', function(){});
     describe('matcher', function(){
       var accessRequest;

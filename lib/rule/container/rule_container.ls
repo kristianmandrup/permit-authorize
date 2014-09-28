@@ -26,7 +26,7 @@ module.exports = class RuleContainer implements Debugger
     @_cleaner ||= new RuleCleaner @
 
   registrator: ->
-    @_registrator ||= new RuleRegistrator @
+    @_registrator ||= new RuleRegistrator @, @debugging
 
   display: ->
     console.log "can-rules:", @can

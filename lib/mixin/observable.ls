@@ -2,7 +2,7 @@ module.exports =
   observers: []
 
   addObserver: (observer) ->
-    observers.push observer
+    @observers.push observer
 
   notify: (event) ->
     for observer in @observers

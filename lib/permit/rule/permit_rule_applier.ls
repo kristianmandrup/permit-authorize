@@ -1,9 +1,16 @@
-RulesAccessor     = require '../../rule' .RulesAccessor
-camel-case        = require '../../util' .string.camel-case
-Debugger          = require '../../util' .Debugger
-StaticApplier     = require '../../rule' .apply.StaticApplier
-DynamicApplier    = require '../../rule' .apply.DynamicApplier
-ExecutionContext  = require '../../rule' .apply.ExecutionContext
+rule = require '../../rule'
+util = require '../../util'
+
+RulesAccessor     = rule.RulesAccessor
+camel-case        = util.string.camel-case
+Debugger          = util.Debugger
+
+console.log 'rule', rule
+console.log 'util', util
+
+StaticApplier     = rule.apply.StaticApplier
+DynamicApplier    = rule.apply.DynamicApplier
+ExecutionContext  = rule.apply.ExecutionContext
 
 module.exports = class PermitRuleApplier implements Debugger
   (@ctx, @access-request, @debugging = true) ->
