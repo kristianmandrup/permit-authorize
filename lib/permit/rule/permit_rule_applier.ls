@@ -5,9 +5,20 @@ StaticApplier = require '../../rule' .apply.StaticApplier
 DynamicApplier = require '../../rule' .apply.StaticApplier
 
 module.exports = class PermitRuleApplier implements Debugger
-  (@permit, @access-request, @debugging) ->
+  (@ctx, @access-request, @debugging = true) ->
+    @_validate!
     @applied-rules = false
-    @rules = @permit.rules
+    @debug 'ctx', @ctx
+    @rules = @ctx.rules
+    @debug 'rules', @rules
+    @
+
+  _validate: ->
+    unless typeof! @ctx is 'Object'
+      throw Error "Apply Context must be an Object, was: #{@cxt}"
+
+    unless @ctx.repo
+      throw Error "Apply Context missing a .repo to store the applied rules, was: #{@cxt}"
 
   clean: ->
     @applied-rules = false
@@ -16,19 +27,18 @@ module.exports = class PermitRuleApplier implements Debugger
     new StaticApplier @execution-context!, @rules, @debugging
 
   dynamic-applier: ->
-
     new DynamicApplier @execution-context!, @rules, @access-request, @debugging
 
   execution-context: ->
-    @_xcuter ||= @permit.rule-repo
+    @_executer ||= @ctx.repo!
 
   rule-applier: ->
-    new @rules-applier.clazz @permit, @access-request, @debugging
+    new @rules-applier.clazz @ctx, @access-request, @debugging
 
   # TODO: put in module
   validate-access-request: ->
     unless typeof! @access-request is 'Object'
-      throw Error "Invalid access reques #{@access-request}, must be an Object"
+      throw Error "Invalid access request: #{@access-request}, must be an Object"
 
   applier-for: (type) ->
     @["#{type}Applier"]!
@@ -42,8 +52,9 @@ module.exports = class PermitRuleApplier implements Debugger
 
   # @force - set to force re-application of static rules
   apply-static: (force) ->
+    @debug 'forcing static apply' if force
     unless @applied-rules and not force
-      @debug 'permit apply static rules'
+      @debug 'apply static rules'
       # dynamic
       @applier-for('static').apply-rules!
       @applied-static-rules = true

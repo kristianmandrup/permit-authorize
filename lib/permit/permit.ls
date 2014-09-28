@@ -25,7 +25,7 @@ module.exports = class Permit implements Activation, Observable, Debugger
     @_repo ||= new RuleRepo @name
 
   applier: (ar) ->
-    @_applier ||= new PermitApplier @, ar, @debugging
+    new PermitApplier @, ar, @debugging
 
   apply-rules: (access-request) ->
     @applier(access-request).apply 'dynamic'
@@ -65,7 +65,7 @@ module.exports = class Permit implements Activation, Observable, Debugger
   # pre-compiles static rules that match
   init: ->
     @debug 'permit init'
-    @applier.apply 'static'
+    @applier!.apply 'static'
     @
 
   clean: ->

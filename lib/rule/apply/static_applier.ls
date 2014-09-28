@@ -4,7 +4,7 @@ util         = require '../util'
 module.exports = class StaticApplier extends RulesApplier
   (@execution-context, @rules, @debugging) ->
     super ...
-    @debug 'StaticApplier ctx:', @execution-context
+    @debug 'ctx:', @execution-context, 'rules:', rules
     @
 
   # only the static rules
@@ -14,17 +14,19 @@ module.exports = class StaticApplier extends RulesApplier
       @debug 'invalid permit rules could not be applied'
       return
 
-    @debug 'applying rules', @rules
-
-    switch typeof @rules
-    when 'function'
-      @rules!
-    when 'object'
-      @apply-default-rules!
-
-    else
-      throw Error "rules must be a Function or an Object, was: #{@rules}"
+    @debug 'applying rules', @rules, typeof! @rules
+    @function-rules! or @object-rules! or @no-rules!
     @
+
+  function-rules: ->
+    @apply-default-rules! if typeof! @rules is 'Function'
+
+  object-rules: ->
+    @rules! if typeof! @rules is 'Object'
+
+  no-rules: ->
+    throw Error "rules must be a Function or an Object, was: #{@rules}"
+
 
   # apply rules for key 'default:'
   #

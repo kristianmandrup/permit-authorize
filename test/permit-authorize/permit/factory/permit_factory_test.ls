@@ -8,11 +8,39 @@ PermitFactory   = requires.permit 'factory'   .PermitFactory
 class AdminPermit extends Permit
   type: 'admin'
 
+expect = require 'chai' .expect
+
 describe 'PermitFactory' ->
   permits = {}
 
-  context 'multiple guest permits' ->
+  var fun
 
+  describe 'create with function' ->
+    before-each ->
+      fun := ->
+        rules:
+          ctx:
+            area:
+              visitor: ->
+                @ucan 'publish', 'Paper'
+          read: ->
+            @ucan 'read' 'Book'
+          write: ->
+            @ucan 'write' 'Book'
+          default: ->
+            @ucan 'read' 'any'
+
+      permits.fun-guest = new PermitFactory('guest books', fun, false).create!
+      # console.log permits.fun-guest.rules
+
+    describe 'rules' ->
+      specify 'should be an object' ->
+        expect (typeof! permits.fun-guest.rules) .to.eql 'Object'
+
+      specify 'read be a Function' ->
+        expect (typeof! permits.fun-guest.rules.read) .to.eql 'Function'
+
+  context 'multiple guest permits' ->
     before ->
       permits.guest := new PermitFactory('Guest', {
         number: 1
@@ -28,3 +56,7 @@ describe 'PermitFactory' ->
 
     specify 'creating other Guest permit throws error' ->
       ( -> permit-for 'Guest' ).should.throw
+
+    describe 'use' ->
+
+    describe 'create' ->
