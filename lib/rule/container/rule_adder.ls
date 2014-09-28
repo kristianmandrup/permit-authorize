@@ -13,16 +13,16 @@ module.exports = class RuleAdder implements Debugger
     @
 
   action-subjects: ->
-    @_action-subjects ||= @rule-extractor(@container, @action, @subjects).extract!
+    @_action-subjects ||= @extractor(@container, @action, @subjects).extract!
 
   add-manage: ->
     return unless @action is 'manage'
+    @debug 'add-manage', @action
     for action in @manage-actions
       @container[action] = @action-subjects!
-    # console.log 'action subjects', rule-container[action]
     @
 
-  rule-extractor:  ->
+  extractor:  ->
     new RuleExtractor @container, @action, @subjects
 
-  manage-actions: require '../../util' .globals.manage-actions
+  manage-actions: require('../../util').globals.manage-actions

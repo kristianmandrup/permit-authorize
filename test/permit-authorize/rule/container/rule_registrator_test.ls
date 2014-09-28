@@ -26,14 +26,6 @@ describe 'RuleRegistrator' ->
       actions   := ['edit', 'publish']
       subjects  := ['book', 'article']
 
-    describe 'add-rule (container, action, subjects)' ->
-      specify 'adds the rule to container' ->
-        expect registrator.add container, action, subjects .to.equal registrator
-
-    describe 'rule-extractor (rule-container, action, subjects)' ->
-      # new RuleExtractor rule-container, action, subjects
-      specify 'returns rule-extractor with extract function' ->
-        expect registrator.rule-extractor(container, action, subjects).extract .to.be.an.instanceOf Function
 
     # rule-container
     describe 'register-rule (act, actions, subjects)' ->

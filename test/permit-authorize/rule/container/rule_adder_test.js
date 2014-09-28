@@ -12,7 +12,7 @@
     return new Adder(container, action, subjects, debug);
   };
   describe('RuleAdder', function(){
-    var act, action, actions, subjects, adder, container, book;
+    var act, action, actions, subjects, adder, container, book, res;
     return context('basic repo', function(){
       before(function(){
         container = {};
@@ -22,9 +22,53 @@
         subjects = ['book', 'article'];
         return adder = createAdder(container, action, subjects);
       });
-      return describe('add (container, action, subjects)', function(){
+      describe('add(container, action, subjects)', function(){
         return specify('adds the rule to container', function(){
-          return expect(adder.add()).to.equal(adder);
+          return expect(adder.add(container, action, subjects)).to.equal(adder);
+        });
+      });
+      describe('extractor (rule-container, action, subjects)', function(){
+        return specify('returns rule-extractor with extract function', function(){
+          return expect(adder.extractor(container, action, subjects).extract).to.be.an.instanceOf(Function);
+        });
+      });
+      describe('manage-actions', function(){
+        return specify('globals', function(){
+          return expect(adder.manageActions).to.eql(['create', 'delete', 'update', 'edit']);
+        });
+      });
+      context('not a manage rule', function(){
+        before(function(){
+          return res = adder.addManage();
+        });
+        describe('add-manage', function(){
+          return specify('returns void', function(){
+            return expect(res).to.eql(void 8);
+          });
+        });
+        return describe('action-subjects', function(){
+          return specify('them', function(){
+            return expect(adder.actionSubjects()).to.eql(['Book', 'Article']);
+          });
+        });
+      });
+      return context('a manage rule', function(){
+        before(function(){
+          adder = createAdder(container, 'manage', ['book', 'movie']);
+          return res = adder.addManage();
+        });
+        return describe('add-manage', function(){
+          specify('not void', function(){
+            return expect(res).to.eql(adder);
+          });
+          return specify('adds for all manage actions', function(){
+            var i$, ref$, len$, action, results$ = [];
+            for (i$ = 0, len$ = (ref$ = adder.manageActions).length; i$ < len$; ++i$) {
+              action = ref$[i$];
+              results$.push(expect(adder.container[action]).to.eql(['Book', 'Movie']));
+            }
+            return results$;
+          });
         });
       });
     });

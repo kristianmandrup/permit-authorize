@@ -22,16 +22,6 @@
         actions = ['edit', 'publish'];
         return subjects = ['book', 'article'];
       });
-      describe('add-rule (container, action, subjects)', function(){
-        return specify('adds the rule to container', function(){
-          return expect(registrator.add(container, action, subjects)).to.equal(registrator);
-        });
-      });
-      describe('rule-extractor (rule-container, action, subjects)', function(){
-        return specify('returns rule-extractor with extract function', function(){
-          return expect(registrator.ruleExtractor(container, action, subjects).extract).to.be.an.instanceOf(Function);
-        });
-      });
       return describe('register-rule (act, actions, subjects)', function(){
         return specify('registers a rule', function(){
           var res;
