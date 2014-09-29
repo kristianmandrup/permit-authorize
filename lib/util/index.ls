@@ -5,6 +5,7 @@ module.exports =
   normalize:  require './normalize'
   globals:    require './globals'
   time:       require './time'
+  subject:    require './subject'
 
   Intersect:  require './intersect'
   Debugger:   require './debugger'

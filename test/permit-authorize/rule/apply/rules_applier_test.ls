@@ -32,6 +32,14 @@ describe 'Rule Applier (RuleApplier)' ->
   before ->
     book          := new Book 'Far and away'
 
+  describe 'apply-rules-for' ->
+
+  describe 'context-rules' ->
+
+  describe 'apply-obj-rules-for' ->
+
+  describe 'apply-all-rules' ->
+
   # can create, edit and delete a Book
   describe 'manage paper' ->
     context 'applied default rule: manage Paper' ->

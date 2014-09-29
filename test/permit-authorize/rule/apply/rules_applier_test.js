@@ -24,6 +24,10 @@
     before(function(){
       return book = new Book('Far and away');
     });
+    describe('apply-rules-for', function(){});
+    describe('context-rules', function(){});
+    describe('apply-obj-rules-for', function(){});
+    describe('apply-all-rules', function(){});
     describe('manage paper', function(){
       context('applied default rule: manage Paper', function(){
         before(function(){

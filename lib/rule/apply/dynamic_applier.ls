@@ -12,6 +12,7 @@ module.exports = class DynamicApplier extends RulesApplier
     return false if not @access-request
     if Object.keys(@access-request).length > 0 then true else false
 
+  # use delegate generator!
   action: ->
     @access-request?.action
 
@@ -42,27 +43,6 @@ module.exports = class DynamicApplier extends RulesApplier
     else
       throw Error "rules must be a Function or an Object, was: #{@rules}"
     @
-
-  apply-obj-rules-for: (obj, context) ->
-    @debug 'apply-obj-rules-for'
-    rules = @rules-accessor.context-rules(context)
-
-    @debug 'apply-obj-rules-for', obj, context, rules
-
-    obj-keys = Object.keys(obj)
-    is-user = obj.clazz is 'User'
-
-    if is-user
-      obj-keys = ['name', 'role']
-
-    for key of obj-keys
-      val = obj[key]
-
-      if is-user
-        @apply-rules-for val, context
-
-      key-rules = rules[key]
-      @apply-rules-for val, key-rules
 
   # for more advances cases, also pass context 'action' as 2nd param
   apply-action-rules: ->

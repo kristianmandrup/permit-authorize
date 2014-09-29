@@ -1,5 +1,6 @@
 util        = require '../util'
 
+
 # Execute all rules of a particular name (optionally within specific context, such as area, action or role)
 #
 # apply-rules-for 'read', 'action' - will execute the rules in... rules.action.read
@@ -14,10 +15,12 @@ util        = require '../util'
 #     guest: ->
 #   area:
 #     admin: ->
+utily             = require '../../util'
+subject           = utily.subject
+Debugger          = utily.Debugger
 
-Debugger          = require '../../util' .Debugger
 ExecutionContext  = require './execution_context'
-util = require 'util'
+inspect           = require 'util' .inspect
 
 # Base class for Dynamic- and StaticRulesApplier
 module.exports = class RulesApplier implements Debugger
@@ -27,7 +30,7 @@ module.exports = class RulesApplier implements Debugger
 
   _validate: ->
     unless @execution-context.ucan and @execution-context.ucannot
-      throw Error "Execution context must have ucan and ucannot methods for executing rules, was: #{util.inspect @execution-context}"
+      throw Error "Execution context must have ucan and ucannot methods for executing rules, was: #{inspect @execution-context}"
 
   repo: ->
     @execution-context.repo
@@ -65,6 +68,28 @@ module.exports = class RulesApplier implements Debugger
     else
       @debug "no such rules context: #{name}", @rules
       @rules
+
+  apply-obj-rules-for: (obj, context) ->
+    @debug 'apply-obj-rules-for'
+    rules = @context-rules context
+
+    @debug 'apply-obj-rules-for', obj, context, rules
+
+    obj-keys = Object.keys obj
+    is-user =  subject(obj).clazz is 'User'
+
+    if is-user
+      obj-keys = ['name', 'role']
+
+    for key of obj-keys
+      val = obj[key]
+
+      if is-user
+        @apply-rules-for val, context
+
+      key-rules = rules[key]
+      @apply-rules-for val, key-rules
+
 
   # should iterate through rules object recursively and execute any function found
   apply-all-rules: ->

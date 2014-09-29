@@ -2,7 +2,7 @@ module.exports = (@subject) ->
   # always return string, to ensure string comparison valid when matching,
   # including (later) regex tests if necessary
   clazz: ->
-    camel-case (@find-class || '')
+    camel-case (@find-class! || '')
 
   find-class: ->
     res = switch typeof! @subject
