@@ -1,4 +1,5 @@
 Debugger = require '../../util' .Debugger
+util = require 'util'
 
 # a context to execute a rule
 module.exports = class ExecutionContext implements Debugger
@@ -11,7 +12,7 @@ module.exports = class ExecutionContext implements Debugger
 
   _validate: ->
     unless typeof! @repo is 'Object'
-      throw Error "ExecutionContext must take an Object, was: #{@repo}"
+      throw Error "ExecutionContext must take an Object, was: #{util.inspect @repo}"
 
     # so as not to be same name as can method used "from the outside, ie. via Ability"
     # for the functions within rules object, they are executed with the rule applier as this (@) - ie. the context

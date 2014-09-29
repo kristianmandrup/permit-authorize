@@ -17,6 +17,7 @@ util        = require '../util'
 
 Debugger          = require '../../util' .Debugger
 ExecutionContext  = require './execution_context'
+util = require 'util'
 
 # Base class for Dynamic- and StaticRulesApplier
 module.exports = class RulesApplier implements Debugger
@@ -26,7 +27,7 @@ module.exports = class RulesApplier implements Debugger
 
   _validate: ->
     unless @execution-context.ucan and @execution-context.ucannot
-      throw Error "Execution context must have ucan and ucannot methods for executing rules, was: #{@execution-context}"
+      throw Error "Execution context must have ucan and ucannot methods for executing rules, was: #{util.inspect @execution-context}"
 
   repo: ->
     @execution-context.repo

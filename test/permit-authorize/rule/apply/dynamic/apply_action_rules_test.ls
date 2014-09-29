@@ -5,8 +5,9 @@ requires.test 'test_setup'
 User          = requires.fix 'user'
 Book          = requires.fix 'book'
 
-RulesApplier  = requires.rule 'apply' .DynamicApplier
-RuleRepo      = requires.rule 'repo' .RuleRepo
+RulesApplier      = requires.rule 'apply' .DynamicApplier
+RuleRepo          = requires.rule 'repo'  .RuleRepo
+ExecutionContext  = requires.rule 'apply' .ExecutionContext
 
 rules         = requires.fix-rules 'rules'
 
@@ -18,11 +19,17 @@ describe 'Rule Applier (RuleApplier)' ->
     console.log repo.can-rules
     console.log repo.cannot-rules
 
-  create-rules-applier = (rule-repo, rules, read-access-request) ->
-    new RulesApplier rule-repo, rules, read-access-request
+  create-repo = (name = 'dynamic repo', debug = false) ->
+    new RuleRepo name, debug .clean!
 
-  create-repo = (name = 'dynamic repo', debug) ->
-    new RuleRepo name, debug .clear!
+  create-exec-ctx = (debug = true) ->
+    new ExecutionContext create-repo!, debug
+
+  create-rules-applier = (rules, access-request, debug = true) ->
+    new RulesApplier create-exec-ctx!, rules, access-request, debug
+
+  exec-rule-applier = (rules, action-request) ->
+    create-rules-applier(rules, action-request).apply-rules!
 
   before ->
     book  := new Book 'Far and away'
@@ -31,7 +38,7 @@ describe 'Rule Applier (RuleApplier)' ->
     var read-access-request, rule-repo, rule-applier, rules
 
     before ->
-      rules         :=
+      rules :=
         edit: ->
           @ucan     'edit',   'Book'
           @ucannot  'write',  'Book'
@@ -44,9 +51,18 @@ describe 'Rule Applier (RuleApplier)' ->
         subject: book
 
       # adds only the 'read' rules (see access-request.action)
-      rule-repo     := create-repo 'action repo', true
-      rule-applier  := create-rules-applier rule-repo, rules, read-access-request
-
+      rule-applier  := create-rules-applier rules, read-access-request
+      rule-repo     := rule-applier.repo!
       rule-applier.apply-action-rules!
 
-    describe 'apply' ->
+      console.log 'REPO', rule-repo.container!
+
+    specify 'adds all dynamic can rules (only read)' ->
+      rule-repo.can-rules!.should.be.eql {
+        read: ['Project']
+      }
+
+    specify 'adds all dynamic cannot rules (only read)' ->
+      rule-repo.cannot-rules!.should.be.eql {
+        delete: ['Paper']
+      }
