@@ -36,15 +36,15 @@ module.exports = class RulesApplier implements Debugger
     @execution-context.repo
 
   apply-rules-for: (name, context) ->
+    unless typeof! name is 'String'
+      @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
+      return @
+
     @debug "apply rules for #{name} in context:", context
 
     if typeof! name is 'Object'
       @apply-obj-rules-for name, context
 
-    unless typeof! name is 'String'
-      @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
-      return @
-      # throw Error "Name to appl rules for must be a String, was: #{name}"
 
     rules = @context-rules context
 
@@ -69,26 +69,23 @@ module.exports = class RulesApplier implements Debugger
       @debug "no such rules context: #{name}", @rules
       @rules
 
-  apply-obj-rules-for: (obj, context) ->
-    @debug 'apply-obj-rules-for'
+  apply-obj-rules-for: (object, context) ->
     rules = @context-rules context
 
-    @debug 'apply-obj-rules-for', obj, context, rules
+    @debug 'apply-obj-rules-for object:', object, 'context:', context, 'rules:', rules
 
-    obj-keys = Object.keys obj
-    is-user =  subject(obj).clazz is 'User'
+    obj-keys = Object.keys object
+    is-user =  subject(object).clazz is 'User'
 
-    if is-user
-      obj-keys = ['name', 'role']
+    @debug 'obj-keys', obj-keys, 'is user', is-user
 
-    for key of obj-keys
-      val = obj[key]
+    obj-keys = ['name', 'role'] if is-user
 
-      if is-user
-        @apply-rules-for val, context
-
-      key-rules = rules[key]
-      @apply-rules-for val, key-rules
+    for key in obj-keys
+      value = object[key]
+      @debug 'object value', value, 'for', key
+      context = if is-user then context else rules[key]
+      @apply-rules-for value, context
 
 
   # should iterate through rules object recursively and execute any function found
@@ -100,4 +97,3 @@ module.exports = class RulesApplier implements Debugger
         util.recurse rules[key], @execution-context
     else
       throw Error "rules must be an Object was: #{typeof @rules}"
-    @
