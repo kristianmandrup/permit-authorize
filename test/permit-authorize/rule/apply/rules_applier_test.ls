@@ -2,8 +2,8 @@ requires  = require '../../../../requires'
 
 requires.test 'test_setup'
 
-User          = requires.fix 'user'
-Book          = requires.fix 'book'
+User              = requires.fix 'user'
+Book              = requires.fix 'book'
 
 RulesApplier      = requires.rule 'apply' .DynamicApplier
 RuleRepo          = requires.rule 'repo'  .RuleRepo
@@ -100,7 +100,7 @@ describe 'Rule Applier (RuleApplier)' ->
       specify 'should return manage Paper' ->
         expect repo.can-rules!.manage .to.eql ['Paper']
 
-  describe 'apply-all-rules' ->
+  xdescribe 'apply-all-rules' ->
     before-each ->
       rule-applier.apply-all-rules!
       repo := rule-applier.repo!

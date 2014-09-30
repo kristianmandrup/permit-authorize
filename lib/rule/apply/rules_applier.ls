@@ -19,6 +19,7 @@ utily             = require '../../util'
 subject           = utily.subject
 Debugger          = utily.Debugger
 
+RuleApplier       = require './single' .RuleApplier
 ExecutionContext  = require './execution_context'
 inspect           = require 'util' .inspect
 
@@ -35,61 +36,14 @@ module.exports = class RulesApplier implements Debugger
   repo: ->
     @execution-context.repo
 
-  apply-rules-for: (name, context) ->
-    unless typeof! name is 'String'
-      @debug "Name to apply rules for must be a String, was: #{typeof name} : #{name}"
-      return @
+  apply: (thing, ctx) ->
+    @rule-applier(thing, ctx).apply!
 
-    @debug "apply rules for #{name} in context:", context
-
-    if typeof! name is 'Object'
-      @apply-obj-rules-for name, context
-
-
-    rules = @context-rules context
-
-    named-rules = rules[name]
-    @debug 'named rules', named-rules
-    if typeof! named-rules is 'Function'
-      @debug 'call rules in', @execution-context, @execution-context.constructor.display-name
-      named-rules.call @execution-context, @access-request
-    else
-      @debug "rules key for #{name} should be a function that resolves one or more rules"
-    @
-
-  context-rules: (name)->
-    @debug 'context rules', name
-    if typeof! name is 'Object'
-      return name
-
-    return @rules unless typeof! name is 'String'
-    if typeof! @rules[name] is 'Object'
-      @rules[name]
-    else
-      @debug "no such rules context: #{name}", @rules
-      @rules
-
-  apply-obj-rules-for: (object, context) ->
-    rules = @context-rules context
-
-    @debug 'apply-obj-rules-for object:', object, 'context:', context, 'rules:', rules
-
-    obj-keys = Object.keys object
-    is-user =  subject(object).clazz is 'User'
-
-    @debug 'obj-keys', obj-keys, 'is user', is-user
-
-    obj-keys = ['name', 'role'] if is-user
-
-    for key in obj-keys
-      value = object[key]
-      @debug 'object value', value, 'for', key
-      context = if is-user then context else rules[key]
-      @apply-rules-for value, context
-
+  rule-applier: (thing, ctx)->
+    new RuleApplier thing, ctx
 
   # should iterate through rules object recursively and execute any function found
-  apply-all-rules: ->
+  apply-all: ->
     switch typeof @rules
     when 'object'
       rules = @rules

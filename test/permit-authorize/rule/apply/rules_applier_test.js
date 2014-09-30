@@ -102,7 +102,7 @@
         });
       });
     });
-    describe('apply-all-rules', function(){
+    xdescribe('apply-all-rules', function(){
       beforeEach(function(){
         ruleApplier.applyAllRules();
         return repo = ruleApplier.repo();

@@ -2,4 +2,20 @@
 (function(){
   var expect;
   expect = require('chai').expect;
+  describe('Dynamic Applier', function(){
+    describe('create', function(){
+      context('invalid', function(){});
+      return context('valid', function(){});
+    });
+    return context('instance', function(){
+      describe('valid-request', function(){});
+      describe('validate-rules', function(){});
+      describe('apply', function(){});
+      describe('execute-rules', function(){});
+      describe('apply-rules', function(){});
+      describe('ar-value (property)', function(){});
+      describe('apply-dynamic (rule)', function(){});
+      return describe('rule-applier(rule, ctx)', function(){});
+    });
+  });
 }).call(this);

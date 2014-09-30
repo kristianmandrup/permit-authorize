@@ -1,16 +1,16 @@
 RulesApplier = require './rules_applier'
 util         = require '../util'
 
-module.exports = class StaticApplier extends RulesApplier
+module.exports = class StaticApplier
   (@execution-context, @rules, @debugging) ->
-    super ...
+    # super ...
     @debug 'ctx:', @execution-context, 'rules:', rules
     @
 
   _type: 'StaticApplier'
 
   # only the static rules
-  apply-rules: ->
+  apply: ->
     unless util.valid-rules @rules
       # throw Error "No rules defined for permit: #{@name}"
       @debug 'invalid permit rules could not be applied'
@@ -24,19 +24,23 @@ module.exports = class StaticApplier extends RulesApplier
     @rules! if typeof! @rules is 'Function'
 
   object-rules: ->
-    @apply-default-rules! if typeof! @rules is 'Object'
+    @apply-rules! if typeof! @rules is 'Object'
 
   no-rules: ->
     throw Error "rules must be a Function or an Object, was: #{@rules}"
 
-
   # apply rules for key 'default:'
   #
   # rules:
-  #   default: ->
+  #   static: ->
   #     @ucan ...
-
-  apply-default-rules: ->
-    @debug 'apply-default-rules'
-    @apply-rules-for 'default'
+  apply-rules: (name = 'static') ->
+    @debug 'apply-rules', name
+    @apply-rules-for name
     @
+
+  apply-rules-for: (name) ->
+    @rules-applier!.apply name
+
+  rules-applier: ->
+    @_rules-applier ||= new RulesApplier execution-context, rules, debugging
