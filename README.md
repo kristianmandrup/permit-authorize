@@ -1,5 +1,7 @@
 # Permit Authorizer
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/permit-authorize.svg)](https://greenkeeper.io/)
+
 Authorization via Permits for Javascript.
 
 This library has been developed for *Node.js* but can be used on any platform which supports either
